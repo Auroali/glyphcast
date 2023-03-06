@@ -9,19 +9,17 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.entity.projectile.ProjectileUtil;
-import net.minecraft.world.item.FlintAndSteelItem;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.BaseFireBlock;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.FireBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.common.ForgeHooks;
+import net.minecraft.world.phys.shapes.VoxelShape;
 
 import javax.annotation.Nullable;
 
@@ -42,12 +40,33 @@ public class FireEntity extends Projectile {
             this.remove(RemovalReason.KILLED);
             return;
         }
+
+        if(!level.isClientSide)
+            igniteBlock();
+
         BlockPos blockpos = this.blockPosition();
         BlockState blockstate = this.level.getBlockState(blockpos);
+
+        if (!blockstate.isAir()) {
+            VoxelShape voxelshape = blockstate.getCollisionShape(this.level, blockpos);
+            if (!voxelshape.isEmpty()) {
+                Vec3 vec31 = this.position();
+
+                for(AABB aabb : voxelshape.toAabbs()) {
+                    if (aabb.move(blockpos).contains(vec31)) {
+                        this.remove(RemovalReason.KILLED);
+                        break;
+                    }
+                }
+            }
+        }
+
         if (this.isInWaterOrRain() || blockstate.is(Blocks.POWDER_SNOW) || this.isInFluidType((fluidType, height) -> this.canFluidExtinguish(fluidType))) {
             level.playSound(null, this, SoundEvents.FIRE_EXTINGUISH, SoundSource.PLAYERS, 1.0f, 1.0f);
             this.remove(RemovalReason.KILLED);
         }
+
+
         if(level.isClientSide) {
             Vec3 speed = getDeltaMovement().scale(0.5f);
             level.addParticle(ParticleTypes.FLAME, this.getX(), this.getEyeY(), this.getZ(), speed.x, speed.y, speed.z);
@@ -57,9 +76,6 @@ public class FireEntity extends Projectile {
         if(result != null && result.getType() == HitResult.Type.ENTITY) {
             this.onHitEntity(result);
         }
-
-        if(!level.isClientSide)
-            igniteBlock();
 
         double newX = getX() + this.getDeltaMovement().x;
         double newY = getY() + this.getDeltaMovement().y;
@@ -75,7 +91,7 @@ public class FireEntity extends Projectile {
             BlockPos pos = result.getBlockPos().relative(result.getDirection());
             BlockState state = level.getBlockState(result.getBlockPos());
             // If the block can be lit, we light it
-            if(state.hasProperty(BlockStateProperties.LIT) && state.getValue(BlockStateProperties.LIT)) {
+            if(state.hasProperty(BlockStateProperties.LIT) && !state.getValue(BlockStateProperties.LIT)) {
                 level.setBlockAndUpdate(result.getBlockPos(), state.setValue(BlockStateProperties.LIT, true));
             }
             // Otherwise we try to burn it
@@ -86,12 +102,6 @@ public class FireEntity extends Projectile {
     @Nullable
     protected EntityHitResult findHitEntity(Vec3 pStartVec, Vec3 pEndVec) {
         return ProjectileUtil.getEntityHitResult(this.level, this, pStartVec, pEndVec, this.getBoundingBox().expandTowards(this.getDeltaMovement()).inflate(1.0D), this::canHitEntity);
-    }
-
-    @Override
-    protected void onInsideBlock(BlockState pState) {
-        if(!pState.isAir())
-            this.remove(RemovalReason.KILLED);
     }
 
     @Override

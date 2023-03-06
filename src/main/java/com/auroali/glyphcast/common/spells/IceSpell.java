@@ -1,6 +1,6 @@
 package com.auroali.glyphcast.common.spells;
 
-import com.auroali.glyphcast.common.network.server.SpawnParticlesMessage;
+import com.auroali.glyphcast.common.network.client.SpawnParticlesMessage;
 import com.auroali.glyphcast.common.registry.GCNetwork;
 import com.auroali.glyphcast.common.spells.glyph.Glyph;
 import com.auroali.glyphcast.common.spells.glyph.GlyphSequence;
@@ -15,11 +15,9 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.FrostedIceBlock;
 import net.minecraft.world.level.block.SupportType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
@@ -31,7 +29,6 @@ public class IceSpell extends Spell{
 
     @Override
     public void activate(Level level, Player player) {
-        RandomSource random = player.getRandom();
         if(level instanceof ServerLevel serverLevel) {
             Vec3 eyePos = player.getEyePosition();
             GCNetwork.sendToClient((ServerPlayer) player, new SpawnParticlesMessage(ParticleTypes.SNOWFLAKE, 40, eyePos.add(player.getLookAngle().scale(0.25f)), player.getLookAngle(), 0.5f));

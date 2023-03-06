@@ -5,5 +5,14 @@
   "item.glyphcast.wandering_wand": "Wandering Wand",
 
   "__comment2": "Item Groups",
-  "itemGroup.glyphcast.glyphcast": "Glyphcast"
+  "itemGroup.glyphcast.glyphcast": "Glyphcast",
+
+  "__comment3": "Glyphs",
+  "glyph.glyphcast.fire": "Fire Glyph",
+  "glyph.glyphcast.light": "Light Glyph",
+  "glyph.glyphcast.ice": "Ice Glyph",
+  "glyph.glyphcast.earth": "Earth Glyph",
+
+  "__comment4": "GUI",
+  "gui.glyphcast.save_glyphs": "Write glyphs to parchment"
 }

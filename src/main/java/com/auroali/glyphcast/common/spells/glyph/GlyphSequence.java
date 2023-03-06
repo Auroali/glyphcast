@@ -6,12 +6,12 @@ import net.minecraft.nbt.ByteTag;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
+import net.minecraft.network.FriendlyByteBuf;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 public class GlyphSequence {
 
@@ -27,12 +27,33 @@ public class GlyphSequence {
         glyphList.add(0, base);
     }
 
+    /**
+     * Creates a glyph sequence from a list of glyphs, assumes index 0 is the base glyph
+     * @param glyphs the list of glyphs
+     */
+    public GlyphSequence(List<Glyph> glyphs) {
+        this(glyphs.remove(0), new ArrayList<>(glyphs.stream().sorted().toList()));
+    }
+
     public Optional<Spell> findSpell() {
         return GlyphCast.SPELL_REGISTRY.get().getValues().stream()
                 .filter(spell -> spell.isSequence(this))
                 .findAny();
     }
 
+    public void encode(FriendlyByteBuf buf) {
+        buf.writeInt(glyphList.size());
+        glyphList.stream().map(Enum::ordinal).forEach(buf::writeByte);
+    }
+
+    public static GlyphSequence fromNetwork(FriendlyByteBuf buf) {
+        int len = buf.readInt();
+        List<Glyph> glyphs = new ArrayList<>();
+        for(int i = 0; i < len; i++) {
+            glyphs.add(Glyph.values()[buf.readByte()]);
+        }
+        return new GlyphSequence(glyphs);
+    }
     public CompoundTag serialize() {
         CompoundTag tag = new CompoundTag();
         tag.putByte("base", (byte) glyphList.get(0).ordinal());

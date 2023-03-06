@@ -1,20 +1,18 @@
-package com.auroali.glyphcast.common.network.server;
+package com.auroali.glyphcast.common.network.client;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.multiplayer.ClientLevel;
+import com.auroali.glyphcast.common.network.NetworkMessage;
 import net.minecraft.core.Registry;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleType;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.util.Mth;
-import net.minecraft.util.RandomSource;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.network.NetworkEvent;
 
 import java.util.function.Supplier;
 
-public class SpawnParticlesMessage {
+public class SpawnParticlesMessage extends NetworkMessage {
 
     ParticleOptions particle;
     int count;
@@ -22,6 +20,8 @@ public class SpawnParticlesMessage {
     Vec3 pos;
     double maxSpeed;
 
+
+    @SuppressWarnings("deprecation")
     public void encode(FriendlyByteBuf buf) {
         buf.writeId(Registry.PARTICLE_TYPE, this.particle.getType());
         buf.writeInt(count);
@@ -42,6 +42,7 @@ public class SpawnParticlesMessage {
         this.maxSpeed = speed;
         this.pos = pos;
     }
+    @SuppressWarnings("deprecation")
     public SpawnParticlesMessage(FriendlyByteBuf buf) {
         ParticleType<?> type = buf.readById(Registry.PARTICLE_TYPE);
         count = buf.readInt();
@@ -55,14 +56,7 @@ public class SpawnParticlesMessage {
         return pParticleType.getDeserializer().fromNetwork(pParticleType, pBuffer);
     }
     public void handle(Supplier<NetworkEvent.Context> ctx) {
-        ctx.get().enqueueWork(() -> {
-            ClientLevel level = Minecraft.getInstance().level;
-            RandomSource rand = level.getRandom();
-            for(int i = 0; i < count; i++) {
-                Vec3 newDir = direction.normalize().scale(maxSpeed * rand.nextFloat());
-                level.addParticle(ParticleTypes.SNOWFLAKE, pos.x, pos.y, pos.z, newDir.x, newDir.y, newDir.z);
-            }
-        });
+        ctx.get().enqueueWork(() -> DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> ClientPacketHandler.spawnParticles(this)));
         ctx.get().setPacketHandled(true);
     }
 }
