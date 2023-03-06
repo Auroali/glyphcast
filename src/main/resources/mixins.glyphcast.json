@@ -1,0 +1,10 @@
+{
+  "package": "com.auroali.glyphcast.mixins",
+  "refmap": "mixins.glyphcast.refmap.json",
+  "minVersion": "0.8",
+  "compatibilityLevel": "JAVA_17",
+  "mixins": [],
+  "client": [
+    "client.BlockLightEngineMixin"
+  ]
+}

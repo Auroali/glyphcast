@@ -1,0 +1,9 @@
+{
+  "__comment1": "Items",
+  "item.glyphcast.parchment": "Written Parchment",
+  "item.glyphcast.blank_parchment": "Blank Parchment",
+  "item.glyphcast.wandering_wand": "Wandering Wand",
+
+  "__comment2": "Item Groups",
+  "itemGroup.glyphcast.glyphcast": "Glyphcast"
+}
