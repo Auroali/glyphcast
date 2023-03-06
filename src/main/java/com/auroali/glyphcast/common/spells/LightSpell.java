@@ -1,11 +1,8 @@
 package com.auroali.glyphcast.common.spells;
 
-import com.auroali.glyphcast.common.entities.FireEntity;
 import com.auroali.glyphcast.common.entities.LightEntity;
 import com.auroali.glyphcast.common.spells.glyph.Glyph;
 import com.auroali.glyphcast.common.spells.glyph.GlyphSequence;
-import net.minecraft.sounds.SoundEvents;
-import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;

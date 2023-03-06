@@ -93,6 +93,7 @@ public class FireEntity extends Projectile {
             // If the block can be lit, we light it
             if(state.hasProperty(BlockStateProperties.LIT) && !state.getValue(BlockStateProperties.LIT)) {
                 level.setBlockAndUpdate(result.getBlockPos(), state.setValue(BlockStateProperties.LIT, true));
+                return;
             }
             // Otherwise we try to burn it
             if(BaseFireBlock.canBePlacedAt(level, pos, result.getDirection()))

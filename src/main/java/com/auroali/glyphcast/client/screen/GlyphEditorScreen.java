@@ -4,6 +4,7 @@ import com.auroali.glyphcast.common.network.server.WriteParchmentMessage;
 import com.auroali.glyphcast.common.registry.GCNetwork;
 import com.auroali.glyphcast.common.spells.glyph.Glyph;
 import com.auroali.glyphcast.common.spells.glyph.GlyphSequence;
+import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.GameNarrator;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.Button;
@@ -36,7 +37,15 @@ public class GlyphEditorScreen extends Screen {
         addRenderableWidget(save);
     }
 
+    @Override
+    public void render(PoseStack pPoseStack, int pMouseX, int pMouseY, float pPartialTick) {
+
+        super.render(pPoseStack, pMouseX, pMouseY, pPartialTick);
+    }
+
     void saveGlyphSequence() {
+        if(glyphs.size() == 0)
+            return;
         GlyphSequence sequence = new GlyphSequence(glyphs);
         GCNetwork.sendToServer(new WriteParchmentMessage(slot, sequence));
         Minecraft.getInstance().setScreen(null);

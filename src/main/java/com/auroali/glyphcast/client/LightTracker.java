@@ -2,7 +2,6 @@ package com.auroali.glyphcast.client;
 
 import com.auroali.glyphcast.common.config.GCClientConfig;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.Entity;
 import net.minecraftforge.api.distmarker.Dist;
@@ -12,9 +11,7 @@ import net.minecraftforge.fml.common.Mod;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
-import java.util.logging.Level;
 
 @Mod.EventBusSubscriber(value = Dist.CLIENT)
 public class LightTracker {
@@ -42,7 +39,7 @@ public class LightTracker {
     }
 
     public static void update(Entity entity) {
-        if(Minecraft.getInstance().level.getGameTime() % GCClientConfig.CLIENT.updateFrequency.get() != 0)
+        if(Minecraft.getInstance().level != null && Minecraft.getInstance().level.getGameTime() % GCClientConfig.CLIENT.updateFrequency.get() != 0)
             return;
         BlockPos pos = LIGHTS.get(entity);
         LIGHTS.put(entity, entity.blockPosition());
