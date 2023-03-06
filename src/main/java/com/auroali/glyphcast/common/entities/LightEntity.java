@@ -2,6 +2,7 @@ package com.auroali.glyphcast.common.entities;
 
 import com.auroali.glyphcast.client.LightTracker;
 import com.auroali.glyphcast.common.registry.GCEntities;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.protocol.Packet;
@@ -10,16 +11,42 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.entity.IEntityAdditionalSpawnData;
 import net.minecraftforge.network.NetworkHooks;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 public class LightEntity extends Entity implements IEntityAdditionalSpawnData {
 
     UUID ownerUUID;
-    Entity cachedPlayer;
+    Entity cachedOwner;
+
+    /**
+     * Returns an immutable list of all light entities owned by and currently orbiting the player
+     * @param player the owning player
+     * @return the list of orbiting lights
+     */
+    public static List<LightEntity> getAllFollowing(Player player) {
+        return player.level.getEntities(player, player.getBoundingBox().inflate(10),
+                e -> e instanceof LightEntity && ((LightEntity) e).ownerUUID.equals(player.getUUID()))
+                .stream().map(e -> (LightEntity)e)
+                .toList();
+    }
+
+    public static List<LightEntity> getAllFollowing(Player player, ServerLevel level) {
+        var it = level.getEntities().getAll().iterator();
+        List<LightEntity> entities = new ArrayList<>();
+        while (it.hasNext()) {
+            Entity entity = it.next();
+            if(entity instanceof LightEntity light && light.getOwner().getUUID().equals(player.getUUID()))
+                entities.add(light);
+        }
+        return entities;
+    }
 
     public LightEntity(EntityType<?> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
@@ -48,7 +75,7 @@ public class LightEntity extends Entity implements IEntityAdditionalSpawnData {
         super.tick();
         if(getOwner() != null) {
             Vec3 target = getOwner().getEyePosition().add(0, 0.0, 0);
-            double perc = 0.35f; //Math.max(Math.min(position().distanceTo(target) / 10, 1.0), 0.5f);
+            double perc = position().distanceToSqr(target) > 400 ? 1.0f : 0.35f; //Math.max(Math.min(position().distanceTo(target) / 10, 1.0), 0.5f);
             Vec3 pos = position().lerp(target, perc);
             double i = 0.25 * Math.sin(0.05 * level.getGameTime());
             double j = 0.25 * Math.cos(0.05 * level.getGameTime());
@@ -60,22 +87,31 @@ public class LightEntity extends Entity implements IEntityAdditionalSpawnData {
         }
         if(level.isClientSide) {
             LightTracker.update(this);
+            if(level.getGameTime() % 10 == 0 && random.nextDouble() > 0.5)
+                spawnParticles();
         }
 
         //setPos(position().add(getDeltaMovement()));
     }
 
+    void spawnParticles() {
+        AABB bb = this.getBoundingBox().inflate(-0.15f);
+        double x = bb.minX + (random.nextDouble() * (bb.maxX - bb.minX));
+        double y = bb.minY + (random.nextDouble() * (bb.maxY - bb.minY));
+        double z = bb.minZ + (random.nextDouble() * (bb.maxZ - bb.minZ));
+        level.addParticle(ParticleTypes.END_ROD, x, y, z, 0, 0, 0);
+    }
     public void setOwner(Entity entity) {
         this.ownerUUID = entity.getUUID();
-        this.cachedPlayer = entity;
+        this.cachedOwner = entity;
     }
 
     public Entity getOwner() {
-        if(cachedPlayer != null && !cachedPlayer.isRemoved())
-            return cachedPlayer;
+        if(cachedOwner != null && !cachedOwner.isRemoved())
+            return cachedOwner;
         if(level instanceof ServerLevel serverLevel) {
-            cachedPlayer = (Player) serverLevel.getEntity(ownerUUID);
-            return cachedPlayer;
+            cachedOwner = serverLevel.getEntity(ownerUUID);
+            return cachedOwner;
         }
         return null;
     }

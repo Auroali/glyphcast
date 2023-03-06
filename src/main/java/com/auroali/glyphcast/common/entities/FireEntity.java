@@ -68,7 +68,7 @@ public class FireEntity extends Projectile {
 
 
         if(level.isClientSide) {
-            Vec3 speed = getDeltaMovement().scale(0.5f);
+            Vec3 speed = getDeltaMovement().scale(0.25f);
             level.addParticle(ParticleTypes.FLAME, this.getX(), this.getEyeY(), this.getZ(), speed.x, speed.y, speed.z);
         }
 

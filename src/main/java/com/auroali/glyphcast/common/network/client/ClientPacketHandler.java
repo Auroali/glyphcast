@@ -14,7 +14,7 @@ public class ClientPacketHandler {
         RandomSource rand = level.getRandom();
         for(int i = 0; i < msg.count; i++) {
             Vec3 newDir = msg.direction.normalize().scale(msg.maxSpeed * rand.nextFloat());
-            level.addParticle(ParticleTypes.SNOWFLAKE, msg.pos.x, msg.pos.y, msg.pos.z, newDir.x, newDir.y, newDir.z);
+            level.addParticle(msg.particle, msg.pos.x, msg.pos.y, msg.pos.z, newDir.x, newDir.y, newDir.z);
         }
     }
 }
