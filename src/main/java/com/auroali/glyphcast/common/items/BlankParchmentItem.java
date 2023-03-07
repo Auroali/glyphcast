@@ -33,6 +33,7 @@ public class BlankParchmentItem extends Item implements IGlyphWriteable {
     public ItemStack writeGlyphs(ItemStack stack, GlyphSequence sequence) {
         ItemStack stack1 = GCItems.PARCHMENT.get().withGlyphSequence(sequence);
         stack1.setCount(stack.getCount());
+
         return stack1;
     }
 }

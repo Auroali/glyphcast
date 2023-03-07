@@ -15,9 +15,11 @@ public class GCClientConfig {
     }
 
     public ForgeConfigSpec.ConfigValue<Integer> updateFrequency;
+    public ForgeConfigSpec.ConfigValue<Boolean> fireEmitsLight;
     public GCClientConfig(ForgeConfigSpec.Builder builder) {
         builder.push("lighting");
-        updateFrequency = builder.comment("The frequency at which the dynamic lighting updates").define("updateFrequency", 10);
+        updateFrequency = builder.comment("The frequency at which the dynamic lighting updates").define("updateFrequency", 1);
+        fireEmitsLight = builder.comment("Whether the fire from the basic fire spell should emit light").define("fireEmitsLight", true);
         builder.pop();
     }
 }

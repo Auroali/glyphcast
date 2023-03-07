@@ -1,5 +1,9 @@
 package com.auroali.glyphcast.common.entities;
 
+import com.auroali.glyphcast.client.LightTracker;
+import com.auroali.glyphcast.common.config.GCClientConfig;
+import com.auroali.glyphcast.common.network.client.ClientPacketHandler;
+import com.auroali.glyphcast.common.network.client.SpawnParticlesMessage;
 import com.auroali.glyphcast.common.registry.GCEntities;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
@@ -36,7 +40,7 @@ public class FireEntity extends Projectile {
     @Override
     public void tick() {
         super.tick();
-        if(tickCount > 1000) {
+        if(getDeltaMovement().length() <= 0.1d) {
             this.remove(RemovalReason.KILLED);
             return;
         }
@@ -68,8 +72,11 @@ public class FireEntity extends Projectile {
 
 
         if(level.isClientSide) {
-            Vec3 speed = getDeltaMovement().scale(0.25f);
-            level.addParticle(ParticleTypes.FLAME, this.getX(), this.getEyeY(), this.getZ(), speed.x, speed.y, speed.z);
+            if(GCClientConfig.CLIENT.fireEmitsLight.get())
+                LightTracker.update(this);
+            ClientPacketHandler.spawnParticles(new SpawnParticlesMessage(ParticleTypes.FLAME, 0.12, 15, position().add(0, 0.25, 0),getDeltaMovement(), 0.12f ));
+            ClientPacketHandler.spawnParticles(new SpawnParticlesMessage(ParticleTypes.SOUL_FIRE_FLAME,0.02, 15, position().add(0, 0.25, 0),getDeltaMovement(), 0.12f ));
+            ClientPacketHandler.spawnParticles(new SpawnParticlesMessage(ParticleTypes.SMOKE, 0.02, 20, position().add(0, 0.25, 0),getDeltaMovement(), 0.12f ));
         }
 
         EntityHitResult result = findHitEntity(position(), position().add(getDeltaMovement()));
@@ -82,6 +89,7 @@ public class FireEntity extends Projectile {
         double newZ = getZ() + this.getDeltaMovement().z;
         this.setPos(newX, newY, newZ);
 
+        setDeltaMovement(getDeltaMovement().scale(0.8f));
         this.checkInsideBlocks();
     }
 
@@ -93,6 +101,7 @@ public class FireEntity extends Projectile {
             // If the block can be lit, we light it
             if(state.hasProperty(BlockStateProperties.LIT) && !state.getValue(BlockStateProperties.LIT)) {
                 level.setBlockAndUpdate(result.getBlockPos(), state.setValue(BlockStateProperties.LIT, true));
+                this.remove(RemovalReason.KILLED);
                 return;
             }
             // Otherwise we try to burn it

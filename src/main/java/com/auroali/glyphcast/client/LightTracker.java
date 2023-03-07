@@ -1,5 +1,6 @@
 package com.auroali.glyphcast.client;
 
+import com.auroali.glyphcast.GlyphCast;
 import com.auroali.glyphcast.common.config.GCClientConfig;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
@@ -13,7 +14,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-@Mod.EventBusSubscriber(value = Dist.CLIENT)
+/**
+ * Tracks the dynamic lighting for an entity
+ * Currently the brightness is fixed
+ * @author Auroali
+ */
+@Mod.EventBusSubscriber(value = Dist.CLIENT, modid = GlyphCast.MODID)
 public class LightTracker {
     public static final HashMap<Entity, BlockPos> LIGHTS = new HashMap<>();
 
@@ -34,12 +40,18 @@ public class LightTracker {
         updatePos.forEach(pos -> Minecraft.getInstance().level.getLightEngine().checkBlock(pos));
     }
 
-    public static boolean shouldRemove(Entity entity) {
+
+    private static boolean shouldRemove(Entity entity) {
         return entity == null || entity.level != Minecraft.getInstance().level || entity.isRemoved();
     }
 
+    /**
+     * Updates the dynamic lighting on an entity
+     * if the entity isn't present in the LIGHTS map, this skips the update frequency check
+     * @param entity the entity to update
+     */
     public static void update(Entity entity) {
-        if(Minecraft.getInstance().level != null && Minecraft.getInstance().level.getGameTime() % GCClientConfig.CLIENT.updateFrequency.get() != 0)
+        if(Minecraft.getInstance().level == null || (!LIGHTS.containsKey(entity) && Minecraft.getInstance().level.getGameTime() % GCClientConfig.CLIENT.updateFrequency.get() != 0))
             return;
         BlockPos pos = LIGHTS.get(entity);
         LIGHTS.put(entity, entity.blockPosition());

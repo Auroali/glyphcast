@@ -10,7 +10,6 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
@@ -31,7 +30,7 @@ public class IceSpell extends Spell{
     public void activate(Level level, Player player) {
         if(level instanceof ServerLevel serverLevel) {
             Vec3 eyePos = player.getEyePosition();
-            GCNetwork.sendToClient((ServerPlayer) player, new SpawnParticlesMessage(ParticleTypes.SNOWFLAKE, 40, eyePos.add(player.getLookAngle().scale(0.25f)), player.getLookAngle(), 0.5f));
+            GCNetwork.sendToClient((ServerPlayer) player, new SpawnParticlesMessage(ParticleTypes.SNOWFLAKE, 0.16d, 40, eyePos.add(player.getLookAngle().scale(0.25f)), player.getLookAngle(), 0.5f));
             rayTraceBlocks(eyePos.add(player.getLookAngle().cross(new Vec3(0, 1, 0))), player.getLookAngle().scale(6), 12, serverLevel);
             rayTraceBlocks(eyePos, player.getLookAngle().scale(6), 12, serverLevel);
             rayTraceBlocks(eyePos.subtract(player.getLookAngle().cross(new Vec3(0, 1, 0))), player.getLookAngle().scale(6), 12, serverLevel);
