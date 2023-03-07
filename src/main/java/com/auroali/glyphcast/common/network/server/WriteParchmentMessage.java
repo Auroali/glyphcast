@@ -10,6 +10,7 @@ import net.minecraftforge.network.NetworkEvent;
 
 import java.util.function.Supplier;
 
+
 public class WriteParchmentMessage extends NetworkMessage {
     int slot;
     GlyphSequence sequence;
@@ -35,6 +36,7 @@ public class WriteParchmentMessage extends NetworkMessage {
             if(player == null)
                 return;
 
+            // Write the glyph sequence to the target item
             ItemStack stack = player.getInventory().getItem(slot);
             if(stack.getItem() instanceof IGlyphWriteable glyphWriteable)
                 player.getInventory().setItem(slot, glyphWriteable.writeGlyphs(stack, sequence));

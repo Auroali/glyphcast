@@ -13,9 +13,26 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * A sequence of glyphs that may represent a spell.
+ * This automatically sorts all glyphs other than the base glyph,
+ * so (assuming the first is the base glyph) <code>[FIRE, ICE, ICE, EARTH, FIRE]</code>
+ * will become <code>[FIRE, FIRE, ICE, ICE, EARTH]</code>. This is to make matching with
+ * spells easier, as the player only has to get the amount of each glyph right, not
+ * the order.
+ *
+ * @see com.auroali.glyphcast.common.spells.glyph.Glyph
+ * @author Auroali
+ */
 public class GlyphSequence {
 
     private final List<Glyph> glyphList;
+
+    /**
+     * Creates a new GlyphSequence
+     * @param base the base glyph of the sequence, will be at index 0
+     * @param glyphs the extra glyphs in the sequence, will be sorted
+     */
     public GlyphSequence(Glyph base, Glyph... glyphs) {
         glyphList = new ArrayList<>();
         glyphList.addAll(Arrays.stream(glyphs).sorted().toList());
@@ -35,6 +52,10 @@ public class GlyphSequence {
         this(glyphs.remove(0), new ArrayList<>(glyphs.stream().sorted().toList()));
     }
 
+    /**
+     * Finds a spell in the registry matching this sequence
+     * @return an optional containing the spell, if it exists
+     */
     public Optional<Spell> findSpell() {
         return GlyphCast.SPELL_REGISTRY.get().getValues().stream()
                 .filter(spell -> spell.isSequence(this))
@@ -46,14 +67,6 @@ public class GlyphSequence {
         glyphList.stream().map(Enum::ordinal).forEach(buf::writeByte);
     }
 
-    public static GlyphSequence fromNetwork(FriendlyByteBuf buf) {
-        int len = buf.readInt();
-        List<Glyph> glyphs = new ArrayList<>();
-        for(int i = 0; i < len; i++) {
-            glyphs.add(Glyph.values()[buf.readByte()]);
-        }
-        return new GlyphSequence(glyphs);
-    }
     public CompoundTag serialize() {
         CompoundTag tag = new CompoundTag();
         tag.putByte("base", (byte) glyphList.get(0).ordinal());
@@ -62,6 +75,26 @@ public class GlyphSequence {
         tag.put("glyphs", list);
         return tag;
     }
+
+    /**
+     * Creates a new GlyphSequence from the provided buffer
+     * @param buf the buffer to create the sequence from
+     * @return the resulting sequence
+     */
+    public static GlyphSequence fromNetwork(FriendlyByteBuf buf) {
+        int len = buf.readInt();
+        List<Glyph> glyphs = new ArrayList<>();
+        for(int i = 0; i < len; i++) {
+            glyphs.add(Glyph.values()[buf.readByte()]);
+        }
+        return new GlyphSequence(glyphs);
+    }
+
+    /**
+     * Creates a new GlyphSequence from a CompoundTag
+     * @param tag the tag to create the sequence from
+     * @return the resulting sequence
+     */
     public static GlyphSequence fromTag(CompoundTag tag) {
         // We store the base and extra glyphs seperately,
         // so that ordering is preserved

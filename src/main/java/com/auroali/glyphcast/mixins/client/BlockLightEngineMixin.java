@@ -9,6 +9,10 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+/**
+ * Light Engine Mixin to allow dynamic lighting
+ * @author Auroali
+ */
 @Mixin(BlockLightEngine.class)
 public class BlockLightEngineMixin {
 
