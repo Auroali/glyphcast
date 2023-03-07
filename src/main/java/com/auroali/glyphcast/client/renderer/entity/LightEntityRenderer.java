@@ -3,7 +3,7 @@ package com.auroali.glyphcast.client.renderer.entity;
 import com.auroali.glyphcast.GlyphCast;
 import com.auroali.glyphcast.client.GCRenderTypes;
 import com.auroali.glyphcast.client.model.FloatingLightModel;
-import com.auroali.glyphcast.common.entities.LightEntity;
+import com.auroali.glyphcast.common.entities.FloatingLight;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRenderer;
@@ -11,7 +11,7 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
 
-public class LightEntityRenderer extends EntityRenderer<LightEntity> {
+public class LightEntityRenderer extends EntityRenderer<FloatingLight> {
 
     FloatingLightModel model;
     ResourceLocation TEXTURE = new ResourceLocation(GlyphCast.MODID, "textures/entity/floating_light.png");
@@ -24,7 +24,7 @@ public class LightEntityRenderer extends EntityRenderer<LightEntity> {
     }
 
     @Override
-    public void render(LightEntity pEntity, float pEntityYaw, float pPartialTick, PoseStack pPoseStack, MultiBufferSource pBuffer, int pPackedLight) {
+    public void render(FloatingLight pEntity, float pEntityYaw, float pPartialTick, PoseStack pPoseStack, MultiBufferSource pBuffer, int pPackedLight) {
         pPoseStack.pushPose();
         pPoseStack.translate(0.0f, -0.85f, 0.f);
 
@@ -35,7 +35,7 @@ public class LightEntityRenderer extends EntityRenderer<LightEntity> {
     }
 
     @Override
-    public ResourceLocation getTextureLocation(LightEntity pEntity) {
+    public ResourceLocation getTextureLocation(FloatingLight pEntity) {
         return TEXTURE;
     }
 }

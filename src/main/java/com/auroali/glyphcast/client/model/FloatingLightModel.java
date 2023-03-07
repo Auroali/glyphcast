@@ -4,7 +4,7 @@ package com.auroali.glyphcast.client.model;// Made with Blockbench 4.6.4
 
 
 import com.auroali.glyphcast.GlyphCast;
-import com.auroali.glyphcast.common.entities.LightEntity;
+import com.auroali.glyphcast.common.entities.FloatingLight;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.model.EntityModel;
@@ -18,7 +18,7 @@ import net.minecraft.resources.ResourceLocation;
  * Model for the floating light entity
  * @author Auroali
  */
-public class FloatingLightModel extends EntityModel<LightEntity> {
+public class FloatingLightModel extends EntityModel<FloatingLight> {
 	// This layer location should be baked with EntityRendererProvider.Context in the entity renderer and passed into this model's constructor
 	public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(new ResourceLocation(GlyphCast.MODID, "floatinglightmodel"), "main");
 	private final ModelPart light;
@@ -38,7 +38,7 @@ public class FloatingLightModel extends EntityModel<LightEntity> {
 	}
 
 	@Override
-	public void setupAnim(LightEntity entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
+	public void setupAnim(FloatingLight entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
 
 	}
 

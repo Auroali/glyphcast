@@ -4,15 +4,20 @@
   "item.glyphcast.blank_parchment": "Blank Parchment",
   "item.glyphcast.wandering_wand": "Wandering Wand",
 
-  "__comment2": "Item Groups",
+  "item.glyphcast.blue_glyph_petal": "Blue Glyph Petal",
+
+  "__comment2": "Blocks",
+  "block.glyphcast.blue_glyph_flower": "Blue Glyph Flower",
+
+  "__comment3": "Item Groups",
   "itemGroup.glyphcast.glyphcast": "Glyphcast",
 
-  "__comment3": "Glyphs",
+  "__comment4": "Glyphs",
   "glyph.glyphcast.fire": "Fire Glyph",
   "glyph.glyphcast.light": "Light Glyph",
   "glyph.glyphcast.ice": "Ice Glyph",
   "glyph.glyphcast.earth": "Earth Glyph",
 
-  "__comment4": "GUI",
+  "__comment5": "GUI",
   "gui.glyphcast.save_glyphs": "Write Glyphs"
 }

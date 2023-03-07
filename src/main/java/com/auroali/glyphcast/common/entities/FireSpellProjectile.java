@@ -27,12 +27,12 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 
 import javax.annotation.Nullable;
 
-public class FireEntity extends Projectile {
-    public FireEntity(EntityType<? extends Projectile> pEntityType, Level pLevel) {
+public class FireSpellProjectile extends Projectile {
+    public FireSpellProjectile(EntityType<? extends Projectile> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
     }
 
-    public FireEntity(Level level, double x, double y, double z) {
+    public FireSpellProjectile(Level level, double x, double y, double z) {
         super(GCEntities.FIRE.get(), level);
         setPos(x, y, z);
     }

@@ -1,6 +1,6 @@
 package com.auroali.glyphcast.common.spells;
 
-import com.auroali.glyphcast.common.entities.FireEntity;
+import com.auroali.glyphcast.common.entities.FireSpellProjectile;
 import com.auroali.glyphcast.common.spells.glyph.Glyph;
 import com.auroali.glyphcast.common.spells.glyph.GlyphSequence;
 import net.minecraft.sounds.SoundEvents;
@@ -15,7 +15,7 @@ public class FireSpell extends Spell {
 
     @Override
     public void activate(Level level, Player player) {
-        FireEntity fire = new FireEntity(level, player.getX() + player.getLookAngle().x, player.getEyeY() - 0.25 + player.getLookAngle().y, player.getZ() + player.getLookAngle().z);
+        FireSpellProjectile fire = new FireSpellProjectile(level, player.getX() + player.getLookAngle().x, player.getEyeY() - 0.25 + player.getLookAngle().y, player.getZ() + player.getLookAngle().z);
         fire.setOwner(player);
         fire.setDeltaMovement(player.getLookAngle().scale(1.25));
         level.addFreshEntity(fire);

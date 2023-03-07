@@ -1,6 +1,6 @@
 package com.auroali.glyphcast.common.spells;
 
-import com.auroali.glyphcast.common.entities.LightEntity;
+import com.auroali.glyphcast.common.entities.FloatingLight;
 import com.auroali.glyphcast.common.spells.glyph.Glyph;
 import com.auroali.glyphcast.common.spells.glyph.GlyphSequence;
 import net.minecraft.world.entity.Entity;
@@ -17,13 +17,13 @@ public class LightSpell extends Spell {
     public void activate(Level level, Player player) {
         AABB bounds = player.getBoundingBox().inflate(10.0f);
 
-        var entities = level.getEntities(player, bounds, e -> e instanceof LightEntity && ((LightEntity) e).getOwner() == player);
+        var entities = level.getEntities(player, bounds, e -> e instanceof FloatingLight && ((FloatingLight) e).getOwner() == player);
         if(entities.size() > 0) {
             entities.forEach(e -> e.remove(Entity.RemovalReason.KILLED));
             return;
         }
 
-        LightEntity entity = new LightEntity(level, player.getX(), player.getEyeY(), player.getZ());
+        FloatingLight entity = new FloatingLight(level, player.getX(), player.getEyeY(), player.getZ());
         entity.setOwner(player);
         level.addFreshEntity(entity);
     }

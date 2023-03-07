@@ -2,10 +2,7 @@ package com.auroali.glyphcast;
 
 import com.auroali.glyphcast.common.config.GCClientConfig;
 import com.auroali.glyphcast.common.config.GCCommonConfig;
-import com.auroali.glyphcast.common.registry.GCEntities;
-import com.auroali.glyphcast.common.registry.GCItems;
-import com.auroali.glyphcast.common.registry.GCNetwork;
-import com.auroali.glyphcast.common.registry.GCSpells;
+import com.auroali.glyphcast.common.registry.*;
 import com.auroali.glyphcast.common.spells.Spell;
 import com.mojang.logging.LogUtils;
 import net.minecraft.world.item.CreativeModeTab;
@@ -46,6 +43,8 @@ public class GlyphCast
         GCItems.ITEMS.register(modEventBus);
         GCSpells.SPELLS.register(modEventBus);
         GCEntities.ENTITIES.register(modEventBus);
+        GCBlocks.BLOCKS.register(modEventBus);
+
         GCNetwork.registerPackets();
 
         ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, GCClientConfig.CLIENT_SPEC);

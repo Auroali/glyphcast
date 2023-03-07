@@ -20,7 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-public class LightEntity extends Entity implements IEntityAdditionalSpawnData {
+public class FloatingLight extends Entity implements IEntityAdditionalSpawnData {
 
     UUID ownerUUID;
     Entity cachedOwner;
@@ -30,28 +30,28 @@ public class LightEntity extends Entity implements IEntityAdditionalSpawnData {
      * @param player the owning player
      * @return the list of orbiting lights
      */
-    public static List<LightEntity> getAllFollowing(Player player) {
+    public static List<FloatingLight> getAllFollowing(Player player) {
         return player.level.getEntities(player, player.getBoundingBox().inflate(10),
-                e -> e instanceof LightEntity && ((LightEntity) e).ownerUUID.equals(player.getUUID()))
-                .stream().map(e -> (LightEntity)e)
+                e -> e instanceof FloatingLight && ((FloatingLight) e).ownerUUID.equals(player.getUUID()))
+                .stream().map(e -> (FloatingLight)e)
                 .toList();
     }
 
-    public static List<LightEntity> getAllFollowing(Player player, ServerLevel level) {
+    public static List<FloatingLight> getAllFollowing(Player player, ServerLevel level) {
         var it = level.getEntities().getAll().iterator();
-        List<LightEntity> entities = new ArrayList<>();
+        List<FloatingLight> entities = new ArrayList<>();
         while (it.hasNext()) {
             Entity entity = it.next();
-            if(entity instanceof LightEntity light && light.getOwner().getUUID().equals(player.getUUID()))
+            if(entity instanceof FloatingLight light && light.getOwner().getUUID().equals(player.getUUID()))
                 entities.add(light);
         }
         return entities;
     }
 
-    public LightEntity(EntityType<?> pEntityType, Level pLevel) {
+    public FloatingLight(EntityType<?> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
     }
-    public LightEntity(Level pLevel, double x, double y, double z) {
+    public FloatingLight(Level pLevel, double x, double y, double z) {
         super(GCEntities.FLOATING_LIGHT.get(), pLevel);
         setPos(x, y, z);
     }

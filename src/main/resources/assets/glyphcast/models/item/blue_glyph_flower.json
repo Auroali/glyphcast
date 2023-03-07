@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "glyphcast:block/blue_glyph_flower"
+  }
+}

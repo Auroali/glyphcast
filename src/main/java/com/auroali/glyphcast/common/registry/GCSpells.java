@@ -1,10 +1,7 @@
 package com.auroali.glyphcast.common.registry;
 
 import com.auroali.glyphcast.GlyphCast;
-import com.auroali.glyphcast.common.spells.FireSpell;
-import com.auroali.glyphcast.common.spells.IceSpell;
-import com.auroali.glyphcast.common.spells.LightSpell;
-import com.auroali.glyphcast.common.spells.Spell;
+import com.auroali.glyphcast.common.spells.*;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -17,4 +14,5 @@ public class GCSpells {
     public static final RegistryObject<Spell> FIRE_SPELL = SPELLS.register("fire", FireSpell::new);
     public static final RegistryObject<Spell> LIGHT_SPELL = SPELLS.register("light", LightSpell::new);
     public static final RegistryObject<Spell> ICE_SPELL = SPELLS.register("ice", IceSpell::new);
+    public static final RegistryObject<Spell> EARTH_SPELL = SPELLS.register("earth", EarthSpell::new);
 }
