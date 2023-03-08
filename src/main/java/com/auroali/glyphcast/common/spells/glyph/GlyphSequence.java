@@ -2,16 +2,14 @@ package com.auroali.glyphcast.common.spells.glyph;
 
 import com.auroali.glyphcast.GlyphCast;
 import com.auroali.glyphcast.common.spells.Spell;
+import com.google.common.collect.ImmutableList;
 import net.minecraft.nbt.ByteTag;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.FriendlyByteBuf;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 /**
  * A sequence of glyphs that may represent a spell.
@@ -60,6 +58,14 @@ public class GlyphSequence {
         return GlyphCast.SPELL_REGISTRY.get().getValues().stream()
                 .filter(spell -> spell.isSequence(this))
                 .findAny();
+    }
+
+    /**
+     * Returns a list containing all the glyphs in the sequence
+     * @return an immutable list holding the glyphs
+     */
+    public List<Glyph> asList() {
+        return Collections.unmodifiableList(glyphList);
     }
 
     public void encode(FriendlyByteBuf buf) {

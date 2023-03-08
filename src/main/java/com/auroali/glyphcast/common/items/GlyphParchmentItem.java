@@ -1,6 +1,7 @@
 package com.auroali.glyphcast.common.items;
 
 import com.auroali.glyphcast.GlyphCast;
+import com.auroali.glyphcast.common.items.tooltip.GlyphTooltipComponent;
 import com.auroali.glyphcast.common.spells.Spell;
 import com.auroali.glyphcast.common.spells.glyph.Glyph;
 import com.auroali.glyphcast.common.spells.glyph.GlyphSequence;
@@ -8,6 +9,7 @@ import net.minecraft.core.NonNullList;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.tooltip.TooltipComponent;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -25,6 +27,14 @@ public class GlyphParchmentItem extends Item implements ISpellHolder {
             pItems.add(withGlyphSequence(new GlyphSequence(Glyph.ICE)));
             pItems.add(withGlyphSequence(new GlyphSequence(Glyph.EARTH)));
         }
+    }
+
+    @Override
+    public Optional<TooltipComponent> getTooltipImage(ItemStack pStack) {
+        GlyphSequence sequence = getSequence(pStack);
+        if(sequence == null)
+            return Optional.empty();
+        return Optional.of(new GlyphTooltipComponent(getSequence(pStack)));
     }
 
     public ItemStack withGlyphSequence(GlyphSequence sequence) {

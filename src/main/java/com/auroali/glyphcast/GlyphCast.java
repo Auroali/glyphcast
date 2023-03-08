@@ -66,6 +66,5 @@ public class GlyphCast
     }
     private void clientSetup(final FMLClientSetupEvent event)
     {
-        ClientEvents.registerTooltipComponents();
     }
 }

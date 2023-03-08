@@ -2,11 +2,14 @@ package com.auroali.glyphcast.client;
 
 import com.auroali.glyphcast.GlyphCast;
 import com.auroali.glyphcast.client.model.FloatingLightModel;
+import com.auroali.glyphcast.client.render.GlyphClientTooltipComponent;
 import com.auroali.glyphcast.client.render.entity.FireEntityRenderer;
 import com.auroali.glyphcast.client.render.entity.LightEntityRenderer;
+import com.auroali.glyphcast.common.items.tooltip.GlyphTooltipComponent;
 import com.auroali.glyphcast.common.registry.GCEntities;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.EntityRenderersEvent;
+import net.minecraftforge.client.event.RegisterClientTooltipComponentFactoriesEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
@@ -23,7 +26,8 @@ public class ClientEvents {
         event.registerLayerDefinition(FloatingLightModel.LAYER_LOCATION, FloatingLightModel::createBodyLayer);
     }
 
-    public static void registerTooltipComponents() {
-
+    @SubscribeEvent
+    public static void registerTooltipFactories(RegisterClientTooltipComponentFactoriesEvent event) {
+        event.register(GlyphTooltipComponent.class, (c) -> new GlyphClientTooltipComponent(c.sequence()));
     }
 }

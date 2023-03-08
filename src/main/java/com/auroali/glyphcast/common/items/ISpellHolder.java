@@ -54,4 +54,10 @@ public interface ISpellHolder {
         });
         return spell;
     }
+
+    default GlyphSequence getSequence(ItemStack stack) {
+        if(!stack.getOrCreateTag().contains("glyphcast:glyphs"))
+            return null;
+        return GlyphSequence.fromTag(stack.getOrCreateTag().getCompound("glyphcast:glyphs"));
+    }
 }
