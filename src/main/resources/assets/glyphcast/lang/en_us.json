@@ -1,6 +1,7 @@
 {
   "__comment1": "Items",
   "item.glyphcast.parchment": "Written Parchment",
+  "item.glyphcast.parchment_of_spell": "Written Parchment of %s",
   "item.glyphcast.blank_parchment": "Blank Parchment",
   "item.glyphcast.wandering_wand": "Wandering Wand",
 
@@ -19,5 +20,11 @@
   "glyph.glyphcast.earth": "Earth Glyph",
 
   "__comment5": "GUI",
-  "gui.glyphcast.save_glyphs": "Write Glyphs"
+  "gui.glyphcast.save_glyphs": "Write Glyphs",
+
+  "__comment6": "Spells",
+  "spell.glyphcast.fire": "Fire",
+  "spell.glyphcast.light": "Light",
+  "spell.glyphcast.ice": "Ice",
+  "spell.glyphcast.earth": "Earth"
 }

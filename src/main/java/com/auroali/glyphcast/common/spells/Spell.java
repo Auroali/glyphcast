@@ -1,7 +1,11 @@
 package com.auroali.glyphcast.common.spells;
 
+import com.auroali.glyphcast.GlyphCast;
 import com.auroali.glyphcast.common.spells.glyph.GlyphSequence;
+import net.minecraft.Util;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.level.Level;
 
 /**
@@ -14,7 +18,29 @@ import net.minecraft.world.level.Level;
  */
 public abstract class Spell {
     protected final GlyphSequence sequence;
+    protected String descriptionId;
 
+    protected String getOrCreateDescriptionId() {
+        if (this.descriptionId == null) {
+            this.descriptionId = Util.makeDescriptionId("spell", GlyphCast.SPELL_REGISTRY.get().getKey(this));
+        }
+
+        return this.descriptionId;
+    }
+
+    /**
+     * Gets the spell's unlocalized name
+     * @return the spell's unlocalized name
+     * @see Item#getDescriptionId()
+     */
+    public String getDescriptionId() {
+        return this.getOrCreateDescriptionId();
+    }
+
+    public Component getName() {
+        return Component.translatable(getDescriptionId());
+    }
+    
     public Spell(GlyphSequence sequence) {
         this.sequence = sequence;
     }
