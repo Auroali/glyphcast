@@ -13,8 +13,8 @@ import net.minecraft.resources.ResourceLocation;
 
 public class LightEntityRenderer extends EntityRenderer<FloatingLight> {
 
-    FloatingLightModel model;
-    ResourceLocation TEXTURE = new ResourceLocation(GlyphCast.MODID, "textures/entity/floating_light.png");
+    final FloatingLightModel model;
+    public static final ResourceLocation TEXTURE = new ResourceLocation(GlyphCast.MODID, "textures/entity/floating_light.png");
     public LightEntityRenderer(EntityRendererProvider.Context pContext) {
         super(pContext);
         this.shadowStrength = 0.0f;

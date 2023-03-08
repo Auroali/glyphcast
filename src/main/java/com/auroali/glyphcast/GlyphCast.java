@@ -1,6 +1,5 @@
 package com.auroali.glyphcast;
 
-import com.auroali.glyphcast.client.ClientEvents;
 import com.auroali.glyphcast.common.config.GCClientConfig;
 import com.auroali.glyphcast.common.config.GCCommonConfig;
 import com.auroali.glyphcast.common.registry.*;

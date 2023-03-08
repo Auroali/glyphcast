@@ -2,10 +2,9 @@ package com.auroali.glyphcast.common.spells.glyph;
 
 import com.auroali.glyphcast.GlyphCast;
 import com.auroali.glyphcast.common.spells.Spell;
-import com.google.common.collect.ImmutableList;
-import net.minecraft.nbt.ByteTag;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.ShortTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.FriendlyByteBuf;
 
@@ -24,7 +23,12 @@ import java.util.*;
  */
 public class GlyphSequence {
 
+    public static final GlyphSequence EMPTY = new GlyphSequence();
     private final List<Glyph> glyphList;
+
+    private GlyphSequence() {
+        this.glyphList = List.of();
+    }
 
     /**
      * Creates a new GlyphSequence
@@ -75,9 +79,9 @@ public class GlyphSequence {
 
     public CompoundTag serialize() {
         CompoundTag tag = new CompoundTag();
-        tag.putByte("base", (byte) glyphList.get(0).ordinal());
+        tag.putShort("base", (byte) glyphList.get(0).ordinal());
         ListTag list = new ListTag();
-        glyphList.stream().skip(1).forEach(glyph -> list.add(ByteTag.valueOf((byte) glyph.ordinal())));
+        glyphList.stream().skip(1).forEach(glyph -> list.add(ShortTag.valueOf((short) glyph.ordinal())));
         tag.put("glyphs", list);
         return tag;
     }
@@ -104,13 +108,13 @@ public class GlyphSequence {
     public static GlyphSequence fromTag(CompoundTag tag) {
         // We store the base and extra glyphs seperately,
         // so that ordering is preserved
-        int baseGlyph = tag.getByte("base");
-        ListTag list = tag.getList("glyphs", Tag.TAG_BYTE);
+        int baseGlyph = tag.getShort("base");
+        ListTag list = tag.getList("glyphs", Tag.TAG_SHORT);
 
         Glyph base = Glyph.values()[baseGlyph];
         List<Glyph> glyphs = new ArrayList<>();
         for(int i = 0; i < list.size(); i++) {
-            glyphs.add(Glyph.values()[list.getInt(i)]);
+            glyphs.add(Glyph.values()[list.getShort(i)]);
         }
 
         return new GlyphSequence(base, glyphs);

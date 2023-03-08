@@ -12,8 +12,8 @@ import java.util.function.Supplier;
 
 
 public class WriteParchmentMessage extends NetworkMessage {
-    int slot;
-    GlyphSequence sequence;
+    final int slot;
+    final GlyphSequence sequence;
 
     public WriteParchmentMessage(int slot, GlyphSequence sequence) {
         this.slot = slot;

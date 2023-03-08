@@ -20,6 +20,9 @@ public class CommonEventHandler {
     }
 
     private static void teleportLights(PlayerEvent.PlayerChangedDimensionEvent event, ServerPlayer player) {
+        if(player.getServer() == null)
+            return;
+
         ServerLevel level = player.getServer().getLevel(event.getFrom());
         if(level == null)
             return;

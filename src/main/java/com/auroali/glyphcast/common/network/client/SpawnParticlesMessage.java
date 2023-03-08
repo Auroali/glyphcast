@@ -14,12 +14,12 @@ import java.util.function.Supplier;
 
 public class SpawnParticlesMessage extends NetworkMessage {
 
-    ParticleOptions particle;
-    int count;
-    double spread;
-    Vec3 direction;
-    Vec3 pos;
-    double maxSpeed;
+    final ParticleOptions particle;
+    final int count;
+    final double spread;
+    final Vec3 direction;
+    final Vec3 pos;
+    final double maxSpeed;
 
 
     @SuppressWarnings("deprecation")

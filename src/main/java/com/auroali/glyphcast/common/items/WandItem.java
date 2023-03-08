@@ -27,6 +27,6 @@ public class WandItem extends Item {
             spell.ifPresent(spell_ -> spell_.activate(pLevel, pPlayer));
             return spell.isPresent() ? InteractionResultHolder.consume(stack) : InteractionResultHolder.pass(stack);
         }
-        return InteractionResultHolder.sidedSuccess(stack, pLevel.isClientSide);
+        return InteractionResultHolder.success(stack);
     }
 }

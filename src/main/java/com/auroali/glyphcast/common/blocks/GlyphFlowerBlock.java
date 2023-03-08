@@ -38,15 +38,14 @@ public class GlyphFlowerBlock extends FlowerBlock {
         }
     }
     @Override
+    @SuppressWarnings("deprecation")
     public InteractionResult use(BlockState pState, Level pLevel, BlockPos pPos, Player pPlayer, InteractionHand pHand, BlockHitResult pHit) {
         ItemStack stack = pPlayer.getItemInHand(pHand);
         if(stack.is(Items.SHEARS)) {
             pLevel.playSound(pPlayer, pPos, SoundEvents.GROWING_PLANT_CROP, SoundSource.BLOCKS, 1.0F, 1.0F);
             spawnShearedItems(pLevel, stack, pPos, pLevel.random);
             pLevel.setBlockAndUpdate(pPos, GCBlocks.TRIMMED_GLYPH_FLOWER.get().defaultBlockState());
-            stack.hurtAndBreak(1, pPlayer, (p_186374_) -> {
-                p_186374_.broadcastBreakEvent(pHand);
-            });
+            stack.hurtAndBreak(1, pPlayer, (p_186374_) -> p_186374_.broadcastBreakEvent(pHand));
             return InteractionResult.sidedSuccess(pLevel.isClientSide);
         }
         return InteractionResult.PASS;

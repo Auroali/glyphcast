@@ -37,6 +37,12 @@ public class FloatingLight extends Entity implements IEntityAdditionalSpawnData 
                 .toList();
     }
 
+    /**
+     * Returns all floating lights owned by the player in a level
+     * @param player the owning player
+     * @param level the level to check
+     * @return all lights owned by the player
+     */
     public static List<FloatingLight> getAllFollowing(Player player, ServerLevel level) {
         var it = level.getEntities().getAll().iterator();
         List<FloatingLight> entities = new ArrayList<>();
@@ -146,7 +152,11 @@ public class FloatingLight extends Entity implements IEntityAdditionalSpawnData 
 
     @Override
     public void readSpawnData(FriendlyByteBuf additionalData) {
-        if(additionalData.isReadable())
-            setOwner(level.getEntity(additionalData.readInt()));
+        if(additionalData.isReadable()) {
+            Entity e = level.getEntity(additionalData.readInt());
+            if(e == null)
+                return;
+            setOwner(e);
+        }
     }
 }
