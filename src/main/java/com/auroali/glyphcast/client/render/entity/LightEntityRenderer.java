@@ -1,4 +1,4 @@
-package com.auroali.glyphcast.client.renderer.entity;
+package com.auroali.glyphcast.client.render.entity;
 
 import com.auroali.glyphcast.GlyphCast;
 import com.auroali.glyphcast.client.GCRenderTypes;

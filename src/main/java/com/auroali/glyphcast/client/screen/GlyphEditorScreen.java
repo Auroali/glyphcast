@@ -59,10 +59,11 @@ public class GlyphEditorScreen extends Screen {
     }
 
     void addGlyph(Glyph glyph) {
-        if(glyphs.size() >= 37)
+        if(glyphs.size() >= 31)
             return;
 
         glyphs.add(glyph);
+
     }
     @Override
     public void render(PoseStack pPoseStack, int pMouseX, int pMouseY, float pPartialTick) {
@@ -75,7 +76,7 @@ public class GlyphEditorScreen extends Screen {
         if(glyphs.size() == 0)
             return;
 
-        drawAllGlyphs(pPoseStack);
+        drawAllGlyphs(pPoseStack, glyphs);
     }
 
     @Override
@@ -89,21 +90,49 @@ public class GlyphEditorScreen extends Screen {
         this.blit(poseStack, posX, posY, 0, 0, 200, 230);
     }
 
-    private void drawAllGlyphs(PoseStack pPoseStack) {
+    public void drawAllGlyphs(PoseStack pPoseStack, List<Glyph> glyphs) {
         drawBaseGlyph(pPoseStack, glyphs.get(0));
 
-        int dist = 25;
-        int maxGlyphsInRing = 6;
-        int size = Math.min(glyphs.size() - 1, maxGlyphsInRing);
-        int indexOffset = 0;
+        if(glyphs.size() <= 1)
+            return;
+
+        int maxPerRing = Math.min(glyphs.size() - 1, 7);
+        int offset = 0;
+        int distance = 25;
+        int samples = 40;
+        drawRing(pPoseStack, distance, samples);
         for(int i = 1; i < glyphs.size(); i++) {
-            renderGlyph(pPoseStack, i - indexOffset, size, dist, glyphs.get(i));
-            // We've exceeded the amount of glyphs allowed in this ring, so we move on to the next
-            if((i - indexOffset) % maxGlyphsInRing == 0) {
-                dist += 20;
-                indexOffset += maxGlyphsInRing;
-                maxGlyphsInRing += 6;
-                size = Math.min(Math.max(1, glyphs.size() - indexOffset), maxGlyphsInRing);
+            renderGlyph(pPoseStack, i - offset, maxPerRing, distance, glyphs.get(i));
+            if((i - offset) % (maxPerRing) == 0) {
+                offset = i;
+                maxPerRing = Math.min(maxPerRing + 3, Math.max(glyphs.size() - 1 - offset, 0));
+                distance += 20;
+                samples *= 2;
+                if(glyphs.size() - 1 - offset > 0)
+                    drawRing(pPoseStack, distance, samples);
+            }
+        }
+    }
+
+    private void drawRing(PoseStack stack, int radius, int samples) {
+        double fullCircle = 2*Math.PI;
+        int centerX = width / 2;
+        int centerY = height / 2;
+        for(int i = 0; i < samples; i++) {
+            int x = (int) (radius * Math.cos(fullCircle * (i / (double) samples)));
+            int y = (int) (radius * Math.sin(fullCircle * (i / (double) samples)));
+            int prevX = (int) (radius * Math.cos(fullCircle * ((i - 1) / (double) samples)));
+            int prevY = (int) (radius * Math.sin(fullCircle * ((i - 1) / (double) samples)));
+            int halfX = (x + prevX) / 2;
+            int halfY = (y + prevY) / 2;
+            int offset = y > prevY ? -1 : 1;
+
+            hLine(stack, centerX + prevX, centerX + halfX, centerY + halfY, -3881788);
+            hLine(stack, centerX + halfX, centerX + x, centerY + halfY, -3881788);
+
+            if (prevX != 0) {
+                vLine(stack, centerX + prevX, centerY + prevY + offset, centerY + halfY, -3881788);
+                vLine(stack, centerX + x, centerY + y, centerY + halfY, -3881788);
             }
         }
     }
@@ -153,6 +182,17 @@ public class GlyphEditorScreen extends Screen {
         drawGlyphIcon(stack, glyph, centerX + x - texOffsetX, centerY + y - texOffsetY);
     }
 
+    void renderRing(PoseStack stack, Glyph glyph, int index, int maxPerRing, int size) {
+        // Get the angle the glyph should be at
+        double angle = 2*Math.PI * ((double) index / (double)maxPerRing);
+
+        // Convert the angle to screen coordinates, centered around the screen center
+        int glyphX = (width / 2) + (int)(size * Math.cos(angle));
+        int glyphY = (height / 2) + (int)(size * Math.sin(angle));
+
+        this.blit(stack, glyphX - 8, glyphY - 8, 0, 32, 16, 16);
+        drawGlyphIcon(stack, glyph, glyphX, glyphY);
+    }
     @Override
     public boolean isPauseScreen() {
         return false;

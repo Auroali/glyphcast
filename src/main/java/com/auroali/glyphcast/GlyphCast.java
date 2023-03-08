@@ -1,5 +1,6 @@
 package com.auroali.glyphcast;
 
+import com.auroali.glyphcast.client.ClientEvents;
 import com.auroali.glyphcast.common.config.GCClientConfig;
 import com.auroali.glyphcast.common.config.GCCommonConfig;
 import com.auroali.glyphcast.common.registry.*;
@@ -12,6 +13,7 @@ import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
+import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.IForgeRegistry;
@@ -52,6 +54,7 @@ public class GlyphCast
 
         // Register the commonSetup method for modloading
         modEventBus.addListener(this::commonSetup);
+        modEventBus.addListener(this::clientSetup);
         // Register ourselves for server and other game events we are interested in
         MinecraftForge.EVENT_BUS.register(this);
 
@@ -60,5 +63,9 @@ public class GlyphCast
     private void commonSetup(final FMLCommonSetupEvent event)
     {
 
+    }
+    private void clientSetup(final FMLClientSetupEvent event)
+    {
+        ClientEvents.registerTooltipComponents();
     }
 }

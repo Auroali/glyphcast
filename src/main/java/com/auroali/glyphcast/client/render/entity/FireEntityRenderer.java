@@ -1,4 +1,4 @@
-package com.auroali.glyphcast.client.renderer.entity;
+package com.auroali.glyphcast.client.render.entity;
 
 import com.auroali.glyphcast.common.entities.FireSpellProjectile;
 import com.mojang.blaze3d.vertex.PoseStack;
