@@ -21,7 +21,7 @@ public class BlockLightEngineMixin {
      * this allows us to manually set the light value of blocks.
      */
     @Inject(method = "getLightEmission", at = @At("HEAD"), cancellable = true)
-    public void getLightEmission(long pLevelPos, CallbackInfoReturnable<Integer> cir) {
+    public void glyphcast$getLightEmission(long pLevelPos, CallbackInfoReturnable<Integer> cir) {
         int i = BlockPos.getX(pLevelPos);
         int j = BlockPos.getY(pLevelPos);
         int k = BlockPos.getZ(pLevelPos);
@@ -29,7 +29,7 @@ public class BlockLightEngineMixin {
         // We can use the Minecraft class because this is a client-only mixin,
         // it won't be applied to dedicated servers
         // Check to make sure the level is client-side so that the lighting is visual only
-        if(Minecraft.getInstance().level != null && Minecraft.getInstance().level.isClientSide && LightTracker.LIGHTS.containsValue(pos))
-            cir.setReturnValue(15);
+        if(Minecraft.getInstance().level != null && Minecraft.getInstance().level.isClientSide && LightTracker.hasAnyLight(pos))
+            cir.setReturnValue(LightTracker.getBrightnessAtPosition(pos));
     }
 }

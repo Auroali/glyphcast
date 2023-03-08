@@ -73,10 +73,11 @@ public class FireSpellProjectile extends Projectile {
 
         if(level.isClientSide) {
             if(GCClientConfig.CLIENT.fireEmitsLight.get())
-                LightTracker.update(this);
-            ClientPacketHandler.spawnParticles(new SpawnParticlesMessage(ParticleTypes.FLAME, 0.12, 15, position().add(0, 0.25, 0),getDeltaMovement(), 0.12f ));
-            ClientPacketHandler.spawnParticles(new SpawnParticlesMessage(ParticleTypes.SOUL_FIRE_FLAME,0.02, 15, position().add(0, 0.25, 0),getDeltaMovement(), 0.12f ));
-            ClientPacketHandler.spawnParticles(new SpawnParticlesMessage(ParticleTypes.SMOKE, 0.02, 20, position().add(0, 0.25, 0),getDeltaMovement(), 0.12f ));
+                LightTracker.update(this, 7);
+            double speed = getDeltaMovement().length() / 5;
+            ClientPacketHandler.spawnParticles(new SpawnParticlesMessage(ParticleTypes.FLAME, 0.12, 15, position().add(0, 0.25, 0),getDeltaMovement(), speed ));
+            ClientPacketHandler.spawnParticles(new SpawnParticlesMessage(ParticleTypes.SOUL_FIRE_FLAME,0.02, 15, position().add(0, 0.25, 0),getDeltaMovement(), speed));
+            ClientPacketHandler.spawnParticles(new SpawnParticlesMessage(ParticleTypes.SMOKE, 0.02, 20, position().add(0, 0.25, 0),getDeltaMovement(), speed));
         }
 
         EntityHitResult result = findHitEntity(position(), position().add(getDeltaMovement()));

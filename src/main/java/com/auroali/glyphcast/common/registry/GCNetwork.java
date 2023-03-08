@@ -7,6 +7,8 @@ import com.auroali.glyphcast.common.network.server.WriteParchmentMessage;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.network.NetworkDirection;
 import net.minecraftforge.network.NetworkRegistry;
 import net.minecraftforge.network.PacketDistributor;
@@ -41,6 +43,14 @@ public class GCNetwork {
 
     public static void sendToClient(ServerPlayer player, Object message) {
         CHANNEL.send(PacketDistributor.PLAYER.with(() -> player), message);
+    }
+
+    public static void sendToAll(Object message) {
+        CHANNEL.send(PacketDistributor.ALL.noArg(), message);
+    }
+
+    public static void sendToNear(Level level, Vec3 pos, double radius, Object message) {
+        CHANNEL.send(PacketDistributor.NEAR.with(PacketDistributor.TargetPoint.p(pos.x, pos.y, pos.z, radius, level.dimension())), message);
     }
 
     public static void sendToServer(Object message) {

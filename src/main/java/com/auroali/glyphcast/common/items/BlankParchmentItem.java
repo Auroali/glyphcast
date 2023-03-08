@@ -4,7 +4,6 @@ import com.auroali.glyphcast.GlyphCast;
 import com.auroali.glyphcast.client.screen.GlyphEditorScreen;
 import com.auroali.glyphcast.common.registry.GCItems;
 import com.auroali.glyphcast.common.spells.glyph.GlyphSequence;
-import net.minecraft.client.Minecraft;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
@@ -22,8 +21,7 @@ public class BlankParchmentItem extends Item implements IGlyphWriteable {
         if (pLevel.isClientSide) {
             // Open the glyph editor screen
             ItemStack stack = pPlayer.getItemInHand(pUsedHand);
-            GlyphEditorScreen editor = new GlyphEditorScreen(pPlayer.getInventory().findSlotMatchingItem(stack));
-            Minecraft.getInstance().setScreen(editor);
+            GlyphEditorScreen.openScreen(pPlayer, stack);
             return InteractionResultHolder.consume(stack);
         }
         return InteractionResultHolder.pass(pPlayer.getItemInHand(pUsedHand));

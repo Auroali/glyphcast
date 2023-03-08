@@ -86,7 +86,7 @@ public class FloatingLight extends Entity implements IEntityAdditionalSpawnData 
             setPos(pos);
         }
         if(level.isClientSide) {
-            LightTracker.update(this);
+            LightTracker.update(this, 15);
             if(level.getGameTime() % 10 == 0 && random.nextDouble() > 0.5)
                 spawnParticles();
         }

@@ -14,16 +14,22 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class GlyphEditorScreen extends Screen {
-
     public static final ResourceLocation GLYPHS = new ResourceLocation(GlyphCast.MODID, "textures/gui/glyphs/glyph_icons.png");
     public static final ResourceLocation PARCHMENT = new ResourceLocation(GlyphCast.MODID, "textures/gui/parchment.png");
     public static final Component SAVE_LABEL = Component.translatable("gui.glyphcast.save_glyphs");
     public static final Component CLOSE_LABEL = Component.translatable("gui.cancel");
+
+    public static void openScreen(Player player, ItemStack stack) {
+        GlyphEditorScreen editor = new GlyphEditorScreen(player.getInventory().findSlotMatchingItem(stack));
+        Minecraft.getInstance().setScreen(editor);
+    }
     int slot;
     List<Glyph> glyphs = new ArrayList<>();
     public GlyphEditorScreen(int slot) {
