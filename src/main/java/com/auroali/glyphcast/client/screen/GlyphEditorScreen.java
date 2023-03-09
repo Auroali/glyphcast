@@ -2,6 +2,7 @@ package com.auroali.glyphcast.client.screen;
 
 import com.auroali.glyphcast.GlyphCast;
 import com.auroali.glyphcast.client.render.GlyphRenderer;
+import com.auroali.glyphcast.client.screen.widgets.AddGlyphButton;
 import com.auroali.glyphcast.common.network.server.WriteParchmentMessage;
 import com.auroali.glyphcast.common.registry.GCNetwork;
 import com.auroali.glyphcast.common.spells.glyph.Glyph;

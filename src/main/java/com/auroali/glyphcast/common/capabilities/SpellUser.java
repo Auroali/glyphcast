@@ -2,6 +2,7 @@ package com.auroali.glyphcast.common.capabilities;
 
 import com.auroali.glyphcast.GlyphCast;
 import com.auroali.glyphcast.common.registry.GCCapabilities;
+import com.auroali.glyphcast.common.registry.GCSpells;
 import com.auroali.glyphcast.common.spells.Spell;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -11,13 +12,17 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.common.util.LazyOptional;
 
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
 public class SpellUser implements ISpellUser {
     List<Spell> discoveredSpells;
+    Spell selected = GCSpells.FIRE_SPELL.get();
 
-    public static LazyOptional<ISpellUser> get(Player player) {
+    public static LazyOptional<ISpellUser> get(@Nullable Player player) {
+        if(player == null)
+            return LazyOptional.empty();
         return player.getCapability(GCCapabilities.SPELL_USER);
     }
 
@@ -34,6 +39,16 @@ public class SpellUser implements ISpellUser {
     public void markSpellDiscovered(Spell spell) {
         if(!discoveredSpells.contains(spell))
             discoveredSpells.add(spell);
+    }
+
+    @Override
+    public void selectSpell(Spell spell) {
+        this.selected = spell;
+    }
+
+    @Override
+    public Spell getSelectedSpell() {
+        return selected;
     }
 
     @Override

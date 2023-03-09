@@ -21,10 +21,15 @@
 
   "__comment5": "GUI",
   "gui.glyphcast.save_glyphs": "Write Glyphs",
+  "gui.glyphcast.select_spell": "Select Spell",
 
   "__comment6": "Spells",
   "spell.glyphcast.fire": "Fire",
   "spell.glyphcast.light": "Light",
   "spell.glyphcast.ice": "Ice",
-  "spell.glyphcast.earth": "Earth"
+  "spell.glyphcast.earth": "Earth",
+
+  "__comment7": "Key Mappings",
+  "key.categories.glyphcast": "Glyphcast",
+  "key.glyphcast.spells": "Open Spell Selection"
 }

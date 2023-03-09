@@ -1,4 +1,4 @@
-package com.auroali.glyphcast.client.screen;
+package com.auroali.glyphcast.client.screen.widgets;
 
 import com.auroali.glyphcast.client.render.GlyphRenderer;
 import com.auroali.glyphcast.common.spells.glyph.Glyph;

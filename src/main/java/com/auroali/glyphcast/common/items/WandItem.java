@@ -1,6 +1,8 @@
 package com.auroali.glyphcast.common.items;
 
 import com.auroali.glyphcast.GlyphCast;
+import com.auroali.glyphcast.client.screen.SpellSelectionScreen;
+import com.auroali.glyphcast.common.capabilities.SpellUser;
 import com.auroali.glyphcast.common.spells.Spell;
 import com.auroali.glyphcast.common.spells.glyph.Glyph;
 import com.auroali.glyphcast.common.spells.glyph.GlyphSequence;
@@ -22,10 +24,9 @@ public class WandItem extends Item {
     public InteractionResultHolder<ItemStack> use(Level pLevel, Player pPlayer, InteractionHand pUsedHand) {
         ItemStack stack = pPlayer.getItemInHand(pUsedHand);
         if(!pLevel.isClientSide) {
-            GlyphSequence s = new GlyphSequence(Glyph.FIRE);
-            Optional<Spell> spell = s.findSpell();
-            spell.ifPresent(spell_ -> spell_.activate(pLevel, pPlayer));
-            return spell.isPresent() ? InteractionResultHolder.consume(stack) : InteractionResultHolder.pass(stack);
+            SpellUser.get(pPlayer).ifPresent(user -> user.getSelectedSpell().activate(pLevel, pPlayer));
+
+            return InteractionResultHolder.consume(stack);
         }
         return InteractionResultHolder.success(stack);
     }
