@@ -3,6 +3,7 @@ package com.auroali.glyphcast.client.screen;
 import com.auroali.glyphcast.GlyphCast;
 import com.auroali.glyphcast.client.render.GlyphRenderer;
 import com.auroali.glyphcast.client.screen.widgets.AddGlyphButton;
+import com.auroali.glyphcast.common.capabilities.SpellUser;
 import com.auroali.glyphcast.common.network.server.WriteParchmentMessage;
 import com.auroali.glyphcast.common.registry.GCNetwork;
 import com.auroali.glyphcast.common.spells.glyph.Glyph;
@@ -46,16 +47,19 @@ public class GlyphEditorScreen extends Screen {
         int topLeftX = centerX - 90;
         int topLeftY = centerY - 78;
         int bottomLeftY = centerY + 62;
-        Button fire = new AddGlyphButton(Glyph.FIRE, topLeftX,topLeftY, (b) -> addGlyph(Glyph.FIRE));
-        Button light = new AddGlyphButton(Glyph.LIGHT, topLeftX,topLeftY + 18, (b) -> addGlyph(Glyph.LIGHT));
-        Button ice = new AddGlyphButton(Glyph.ICE, topLeftX,bottomLeftY - 18, (b) -> addGlyph(Glyph.ICE));
-        Button earth = new AddGlyphButton(Glyph.EARTH, topLeftX,bottomLeftY, (b) -> addGlyph(Glyph.EARTH));
-        Button save = new Button(centerX - 104, centerY + 92,100,20, SAVE_LABEL, (b) -> saveGlyphSequence());
-        Button exit = new Button(centerX + 4, centerY + 92,100,20, CLOSE_LABEL, (b) -> Minecraft.getInstance().setScreen(null));
-        addRenderableWidget(fire);
-        addRenderableWidget(light);
-        addRenderableWidget(ice);
-        addRenderableWidget(earth);
+
+        SpellUser.get(Minecraft.getInstance().player).ifPresent(user -> {
+            Button fire = new AddGlyphButton(Glyph.FIRE, user, topLeftX, topLeftY, (b) -> addGlyph(Glyph.FIRE));
+            Button light = new AddGlyphButton(Glyph.LIGHT, user, topLeftX, topLeftY + 18, (b) -> addGlyph(Glyph.LIGHT));
+            Button ice = new AddGlyphButton(Glyph.ICE, user, topLeftX, bottomLeftY - 18, (b) -> addGlyph(Glyph.ICE));
+            Button earth = new AddGlyphButton(Glyph.EARTH, user, topLeftX, bottomLeftY, (b) -> addGlyph(Glyph.EARTH));
+            addRenderableWidget(fire);
+            addRenderableWidget(light);
+            addRenderableWidget(ice);
+            addRenderableWidget(earth);
+        });
+        Button save = new Button(centerX - 104, centerY + 92, 100, 20, SAVE_LABEL, (b) -> saveGlyphSequence());
+        Button exit = new Button(centerX + 4, centerY + 92, 100, 20, CLOSE_LABEL, (b) -> Minecraft.getInstance().setScreen(null));
         addRenderableWidget(save);
         addRenderableWidget(exit);
     }

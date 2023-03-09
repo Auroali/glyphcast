@@ -3,9 +3,11 @@ package com.auroali.glyphcast.common.registry;
 import com.auroali.glyphcast.GlyphCast;
 import com.auroali.glyphcast.common.capabilities.ISpellUser;
 import com.auroali.glyphcast.common.capabilities.SpellUser;
+import com.auroali.glyphcast.common.network.client.SyncSpellUserDataMessage;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.common.capabilities.Capability;
@@ -29,8 +31,8 @@ public class GCCapabilities {
         private final ISpellUser cap;
         private final LazyOptional<ISpellUser> optional;
 
-        public SpellUserProvider() {
-            this.cap = new SpellUser();
+        public SpellUserProvider(Player player) {
+            this.cap = new SpellUser(player);
             this.optional = LazyOptional.of(() -> cap);
         }
         @Override
@@ -51,12 +53,34 @@ public class GCCapabilities {
 
     @SubscribeEvent
     public static void attachCapabilities(final AttachCapabilitiesEvent<Entity> event) {
-        if(event.getObject() instanceof Player)
-            event.addCapability(new ResourceLocation(GlyphCast.MODID, "spell_user"), new SpellUserProvider());
+        if(event.getObject() instanceof Player player)
+            event.addCapability(new ResourceLocation(GlyphCast.MODID, "spell_user"), new SpellUserProvider(player));
     }
 
     @SubscribeEvent
     public static void clone(PlayerEvent.Clone event) {
         SpellUser.get(event.getOriginal()).ifPresent(user -> user.cloneTo(SpellUser.get(event.getEntity())));
+    }
+
+    /*
+        Events to sync the ISpellUser data
+     */
+
+    @SubscribeEvent
+    public static void onPlayerLoggedIn(PlayerEvent.PlayerLoggedInEvent event) {
+        if(event.getEntity() instanceof ServerPlayer player)
+            SpellUser.get(event.getEntity()).ifPresent(user -> GCNetwork.sendToClient(player, new SyncSpellUserDataMessage(user)));
+    }
+
+    @SubscribeEvent
+    public static void onPlayerRespawn(PlayerEvent.PlayerRespawnEvent event) {
+        if(event.getEntity() instanceof ServerPlayer player)
+            SpellUser.get(event.getEntity()).ifPresent(user -> GCNetwork.sendToClient(player, new SyncSpellUserDataMessage(user)));
+    }
+
+    @SubscribeEvent
+    public static void onPlayerChangedDimensions(PlayerEvent.PlayerChangedDimensionEvent event) {
+        if(event.getEntity() instanceof ServerPlayer player)
+            SpellUser.get(event.getEntity()).ifPresent(user -> GCNetwork.sendToClient(player, new SyncSpellUserDataMessage(user)));
     }
 }

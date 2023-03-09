@@ -18,7 +18,10 @@ public class WandItem extends Item {
     public InteractionResultHolder<ItemStack> use(Level pLevel, Player pPlayer, InteractionHand pUsedHand) {
         ItemStack stack = pPlayer.getItemInHand(pUsedHand);
         if(!pLevel.isClientSide) {
-            SpellUser.get(pPlayer).ifPresent(user -> user.getSelectedSpell().activate(pLevel, pPlayer));
+            SpellUser.get(pPlayer).ifPresent(user -> {
+                if(user.getSelectedSpell() != null)
+                    user.getSelectedSpell().activate(pLevel, pPlayer);
+            });
 
             return InteractionResultHolder.consume(stack);
         }

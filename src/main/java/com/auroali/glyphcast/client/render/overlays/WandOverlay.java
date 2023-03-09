@@ -15,7 +15,7 @@ public class WandOverlay implements IGuiOverlay {
         int index = slot.getIndex();
         Component component = getComponent(index, slot.isEmpty() ? Component.empty() : slot.getSpell().getName());
 
-        Minecraft.getInstance().font.draw(stack, component, (float) 5, (float) Minecraft.getInstance().font.lineHeight * slot.getIndex(), -1);
+        Minecraft.getInstance().font.draw(stack, component, (float) 5, (float) 5 + Minecraft.getInstance().font.lineHeight * slot.getIndex(), -1);
     }
 
     public Component getComponent(int index, Component component) {
@@ -34,8 +34,6 @@ public class WandOverlay implements IGuiOverlay {
         if(player == null)
             return;
 
-        SpellUser.get(player).ifPresent(user -> {
-            user.getSlots().forEach(slot -> renderSlot(poseStack, slot));
-        });
+        SpellUser.get(player).ifPresent(user -> user.getSlots().forEach(slot -> renderSlot(poseStack, slot)));
     }
 }

@@ -3,6 +3,8 @@ package com.auroali.glyphcast.common.registry;
 import com.auroali.glyphcast.GlyphCast;
 import com.auroali.glyphcast.common.network.NetworkMessage;
 import com.auroali.glyphcast.common.network.client.SpawnParticlesMessage;
+import com.auroali.glyphcast.common.network.client.SyncSpellUserDataMessage;
+import com.auroali.glyphcast.common.network.server.ClearSpellSlotMessage;
 import com.auroali.glyphcast.common.network.server.SelectSpellSlotMessage;
 import com.auroali.glyphcast.common.network.server.SetSlotSpellMessage;
 import com.auroali.glyphcast.common.network.server.WriteParchmentMessage;
@@ -26,9 +28,11 @@ public class GCNetwork {
     private static int id = 0;
     public static void registerPackets() {
         registerPlayToClient(SpawnParticlesMessage.class, SpawnParticlesMessage::new);
+        registerPlayToClient(SyncSpellUserDataMessage.class, SyncSpellUserDataMessage::new);
         registerPlayToServer(WriteParchmentMessage.class, WriteParchmentMessage::new);
         registerPlayToServer(SetSlotSpellMessage.class, SetSlotSpellMessage::new);
         registerPlayToServer(SelectSpellSlotMessage.class, SelectSpellSlotMessage::new);
+        registerPlayToServer(ClearSpellSlotMessage.class, ClearSpellSlotMessage::new);
     }
 
     private static <T extends NetworkMessage> void registerWithDirection(int id, Class<T> packet, Function<FriendlyByteBuf, T> decoder, Optional<NetworkDirection> direction) {

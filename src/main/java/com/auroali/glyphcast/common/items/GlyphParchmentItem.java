@@ -61,13 +61,17 @@ public class GlyphParchmentItem extends Item implements ISpellHolder {
         ItemStack stack = pPlayer.getItemInHand(pUsedHand);
         if(!pLevel.isClientSide) {
             Optional<Spell> spell = getSpell(stack);
-            spell.ifPresent(spell_ -> spell_.activate(pLevel, pPlayer));
+            spell.ifPresent(_spell -> _spell.activate(pLevel, pPlayer));
 
             if(spell.isPresent() && !pPlayer.isCreative())
                 stack.shrink(1);
 
             // Mark the spell as discovered
-            SpellUser.get(pPlayer).ifPresent(user -> spell.ifPresent(user::markSpellDiscovered));
+            SpellUser.get(pPlayer).ifPresent(user -> {
+                GlyphSequence sequence = spell.map(Spell::getSequence).orElse(GlyphSequence.EMPTY);
+                sequence.asList().forEach(user::markGlyphDiscovered);
+                spell.ifPresent(user::markSpellDiscovered);
+            });
 
             return spell.isPresent() ? InteractionResultHolder.consume(stack) : InteractionResultHolder.pass(stack);
         }

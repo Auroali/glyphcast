@@ -1,6 +1,7 @@
 package com.auroali.glyphcast.client.screen.widgets;
 
 import com.auroali.glyphcast.client.render.GlyphRenderer;
+import com.auroali.glyphcast.common.capabilities.ISpellUser;
 import com.auroali.glyphcast.common.spells.glyph.Glyph;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -9,13 +10,16 @@ import net.minecraft.client.renderer.GameRenderer;
 
 public class AddGlyphButton extends Button {
     final Glyph glyph;
-    public AddGlyphButton(Glyph glyph, int pX, int pY, OnPress pOnPress) {
+    public AddGlyphButton(Glyph glyph, ISpellUser user, int pX, int pY, OnPress pOnPress) {
         super(pX, pY, 16, 16, glyph.component(), pOnPress);
         this.glyph = glyph;
+        this.visible = user.hasDiscoveredGlyph(glyph);
     }
 
     @Override
     public void renderButton(PoseStack pPoseStack, int pMouseX, int pMouseY, float pPartialTick) {
+        if(!this.visible)
+            return;
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
         RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f);
         RenderSystem.setShaderTexture(0, GlyphRenderer.GLYPHS);

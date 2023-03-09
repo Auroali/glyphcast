@@ -1,15 +1,15 @@
 package com.auroali.glyphcast.client.screen.widgets;
 
-import com.auroali.glyphcast.GlyphCast;
 import com.auroali.glyphcast.client.screen.SpellSelectionScreen;
 import com.auroali.glyphcast.common.spells.Spell;
-import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.client.gui.components.ObjectSelectionList;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+
+import java.util.List;
 
 public class SpellListWidget extends ObjectSelectionList<SpellListWidget.SpellListEntry> {
 
@@ -19,12 +19,16 @@ public class SpellListWidget extends ObjectSelectionList<SpellListWidget.SpellLi
         super(screen.getMinecraft(), pWidth, pHeight, pY0, pY1, pItemHeight);
         this.width = pWidth;
         this.screen = screen;
-        GlyphCast.SPELL_REGISTRY.get().getValues().forEach(spell -> addEntry(new SpellListEntry(this, spell)));
+        this.setRenderBackground(false);
+        this.setRenderHeader(false, 0);
+        this.setRenderTopAndBottom(false);
     }
 
     @Override
     protected void renderBackground(PoseStack pPoseStack) {
         super.renderBackground(pPoseStack);
+        GuiComponent.fill(pPoseStack, getLeft(), getTop(), getLeft() + width, getBottom(), -14540254);
+        vLine(pPoseStack, width, getTop(), getBottom(), -1);
     }
 
     @Override
@@ -35,11 +39,16 @@ public class SpellListWidget extends ObjectSelectionList<SpellListWidget.SpellLi
     @Override
     protected int getScrollbarPosition()
     {
-        return this.width;
+        return this.width - 6;
     }
 
     public SpellListEntry getHoveredEntry() {
         return getHovered();
+    }
+
+    public void setSpells(List<Spell> spells) {
+        clearEntries();
+        spells.forEach(spell -> addEntry(new SpellListEntry(this, spell)));
     }
     public static class SpellListEntry extends ObjectSelectionList.Entry<SpellListEntry> {
 
@@ -59,18 +68,7 @@ public class SpellListWidget extends ObjectSelectionList<SpellListWidget.SpellLi
 
         @Override
         public void render(PoseStack pPoseStack, int pIndex, int pTop, int pLeft, int pWidth, int pHeight, int pMouseX, int pMouseY, boolean pIsMouseOver, float pPartialTick) {
-            //renderIcon(pPoseStack, spell, pTop, pLeft);
             Minecraft.getInstance().font.draw(pPoseStack, spell.getName(), pLeft + 18, pTop + 5, -1);
-        }
-
-        public void renderIcon(PoseStack stack, Spell spell, int top, int left) {
-            ResourceLocation id = GlyphCast.SPELL_REGISTRY.get().getKey(spell);
-            if(id == null)
-                return;
-
-            ResourceLocation texture = new ResourceLocation(id.getNamespace(), "textures/spell/%s.png".formatted(id.getPath()));
-            RenderSystem.setShaderTexture(0, texture);
-            blit(stack, left, top, 0, 0, 16, 16, 16, 16);
         }
 
         @Override

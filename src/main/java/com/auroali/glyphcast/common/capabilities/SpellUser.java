@@ -1,26 +1,35 @@
 package com.auroali.glyphcast.common.capabilities;
 
 import com.auroali.glyphcast.GlyphCast;
+import com.auroali.glyphcast.common.network.client.SyncSpellUserDataMessage;
 import com.auroali.glyphcast.common.registry.GCCapabilities;
+import com.auroali.glyphcast.common.registry.GCNetwork;
 import com.auroali.glyphcast.common.spells.Spell;
 import com.auroali.glyphcast.common.spells.SpellSlot;
+import com.auroali.glyphcast.common.spells.glyph.Glyph;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.StringTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.common.util.LazyOptional;
 
 import javax.annotation.Nullable;
-import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class SpellUser implements ISpellUser {
-    List<Spell> discoveredSpells;
+    int glyphMask;
+    Set<Spell> discoveredSpells;
     List<SpellSlot> slots;
     int selectedSlot;
+
+    // The player this capability is attached to
+    final Player player;
 
     public static LazyOptional<ISpellUser> get(@Nullable Player player) {
         if(player == null)
@@ -28,9 +37,10 @@ public class SpellUser implements ISpellUser {
         return player.getCapability(GCCapabilities.SPELL_USER);
     }
 
-    public SpellUser() {
-        this.discoveredSpells = new ArrayList<>();
+    public SpellUser(Player player) {
+        this.discoveredSpells = new HashSet<>();
         this.slots = SpellSlot.makeSlots(4);
+        this.player = player;
     }
 
     @Override
@@ -39,9 +49,27 @@ public class SpellUser implements ISpellUser {
     }
 
     @Override
+    public boolean hasDiscoveredGlyph(Glyph glyph) {
+        return (glyphMask >> glyph.ordinal() & 1) != 0;
+    }
+
+    @Override
     public void markSpellDiscovered(Spell spell) {
-        if(!discoveredSpells.contains(spell))
+        if(!discoveredSpells.contains(spell)) {
             discoveredSpells.add(spell);
+            sync();
+        }
+    }
+
+    @Override
+    public void markGlyphDiscovered(Glyph glyph) {
+        glyphMask |= 0x01 << glyph.ordinal();
+        sync();
+    }
+
+    @Override
+    public List<Spell> getDiscoveredSpells() {
+        return discoveredSpells.stream().toList();
     }
 
     @Override
@@ -66,6 +94,7 @@ public class SpellUser implements ISpellUser {
         }
 
         slots.set(slot, new SpellSlot(slot, spell));
+        sync();
     }
 
     @Override
@@ -103,6 +132,7 @@ public class SpellUser implements ISpellUser {
         tag.putInt("SelectedSlot", selectedSlot);
         tag.put("SpellSlots", spellSlotsTag);
         tag.put("DiscoveredSpells", discoveredSpellsTag);
+        tag.putInt("DiscoveredGlyphs", glyphMask);
         return tag;
     }
 
@@ -133,5 +163,11 @@ public class SpellUser implements ISpellUser {
         }
 
         selectedSlot = nbt.getInt("SelectedSlot");
+        glyphMask = nbt.getInt("DiscoveredGlyphs");
+    }
+
+    void sync() {
+        if(player instanceof ServerPlayer serverPlayer)
+            GCNetwork.sendToClient(serverPlayer, new SyncSpellUserDataMessage(this));
     }
 }
