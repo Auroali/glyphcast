@@ -10,15 +10,21 @@ import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.components.ObjectSelectionList;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.client.gui.widget.ModListWidget;
 
 public class SpellListWidget extends ObjectSelectionList<SpellListWidget.SpellListEntry> {
 
     final int width;
-    public SpellListWidget(Minecraft pMinecraft, int pWidth, int pHeight, int pY0, int pY1, int pItemHeight) {
-        super(pMinecraft, pWidth, pHeight, pY0, pY1, pItemHeight);
+    final SpellSelectionScreen screen;
+    public SpellListWidget(SpellSelectionScreen screen, int pWidth, int pHeight, int pY0, int pY1, int pItemHeight) {
+        super(screen.getMinecraft(), pWidth, pHeight, pY0, pY1, pItemHeight);
         this.width = pWidth;
+        this.screen = screen;
         GlyphCast.SPELL_REGISTRY.get().getValues().forEach(spell -> addEntry(new SpellListEntry(this, spell)));
+    }
+
+    @Override
+    protected void renderBackground(PoseStack pPoseStack) {
+        super.renderBackground(pPoseStack);
     }
 
     @Override
@@ -32,11 +38,13 @@ public class SpellListWidget extends ObjectSelectionList<SpellListWidget.SpellLi
         return this.width;
     }
 
+    public SpellListEntry getHoveredEntry() {
+        return getHovered();
+    }
     public static class SpellListEntry extends ObjectSelectionList.Entry<SpellListEntry> {
 
         public final Spell spell;
         final Font font;
-
         final SpellListWidget widget;
         public SpellListEntry(SpellListWidget widget, Spell spell) {
             this.widget = widget;
@@ -51,7 +59,7 @@ public class SpellListWidget extends ObjectSelectionList<SpellListWidget.SpellLi
 
         @Override
         public void render(PoseStack pPoseStack, int pIndex, int pTop, int pLeft, int pWidth, int pHeight, int pMouseX, int pMouseY, boolean pIsMouseOver, float pPartialTick) {
-            renderIcon(pPoseStack, spell, pTop, pLeft);
+            //renderIcon(pPoseStack, spell, pTop, pLeft);
             Minecraft.getInstance().font.draw(pPoseStack, spell.getName(), pLeft + 18, pTop + 5, -1);
         }
 

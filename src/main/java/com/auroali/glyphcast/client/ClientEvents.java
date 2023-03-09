@@ -5,12 +5,15 @@ import com.auroali.glyphcast.client.model.FloatingLightModel;
 import com.auroali.glyphcast.client.render.GlyphClientTooltipComponent;
 import com.auroali.glyphcast.client.render.entity.FireEntityRenderer;
 import com.auroali.glyphcast.client.render.entity.LightEntityRenderer;
+import com.auroali.glyphcast.client.render.overlays.WandOverlay;
 import com.auroali.glyphcast.common.items.tooltip.GlyphTooltipComponent;
 import com.auroali.glyphcast.common.registry.GCEntities;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.client.event.RegisterClientTooltipComponentFactoriesEvent;
+import net.minecraftforge.client.event.RegisterGuiOverlaysEvent;
 import net.minecraftforge.client.event.RegisterKeyMappingsEvent;
+import net.minecraftforge.client.gui.overlay.VanillaGuiOverlay;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
@@ -35,5 +38,10 @@ public class ClientEvents {
     @SubscribeEvent
     public static void registerKeyMappings(RegisterKeyMappingsEvent event) {
         event.register(GCKeybinds.SPELL_SELECTION);
+    }
+
+    @SubscribeEvent
+    public static void registerOverlays(RegisterGuiOverlaysEvent event) {
+        event.registerBelow(VanillaGuiOverlay.CHAT_PANEL.id(), "wand_overlay", new WandOverlay());
     }
 }

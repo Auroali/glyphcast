@@ -31,5 +31,9 @@
 
   "__comment7": "Key Mappings",
   "key.categories.glyphcast": "Glyphcast",
-  "key.glyphcast.spells": "Open Spell Selection"
+  "key.glyphcast.spells": "Open Spell Selection",
+  "key.glyphcast.spells.1": "Select Spell 1",
+  "key.glyphcast.spells.2": "Select Spell 2",
+  "key.glyphcast.spells.3": "Select Spell 3",
+  "key.glyphcast.spells.4": "Select Spell 4"
 }

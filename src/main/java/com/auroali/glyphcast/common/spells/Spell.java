@@ -20,6 +20,9 @@ public abstract class Spell {
     protected final GlyphSequence sequence;
     protected String descriptionId;
 
+    public Spell(GlyphSequence sequence) {
+        this.sequence = sequence;
+    }
     protected String getOrCreateDescriptionId() {
         if (this.descriptionId == null) {
             this.descriptionId = Util.makeDescriptionId("spell", GlyphCast.SPELL_REGISTRY.get().getKey(this));
@@ -36,15 +39,12 @@ public abstract class Spell {
     public String getDescriptionId() {
         return this.getOrCreateDescriptionId();
     }
-
     public Component getName() {
         return Component.translatable(getDescriptionId());
     }
-    
-    public Spell(GlyphSequence sequence) {
-        this.sequence = sequence;
+    public GlyphSequence getSequence() {
+        return sequence;
     }
-
     public boolean isSequence(GlyphSequence sequence) {
         return this.sequence.equals(sequence);
     }
