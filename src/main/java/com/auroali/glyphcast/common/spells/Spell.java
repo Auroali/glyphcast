@@ -42,6 +42,9 @@ public abstract class Spell {
     public Component getName() {
         return Component.translatable(getDescriptionId());
     }
+    public Component getSpellDescription() {
+        return Component.translatable(getDescriptionId() + ".desc");
+    }
     public GlyphSequence getSequence() {
         return sequence;
     }
