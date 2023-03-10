@@ -5,6 +5,7 @@ import com.auroali.glyphcast.common.registry.GCBlocks;
 import com.auroali.glyphcast.common.registry.GCNetwork;
 import com.auroali.glyphcast.common.spells.glyph.Glyph;
 import com.auroali.glyphcast.common.spells.glyph.GlyphSequence;
+import com.auroali.glyphcast.common.spells.glyph.Ring;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
@@ -19,7 +20,7 @@ import net.minecraft.world.phys.Vec3;
 
 public class EarthSpell extends Spell {
     public EarthSpell() {
-        super(new GlyphSequence(Glyph.EARTH));
+        super(new GlyphSequence(Ring.of(Glyph.EARTH)));
     }
 
     @Override

@@ -4,6 +4,7 @@ import com.auroali.glyphcast.common.network.client.SpawnParticlesMessage;
 import com.auroali.glyphcast.common.registry.GCNetwork;
 import com.auroali.glyphcast.common.spells.glyph.Glyph;
 import com.auroali.glyphcast.common.spells.glyph.GlyphSequence;
+import com.auroali.glyphcast.common.spells.glyph.Ring;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
@@ -23,7 +24,7 @@ import net.minecraft.world.phys.Vec3;
 
 public class IceSpell extends Spell{
     public IceSpell() {
-        super(new GlyphSequence(Glyph.ICE));
+        super(new GlyphSequence(Ring.of(Glyph.ICE)));
     }
 
     @Override

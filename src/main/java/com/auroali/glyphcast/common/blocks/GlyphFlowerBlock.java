@@ -28,6 +28,7 @@ public class GlyphFlowerBlock extends FlowerBlock {
         super(() -> MobEffects.HEALTH_BOOST, 300, BlockBehaviour.Properties.of(Material.PLANT).noCollission().instabreak().sound(SoundType.GRASS).offsetType(BlockBehaviour.OffsetType.XZ));
     }
 
+    @SuppressWarnings("deprecation")
     public void spawnShearedItems(Level level, ItemStack heldStack, BlockPos pos, RandomSource rand) {
         int numDrops = rand.nextInt(1, 2 + EnchantmentHelper.getItemEnchantmentLevel(Enchantments.BLOCK_FORTUNE, heldStack));
         for(int i = 0; i < numDrops; i++) {

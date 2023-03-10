@@ -6,6 +6,7 @@ import com.auroali.glyphcast.common.items.tooltip.GlyphTooltipComponent;
 import com.auroali.glyphcast.common.spells.Spell;
 import com.auroali.glyphcast.common.spells.glyph.Glyph;
 import com.auroali.glyphcast.common.spells.glyph.GlyphSequence;
+import com.auroali.glyphcast.common.spells.glyph.Ring;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
@@ -31,10 +32,10 @@ public class GlyphParchmentItem extends Item implements ISpellHolder {
     @Override
     public void fillItemCategory(CreativeModeTab pCategory, NonNullList<ItemStack> pItems) {
         if (this.allowedIn(pCategory)) {
-            pItems.add(withGlyphSequence(new GlyphSequence(Glyph.FIRE)));
-            pItems.add(withGlyphSequence(new GlyphSequence(Glyph.LIGHT)));
-            pItems.add(withGlyphSequence(new GlyphSequence(Glyph.ICE)));
-            pItems.add(withGlyphSequence(new GlyphSequence(Glyph.EARTH)));
+            pItems.add(withGlyphSequence(new GlyphSequence(Ring.of(Glyph.FIRE))));
+            pItems.add(withGlyphSequence(new GlyphSequence(Ring.of(Glyph.LIGHT))));
+            pItems.add(withGlyphSequence(new GlyphSequence(Ring.of(Glyph.ICE))));
+            pItems.add(withGlyphSequence(new GlyphSequence(Ring.of(Glyph.EARTH))));
         }
     }
 

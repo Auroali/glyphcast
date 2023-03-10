@@ -6,7 +6,6 @@ import com.auroali.glyphcast.client.screen.widgets.SpellSlotButton;
 import com.auroali.glyphcast.common.capabilities.SpellUser;
 import com.auroali.glyphcast.common.items.tooltip.GlyphTooltipComponent;
 import com.auroali.glyphcast.common.network.server.ClearSpellSlotMessage;
-import com.auroali.glyphcast.common.network.server.SetSlotSpellMessage;
 import com.auroali.glyphcast.common.registry.GCNetwork;
 import com.auroali.glyphcast.common.spells.Spell;
 import com.auroali.glyphcast.common.spells.SpellSlot;
@@ -36,36 +35,23 @@ public class SpellSelectionScreen extends Screen {
 
     @Override
     protected void init() {
-        this.list = new SpellListWidget(this, width / 4, height, 0, height, Minecraft.getInstance().font.lineHeight * 2 + 2);
+        this.list = new SpellListWidget(this, 128, height - 24, 0, height - 24, Minecraft.getInstance().font.lineHeight * 2 + 2);
 
         SpellUser.get(Minecraft.getInstance().player).ifPresent(user -> {
-            int center = height / 2;
-            int padding = 2;
+            list.setUser(user);
             list.setSpells(user.getDiscoveredSpells());
-            SpellSlotButton slot1 = new SpellSlotButton(0, user, list, width / 4 + 4, center - (32 + padding * 2), b -> selectSpell(0));
-            SpellSlotButton slot2 = new SpellSlotButton(1, user, list, width / 4 + 4, center - (16 + padding / 2), b -> selectSpell(1));
-            SpellSlotButton slot3 = new SpellSlotButton(2, user, list, width / 4 + 4, center + padding / 2, b -> selectSpell(2));
-            SpellSlotButton slot4 = new SpellSlotButton(3, user, list, width / 4 + 4, center + (16 + padding * 2), b -> selectSpell(3));
-            addRenderableWidget(slot1);
-            addRenderableWidget(slot2);
-            addRenderableWidget(slot3);
-            addRenderableWidget(slot4);
+            int spacing = 12;
+            int offset = (128 - (user.getSlots().size() * spacing)) / 2;
+            for(int i = 0; i < user.getSlots().size(); i++) {
+                SpellSlotButton button = new SpellSlotButton(i, user, list, offset + i * spacing, height - 14, b ->  GCNetwork.sendToServer(new ClearSpellSlotMessage(((SpellSlotButton)b).slot)));
+                addRenderableWidget(button);
+            }
         });
 
         addRenderableWidget(list);
 
     }
 
-    void selectSpell(int slot) {
-        SpellListWidget.SpellListEntry entry = list.getSelected();
-        if(entry == null) {
-            GCNetwork.sendToServer(new ClearSpellSlotMessage(slot));
-            return;
-        }
-
-        GCNetwork.sendToServer(new SetSlotSpellMessage(slot, entry.spell));
-        list.setSelected(null);
-    }
     @Override
     public void render(PoseStack pPoseStack, int pMouseX, int pMouseY, float pPartialTick) {
         this.renderBackground(pPoseStack);
@@ -102,7 +88,7 @@ public class SpellSelectionScreen extends Screen {
     public void renderBackground(PoseStack pPoseStack) {
         super.renderBackground(pPoseStack);
         RenderSystem.setShaderTexture(0, SELECTION_ICONS);
-        this.blit(pPoseStack, width / 4, (height - 96)/ 2, 0, 0, 24, 96);
+        this.blit(pPoseStack, 0, height - 24, 0, 0, 128, 24);
     }
 
     @Override

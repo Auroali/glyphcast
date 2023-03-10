@@ -6,6 +6,8 @@ import com.auroali.glyphcast.common.registry.GCCapabilities;
 import com.auroali.glyphcast.common.registry.GCNetwork;
 import com.auroali.glyphcast.common.spells.Spell;
 import com.auroali.glyphcast.common.spells.SpellSlot;
+import com.auroali.glyphcast.common.spells.TickingSpell;
+import com.auroali.glyphcast.common.spells.TickingSpellData;
 import com.auroali.glyphcast.common.spells.glyph.Glyph;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -17,15 +19,13 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.common.util.LazyOptional;
 
 import javax.annotation.Nullable;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public class SpellUser implements ISpellUser {
     int glyphMask;
     Set<Spell> discoveredSpells;
     List<SpellSlot> slots;
+    List<TickingSpellData> tickingSpells;
     int selectedSlot;
 
     // The player this capability is attached to
@@ -39,7 +39,8 @@ public class SpellUser implements ISpellUser {
 
     public SpellUser(Player player) {
         this.discoveredSpells = new HashSet<>();
-        this.slots = SpellSlot.makeSlots(4);
+        this.slots = SpellSlot.makeSlots(9);
+        this.tickingSpells = new ArrayList<>();
         this.player = player;
     }
 
@@ -100,6 +101,16 @@ public class SpellUser implements ISpellUser {
     @Override
     public List<SpellSlot> getSlots() {
         return Collections.unmodifiableList(slots);
+    }
+
+    @Override
+    public void addTickingSpell(TickingSpell spell, CompoundTag tag) {
+        tickingSpells.add(new TickingSpellData(spell, tag));
+    }
+
+    @Override
+    public List<TickingSpellData> getTickingSpells() {
+        return tickingSpells;
     }
 
     @Override

@@ -14,7 +14,7 @@ public class SpellSlotButton extends Button {
     public final int slot;
 
     public SpellSlotButton(int slot, ISpellUser user, SpellListWidget list, int pX, int pY, OnPress pOnPress) {
-        super(pX, pY, 16, 16, Component.empty(), pOnPress);
+        super(pX, pY, 4, 4, Component.empty(), pOnPress);
         this.user = user;
         this.list = list;
         this.slot = slot;
@@ -25,14 +25,10 @@ public class SpellSlotButton extends Button {
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
         RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f);
         RenderSystem.setShaderTexture(0, SpellSelectionScreen.SELECTION_ICONS);
-        this.blit(pPoseStack, x, y, 24, shouldShowPrompt(pMouseX, pMouseY) ? 16 : getIcon(), 16, 16);
+        this.blit(pPoseStack, x, y, getIcon(), 24, 4, 4);
     }
 
     int getIcon() {
-        return user.getSlots().get(slot).isEmpty() ? 0 : 32;
-    }
-
-    boolean shouldShowPrompt(int mouseX, int mouseY) {
-        return isMouseOver(mouseX, mouseY) && list.getSelected() != null;
+        return user.getSlots().get(slot).isEmpty() ? 4 : 0;
     }
 }

@@ -13,14 +13,16 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.resources.ResourceLocation;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class GlyphClientTooltipComponent implements ClientTooltipComponent {
-    final List<Glyph> glyphs;
+    final List<List<Glyph>> glyphs;
 
     public static final ResourceLocation BACKGROUND = new ResourceLocation(GlyphCast.MODID, "textures/gui/tooltip/glyph_tooltip_bg.png");
     public GlyphClientTooltipComponent(GlyphSequence sequence) {
-        this.glyphs = sequence.asList();
+        this.glyphs = new ArrayList<>();
+        sequence.getRings().forEach(ring -> glyphs.add(ring.asList()));
     }
 
     @Override

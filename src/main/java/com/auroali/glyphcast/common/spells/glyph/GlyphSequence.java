@@ -3,55 +3,36 @@ package com.auroali.glyphcast.common.spells.glyph;
 import com.auroali.glyphcast.GlyphCast;
 import com.auroali.glyphcast.common.spells.Spell;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.IntTag;
 import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.ShortTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.FriendlyByteBuf;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
 
 /**
- * A sequence of glyphs that may represent a spell.
- * This automatically sorts all glyphs other than the base glyph,
- * so (assuming the first is the base glyph) <code>[FIRE, ICE, ICE, EARTH, FIRE]</code>
- * will become <code>[FIRE, FIRE, ICE, ICE, EARTH]</code>. This is to make matching with
- * spells easier, as the player only has to get the amount of each glyph right, not
- * the order.
- *
+ * @see Ring
  * @see com.auroali.glyphcast.common.spells.glyph.Glyph
  * @author Auroali
  */
 public class GlyphSequence {
 
     public static final GlyphSequence EMPTY = new GlyphSequence();
-    private final List<Glyph> glyphList;
+    private final List<Ring> glyphList;
 
     private GlyphSequence() {
         this.glyphList = List.of();
     }
 
-    /**
-     * Creates a new GlyphSequence
-     * @param base the base glyph of the sequence, will be at index 0
-     * @param glyphs the extra glyphs in the sequence, will be sorted
-     */
-    public GlyphSequence(Glyph base, Glyph... glyphs) {
-        glyphList = new ArrayList<>();
-        glyphList.addAll(Arrays.stream(glyphs).sorted().toList());
-        glyphList.add(0, base);
+    public GlyphSequence(List<Ring> ringList) {
+        this.glyphList = ringList;
     }
 
-    public GlyphSequence(Glyph base, List<Glyph> glyphs) {
-        glyphList = glyphs;
-        glyphList.add(0, base);
-    }
-
-    /**
-     * Creates a glyph sequence from a list of glyphs, assumes index 0 is the base glyph
-     * @param glyphs the list of glyphs
-     */
-    public GlyphSequence(List<Glyph> glyphs) {
-        this(glyphs.remove(0), new ArrayList<>(glyphs.stream().sorted().toList()));
+    public GlyphSequence(Ring... rings) {
+        this(Arrays.stream(rings).toList());
     }
 
     /**
@@ -64,25 +45,31 @@ public class GlyphSequence {
                 .findAny();
     }
 
+    public List<Ring> getRings() {
+        return glyphList;
+    }
     /**
      * Returns a list containing all the glyphs in the sequence
      * @return an immutable list holding the glyphs
      */
     public List<Glyph> asList() {
-        return Collections.unmodifiableList(glyphList);
+        return Ring.mergeRings(glyphList);
     }
 
     public void encode(FriendlyByteBuf buf) {
         buf.writeInt(glyphList.size());
-        glyphList.stream().map(Enum::ordinal).forEach(buf::writeByte);
+        glyphList.forEach(ring -> ring.encode(buf));
     }
 
     public CompoundTag serialize() {
         CompoundTag tag = new CompoundTag();
-        tag.putShort("base", (byte) glyphList.get(0).ordinal());
-        ListTag list = new ListTag();
-        glyphList.stream().skip(1).forEach(glyph -> list.add(ShortTag.valueOf((short) glyph.ordinal())));
-        tag.put("glyphs", list);
+        ListTag rings = new ListTag();
+        glyphList.forEach(ring -> {
+            ListTag glyphs = new ListTag();
+            ring.glyphs.forEach(glyph -> glyphs.add(IntTag.valueOf(glyph.ordinal())));
+            rings.add(glyphs);
+        });
+        tag.put("Rings", rings);
         return tag;
     }
 
@@ -92,12 +79,12 @@ public class GlyphSequence {
      * @return the resulting sequence
      */
     public static GlyphSequence fromNetwork(FriendlyByteBuf buf) {
-        int len = buf.readInt();
-        List<Glyph> glyphs = new ArrayList<>();
-        for(int i = 0; i < len; i++) {
-            glyphs.add(Glyph.values()[buf.readByte()]);
+        int numRings = buf.readInt();
+        List<Ring> rings = new ArrayList<>();
+        for(int i = 0; i < numRings; i++) {
+            rings.add(Ring.decode(buf));
         }
-        return new GlyphSequence(glyphs);
+        return new GlyphSequence(rings);
     }
 
     /**
@@ -106,18 +93,17 @@ public class GlyphSequence {
      * @return the resulting sequence
      */
     public static GlyphSequence fromTag(CompoundTag tag) {
-        // We store the base and extra glyphs seperately,
-        // so that ordering is preserved
-        int baseGlyph = tag.getShort("base");
-        ListTag list = tag.getList("glyphs", Tag.TAG_SHORT);
-
-        Glyph base = Glyph.values()[baseGlyph];
-        List<Glyph> glyphs = new ArrayList<>();
-        for(int i = 0; i < list.size(); i++) {
-            glyphs.add(Glyph.values()[list.getShort(i)]);
+        ListTag rings = tag.getList("Rings", Tag.TAG_LIST);
+        List<Ring> ringsList = new ArrayList<>();
+        for(int i = 0; i < rings.size(); i++) {
+            ListTag glyphs = rings.getList(i);
+            List<Glyph> ringSequence = new ArrayList<>();
+            for(int j = 0; j < glyphs.size(); j++) {
+                ringSequence.add(Glyph.values()[glyphs.getInt(j)]);
+            }
+            ringsList.add(Ring.of(ringSequence));
         }
-
-        return new GlyphSequence(base, glyphs);
+        return new GlyphSequence(ringsList);
     }
 
     @Override

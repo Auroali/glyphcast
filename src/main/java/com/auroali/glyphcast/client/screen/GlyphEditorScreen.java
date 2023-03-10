@@ -3,11 +3,13 @@ package com.auroali.glyphcast.client.screen;
 import com.auroali.glyphcast.GlyphCast;
 import com.auroali.glyphcast.client.render.GlyphRenderer;
 import com.auroali.glyphcast.client.screen.widgets.AddGlyphButton;
+import com.auroali.glyphcast.client.screen.widgets.TextureButton;
 import com.auroali.glyphcast.common.capabilities.SpellUser;
 import com.auroali.glyphcast.common.network.server.WriteParchmentMessage;
 import com.auroali.glyphcast.common.registry.GCNetwork;
 import com.auroali.glyphcast.common.spells.glyph.Glyph;
 import com.auroali.glyphcast.common.spells.glyph.GlyphSequence;
+import com.auroali.glyphcast.common.spells.glyph.Ring;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.GameNarrator;
@@ -34,10 +36,11 @@ public class GlyphEditorScreen extends Screen {
     }
 
     final int slot;
-    final List<Glyph> glyphs = new ArrayList<>();
+    final List<List<Glyph>> glyphs = new ArrayList<>();
     public GlyphEditorScreen(int slot) {
         super(GameNarrator.NO_TITLE);
         this.slot = slot;
+        this.glyphs.add(new ArrayList<>());
     }
 
     @Override
@@ -46,6 +49,7 @@ public class GlyphEditorScreen extends Screen {
         int centerY = height / 2;
         int topLeftX = centerX - 90;
         int topLeftY = centerY - 78;
+        int bottomRightX = centerX + 74;
         int bottomLeftY = centerY + 62;
 
         SpellUser.get(Minecraft.getInstance().player).ifPresent(user -> {
@@ -58,18 +62,36 @@ public class GlyphEditorScreen extends Screen {
             addRenderableWidget(ice);
             addRenderableWidget(earth);
         });
+
+        Button addRing = new TextureButton(GlyphRenderer.GLYPHS, bottomRightX, bottomLeftY, 16, 16, 0, 48, (b) -> addRing());
         Button save = new Button(centerX - 104, centerY + 92, 100, 20, SAVE_LABEL, (b) -> saveGlyphSequence());
         Button exit = new Button(centerX + 4, centerY + 92, 100, 20, CLOSE_LABEL, (b) -> Minecraft.getInstance().setScreen(null));
         addRenderableWidget(save);
         addRenderableWidget(exit);
+        addRenderableWidget(addRing);
     }
 
     void addGlyph(Glyph glyph) {
-        if(glyphs.size() >= 18)
+        if(glyphs.size() == 0 || glyphs.get(glyphs.size() - 1).size() >= getMaxPerRing())
             return;
 
-        glyphs.add(glyph);
+        glyphs.get(glyphs.size() - 1).add(glyph);
+    }
 
+    void addRing() {
+        if(glyphs.size() >= 3)
+            return;
+
+        glyphs.add(new ArrayList<>());
+    }
+
+    int getMaxPerRing() {
+        return switch (glyphs.size()) {
+            case 1 -> 1;
+            case 2 -> 6;
+            case 3 -> 11;
+            default -> 0;
+        };
     }
     @Override
     public void render(PoseStack pPoseStack, int pMouseX, int pMouseY, float pPartialTick) {
@@ -93,7 +115,9 @@ public class GlyphEditorScreen extends Screen {
     void saveGlyphSequence() {
         if(glyphs.size() == 0)
             return;
-        GlyphSequence sequence = new GlyphSequence(glyphs);
+        List<Ring> rings = new ArrayList<>();
+        glyphs.forEach(r -> rings.add(Ring.of(r)));
+        GlyphSequence sequence = new GlyphSequence(rings);
         GCNetwork.sendToServer(new WriteParchmentMessage(slot, sequence));
         Minecraft.getInstance().setScreen(null);
     }

@@ -3,6 +3,7 @@ package com.auroali.glyphcast.common.spells;
 import com.auroali.glyphcast.common.entities.FloatingLight;
 import com.auroali.glyphcast.common.spells.glyph.Glyph;
 import com.auroali.glyphcast.common.spells.glyph.GlyphSequence;
+import com.auroali.glyphcast.common.spells.glyph.Ring;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
@@ -10,7 +11,7 @@ import net.minecraft.world.phys.AABB;
 
 public class LightSpell extends Spell {
     public LightSpell() {
-        super(new GlyphSequence(Glyph.LIGHT));
+        super(new GlyphSequence(Ring.of(Glyph.LIGHT)));
     }
 
     @Override
