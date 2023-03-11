@@ -37,6 +37,9 @@ public class SetSlotSpellMessage extends NetworkMessage {
                 return;
 
             SpellUser.get(ctx.get().getSender()).ifPresent(user -> {
+                // The client has sent an undiscovered spell, so we don't set it
+                if(!ctx.get().getSender().isCreative() && !user.hasDiscoveredSpell(spell))
+                    return;
                 user.setSpellForSlot(slot, spell);
             });
         });

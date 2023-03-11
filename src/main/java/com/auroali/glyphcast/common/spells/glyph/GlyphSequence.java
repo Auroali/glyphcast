@@ -14,7 +14,8 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * @see Ring
+ * A sequence of glyphs split into rings that represents a spell
+ * @see com.auroali.glyphcast.common.spells.glyph.Ring
  * @see com.auroali.glyphcast.common.spells.glyph.Glyph
  * @author Auroali
  */
@@ -22,9 +23,11 @@ public class GlyphSequence {
 
     public static final GlyphSequence EMPTY = new GlyphSequence();
     private final List<Ring> glyphList;
+    private Spell cachedSpell;
 
     private GlyphSequence() {
         this.glyphList = List.of();
+        this.findSpell().ifPresent(s -> this.cachedSpell = s);
     }
 
     public GlyphSequence(List<Ring> ringList) {
@@ -40,9 +43,14 @@ public class GlyphSequence {
      * @return an optional containing the spell, if it exists
      */
     public Optional<Spell> findSpell() {
-        return GlyphCast.SPELL_REGISTRY.get().getValues().stream()
+        if(cachedSpell != null)
+            return Optional.of(cachedSpell);
+
+        Optional<Spell> spellOpt = GlyphCast.SPELL_REGISTRY.get().getValues().stream()
                 .filter(spell -> spell.isSequence(this))
                 .findAny();
+        spellOpt.ifPresent(s -> this.cachedSpell = s);
+        return spellOpt;
     }
 
     public List<Ring> getRings() {
@@ -95,9 +103,11 @@ public class GlyphSequence {
     public static GlyphSequence fromTag(CompoundTag tag) {
         ListTag rings = tag.getList("Rings", Tag.TAG_LIST);
         List<Ring> ringsList = new ArrayList<>();
+        // Read each ring
         for(int i = 0; i < rings.size(); i++) {
             ListTag glyphs = rings.getList(i);
             List<Glyph> ringSequence = new ArrayList<>();
+            // Read all the glyphs in this ring
             for(int j = 0; j < glyphs.size(); j++) {
                 ringSequence.add(Glyph.values()[glyphs.getInt(j)]);
             }

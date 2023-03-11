@@ -81,7 +81,7 @@ public class SpellUser implements ISpellUser {
     @Override
     public void selectSpellSlot(int slot) {
         if(slot >= slots.size()) {
-            GlyphCast.LOGGER.error("Attempted to select spell slot index {} when max is {}", slot, slots.size() - 1);
+            GlyphCast.LOGGER.error("Attempted to select spell slot index {} when size is {}", slot, slots.size());
             return;
         }
         selectedSlot = slot;
@@ -90,7 +90,7 @@ public class SpellUser implements ISpellUser {
     @Override
     public void setSpellForSlot(int slot, Spell spell) {
         if(slot >= slots.size()) {
-            GlyphCast.LOGGER.error("Attempted to select spell slot index {} when max is {}", slot, slots.size() - 1);
+            GlyphCast.LOGGER.error("Attempted to select spell slot index {} when size is {}", slot, slots.size());
             return;
         }
 
@@ -177,7 +177,9 @@ public class SpellUser implements ISpellUser {
         glyphMask = nbt.getInt("DiscoveredGlyphs");
     }
 
+    // Syncs current spell user data to the client
     void sync() {
+        // If we aren't on the client, don't do anything
         if(player instanceof ServerPlayer serverPlayer)
             GCNetwork.sendToClient(serverPlayer, new SyncSpellUserDataMessage(this));
     }
