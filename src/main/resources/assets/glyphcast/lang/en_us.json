@@ -28,8 +28,16 @@
   "spell.glyphcast.light": "Light",
   "spell.glyphcast.ice": "Ice",
   "spell.glyphcast.earth": "Earth",
+  "spell.glyphcast.mist": "Mist",
 
-  "__comment7": "Key Mappings",
+  "__comment7": "Spell Descriptions",
+  "spell.glyphcast.fire.desc": "Shoots a stream of fire in the direction the caster is looking",
+  "spell.glyphcast.light.desc": "Conjures a floating light that orbits the caster",
+  "spell.glyphcast.ice.desc": "Freezes blocks in the direction the caster is looking",
+  "spell.glyphcast.earth.desc": "Causes plants the caster is looking at to grow",
+  "spell.glyphcast.mist.desc": "Conjures a thick mist that blocks the view of others",
+
+  "__comment8": "Key Mappings",
   "key.categories.glyphcast": "Glyphcast",
   "key.glyphcast.spells": "Open Spell Selection",
   "key.glyphcast.spells.1": "Select Spell 1",
