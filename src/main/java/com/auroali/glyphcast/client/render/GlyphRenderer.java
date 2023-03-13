@@ -33,7 +33,7 @@ public class GlyphRenderer {
                 RenderSystem.setShaderTexture(0, OUTER_RING);
                 GuiComponent.blit(pPoseStack, x - 88, y - 88, 0, 0, 176, 176, 256, 256);
                 RenderSystem.setShaderTexture(0, GLYPHS);
-                for(int j = 1; j < glyphs.get(i).size(); j++) {
+                for(int j = 0; j < glyphs.get(i).size(); j++) {
                     renderGlyphOnRing(pPoseStack, x, y, glyphs.get(i).get(j), j, glyphs.get(i).size(), 70);
                 }
             }
