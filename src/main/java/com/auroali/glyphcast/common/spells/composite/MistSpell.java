@@ -30,8 +30,8 @@ public class MistSpell extends TickingSpell {
         if(ticks % 10 == 0) {
             BlockPos.betweenClosedStream(bounds).forEach(pos -> {
                 Vec3 particlePos = new Vec3(pos.getX(), pos.getY(), pos.getZ());
-                SpawnParticlesMessage msg = new SpawnParticlesMessage(ParticleTypes.CAMPFIRE_COSY_SMOKE, 2, 4, particlePos, Vec3.ZERO, 0.07);
-                GCNetwork.sendToNear(level, particlePos, 64, msg);
+                SpawnParticlesMessage msg = new SpawnParticlesMessage(ParticleTypes.CAMPFIRE_COSY_SMOKE, 2, 1, particlePos, Vec3.ZERO, 0.04, 0.07);
+                GCNetwork.sendToNear(level, particlePos, 32, msg);
             });
         }
         level.getEntities(player, bounds, e -> e instanceof LivingEntity).forEach(entity -> {

@@ -4,9 +4,17 @@ import com.auroali.glyphcast.GlyphCast;
 import com.auroali.glyphcast.common.spells.glyph.GlyphSequence;
 import net.minecraft.Util;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.projectile.ProjectileUtil;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.EntityHitResult;
+import net.minecraft.world.phys.Vec3;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.function.Predicate;
 
 /**
  * A spell that performs an action,
@@ -52,4 +60,15 @@ public abstract class Spell {
         return this.sequence.equals(sequence);
     }
     public abstract void activate(Level level, Player player);
+    @Nullable
+    protected EntityHitResult clipEntity(Level level, Entity entity, Vec3 startVec, Vec3 direction, Predicate<Entity> filter, double dist) {
+        Vec3 endVec = startVec.add(direction.scale(dist));
+        AABB bounds = new AABB(startVec, endVec).inflate(1);
+        return ProjectileUtil.getEntityHitResult(level, entity, startVec, endVec, bounds, filter, 0.3f);
+    }
+
+    @Nullable
+    protected EntityHitResult clipEntityFromPlayer(Player player, double dist, Predicate<Entity> filter) {
+        return clipEntity(player.level, player, player.getEyePosition(), player.getLookAngle(), filter, dist);
+    }
 }

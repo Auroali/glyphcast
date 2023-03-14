@@ -5,6 +5,7 @@ import com.auroali.glyphcast.common.config.GCClientConfig;
 import com.auroali.glyphcast.common.network.client.ClientPacketHandler;
 import com.auroali.glyphcast.common.network.client.SpawnParticlesMessage;
 import com.auroali.glyphcast.common.registry.GCEntities;
+import com.auroali.glyphcast.common.registry.GCNetwork;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.sounds.SoundEvents;
@@ -48,9 +49,17 @@ public class FireSpellProjectile extends Projectile {
         if(!level.isClientSide)
             igniteBlock();
 
+        handleExtinguish();
+        spawnParticles();
+        handleEntityHit();
+        updatePosition();
+        this.checkInsideBlocks();
+        spawnParticles();
+    }
+
+    private void handleExtinguish() {
         BlockPos blockpos = this.blockPosition();
         BlockState blockstate = this.level.getBlockState(blockpos);
-
         if (!blockstate.isAir()) {
             VoxelShape voxelshape = blockstate.getCollisionShape(this.level, blockpos);
             if (!voxelshape.isEmpty()) {
@@ -64,13 +73,29 @@ public class FireSpellProjectile extends Projectile {
                 }
             }
         }
-
         if (this.isInWaterOrRain() || blockstate.is(Blocks.POWDER_SNOW) || this.isInFluidType((fluidType, height) -> this.canFluidExtinguish(fluidType))) {
             level.playSound(null, this, SoundEvents.FIRE_EXTINGUISH, SoundSource.PLAYERS, 1.0f, 1.0f);
             this.remove(RemovalReason.KILLED);
         }
+    }
 
+    private void updatePosition() {
+        double newX = getX() + this.getDeltaMovement().x;
+        double newY = getY() + this.getDeltaMovement().y;
+        double newZ = getZ() + this.getDeltaMovement().z;
+        this.setPos(newX, newY, newZ);
 
+        setDeltaMovement(getDeltaMovement().scale(0.8f));
+    }
+
+    private void handleEntityHit() {
+        EntityHitResult result = findHitEntity(position(), position().add(getDeltaMovement()));
+        if(result != null && result.getType() == HitResult.Type.ENTITY) {
+            this.onHitEntity(result);
+        }
+    }
+
+    private void spawnParticles() {
         if(level.isClientSide) {
             if(GCClientConfig.CLIENT.fireEmitsLight.get())
                 LightTracker.update(this, 7);
@@ -79,19 +104,6 @@ public class FireSpellProjectile extends Projectile {
             ClientPacketHandler.spawnParticles(new SpawnParticlesMessage(ParticleTypes.SOUL_FIRE_FLAME,0.02, 15, position().add(0, 0.25, 0),getDeltaMovement(), speed));
             ClientPacketHandler.spawnParticles(new SpawnParticlesMessage(ParticleTypes.SMOKE, 0.02, 20, position().add(0, 0.25, 0),getDeltaMovement(), speed));
         }
-
-        EntityHitResult result = findHitEntity(position(), position().add(getDeltaMovement()));
-        if(result != null && result.getType() == HitResult.Type.ENTITY) {
-            this.onHitEntity(result);
-        }
-
-        double newX = getX() + this.getDeltaMovement().x;
-        double newY = getY() + this.getDeltaMovement().y;
-        double newZ = getZ() + this.getDeltaMovement().z;
-        this.setPos(newX, newY, newZ);
-
-        setDeltaMovement(getDeltaMovement().scale(0.8f));
-        this.checkInsideBlocks();
     }
 
     void igniteBlock() {
@@ -117,11 +129,15 @@ public class FireSpellProjectile extends Projectile {
 
     @Override
     protected void onHitEntity(EntityHitResult pResult) {
-        if(ownedBy(pResult.getEntity()))
+        if (ownedBy(pResult.getEntity()))
             return;
-        pResult.getEntity().setSecondsOnFire(4);
+        pResult.getEntity().setSecondsOnFire(2);
         pResult.getEntity().hurt(DamageSource.IN_FIRE, 8);
         this.remove(RemovalReason.KILLED);
+        if (!level.isClientSide) {
+            GCNetwork.sendToNear(level, position(), 32, new SpawnParticlesMessage(ParticleTypes.FLAME, 0.15, 15, position().add(0, 0.25, 0), getDeltaMovement().normalize().scale(-1), 0.05, 0.07));
+            GCNetwork.sendToNear(level, position(), 32, new SpawnParticlesMessage(ParticleTypes.SOUL_FIRE_FLAME, 0.15, 15, position().add(0, 0.25, 0), getDeltaMovement().normalize().scale(-1), 0.05,0.07));
+        }
     }
 
     @Override

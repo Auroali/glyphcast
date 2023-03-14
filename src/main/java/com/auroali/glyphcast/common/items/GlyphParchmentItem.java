@@ -62,7 +62,10 @@ public class GlyphParchmentItem extends Item implements ISpellHolder {
         ItemStack stack = pPlayer.getItemInHand(pUsedHand);
         if(!pLevel.isClientSide) {
             Optional<Spell> spell = getSpell(stack);
-            spell.ifPresent(_spell -> _spell.activate(pLevel, pPlayer));
+            spell.ifPresent(_spell -> {
+                _spell.activate(pLevel, pPlayer);
+                pPlayer.getCooldowns().addCooldown(this, 10);
+            });
 
             if(spell.isPresent() && !pPlayer.isCreative())
                 stack.shrink(1);

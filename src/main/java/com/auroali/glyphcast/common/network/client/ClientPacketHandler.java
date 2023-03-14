@@ -17,7 +17,8 @@ public class ClientPacketHandler {
             double spreadX = rand.nextGaussian() * msg.spread;
             double spreadY = rand.nextGaussian() * msg.spread;
             double spreadZ = rand.nextGaussian() * msg.spread;
-            Vec3 newDir = msg.direction.normalize().add(spreadX, spreadY, spreadZ).normalize().scale(msg.maxSpeed * rand.nextFloat());
+            double speed = Math.max(msg.minSpeed, msg.maxSpeed * rand.nextFloat());
+            Vec3 newDir = msg.direction.normalize().add(spreadX, spreadY, spreadZ).normalize().scale(speed);
             level.addParticle(msg.particle, msg.pos.x, msg.pos.y, msg.pos.z, newDir.x, newDir.y, newDir.z);
         }
     }

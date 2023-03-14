@@ -15,13 +15,13 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.GameNarrator;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.tooltip.TooltipComponent;
 
 import java.util.List;
 import java.util.Optional;
 
+// TODO: Replace with like a wheel or something, just not this
 public class SpellSelectionScreen extends Screen {
     public static final ResourceLocation SELECTION_ICONS = new ResourceLocation(GlyphCast.MODID, "textures/gui/selection_screen.png");
     SpellListWidget list;

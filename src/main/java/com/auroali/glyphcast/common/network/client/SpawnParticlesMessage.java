@@ -20,7 +20,7 @@ public class SpawnParticlesMessage extends NetworkMessage {
     final Vec3 direction;
     final Vec3 pos;
     final double maxSpeed;
-
+    final double minSpeed;
 
     @SuppressWarnings("deprecation")
     public void encode(FriendlyByteBuf buf) {
@@ -28,6 +28,7 @@ public class SpawnParticlesMessage extends NetworkMessage {
         buf.writeInt(count);
         buf.writeDouble(spread);
         buf.writeDouble(maxSpeed);
+        buf.writeDouble(minSpeed);
         buf.writeDouble(direction.x);
         buf.writeDouble(direction.y);
         buf.writeDouble(direction.z);
@@ -43,6 +44,16 @@ public class SpawnParticlesMessage extends NetworkMessage {
         this.spread = spread;
         this.direction = direction;
         this.maxSpeed = speed;
+        this.minSpeed = 0;
+        this.pos = pos;
+    }
+    public SpawnParticlesMessage(ParticleOptions options, double spread, int count, Vec3 pos, Vec3 direction, double minSpeed, double maxSpeed) {
+        particle = options;
+        this.count = count;
+        this.spread = spread;
+        this.direction = direction;
+        this.maxSpeed = maxSpeed;
+        this.minSpeed = minSpeed;
         this.pos = pos;
     }
     @SuppressWarnings("deprecation")
@@ -51,6 +62,7 @@ public class SpawnParticlesMessage extends NetworkMessage {
         count = buf.readInt();
         spread = buf.readDouble();
         maxSpeed = buf.readDouble();
+        minSpeed = buf.readDouble();
         direction = new Vec3(buf.readDouble(), buf.readDouble(), buf.readDouble());
         pos = new Vec3(buf.readDouble(), buf.readDouble(), buf.readDouble());
         particle = readParticle(buf, type);

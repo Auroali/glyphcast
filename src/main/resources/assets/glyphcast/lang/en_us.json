@@ -29,6 +29,7 @@
   "spell.glyphcast.ice": "Ice",
   "spell.glyphcast.earth": "Earth",
   "spell.glyphcast.mist": "Mist",
+  "spell.glyphcast.push": "Push",
 
   "__comment7": "Spell Descriptions",
   "spell.glyphcast.fire.desc": "Shoots a stream of fire in the direction the caster is looking",
@@ -36,6 +37,7 @@
   "spell.glyphcast.ice.desc": "Freezes blocks in the direction the caster is looking",
   "spell.glyphcast.earth.desc": "Causes plants the caster is looking at to grow",
   "spell.glyphcast.mist.desc": "Conjures a thick mist that blocks the view of others",
+  "spell.glyphcast.push.desc": "Pushes either the caster or the entity the caster is looking at back",
 
   "__comment8": "Key Mappings",
   "key.categories.glyphcast": "Glyphcast",

@@ -57,7 +57,7 @@ public class EarthSpell extends Spell {
             double dist = i / 25.0;
             Vec3 particlePosition = basePos.add(dist * Math.sin(i),0,dist * Math.cos(i));
             SpawnParticlesMessage msg = new SpawnParticlesMessage(ParticleTypes.HAPPY_VILLAGER, 0, 3, particlePosition, UP, i / 50.0);
-            GCNetwork.sendToNear(level, basePos, 64, msg);
+            GCNetwork.sendToNear(level, basePos, 16, msg);
         }
     }
     private BlockHitResult getTargetBlock(Level level, Player player) {
