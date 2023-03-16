@@ -119,7 +119,7 @@ public class GlyphEditorScreen extends Screen {
         glyphs.forEach(r -> rings.add(Ring.of(r)));
         GlyphSequence sequence = new GlyphSequence(rings);
         GCNetwork.sendToServer(new WriteParchmentMessage(slot, sequence));
-        Minecraft.getInstance().setScreen(null);
+        onClose();
     }
 
     @Override

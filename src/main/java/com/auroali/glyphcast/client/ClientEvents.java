@@ -35,6 +35,7 @@ public class ClientEvents {
 
     @SubscribeEvent
     public static void registerKeyMappings(RegisterKeyMappingsEvent event) {
+        event.register(GCKeybinds.SPELL_SELECTION);
     }
 
     @SubscribeEvent

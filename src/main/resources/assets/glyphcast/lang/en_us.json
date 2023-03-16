@@ -41,14 +41,5 @@
 
   "__comment8": "Key Mappings",
   "key.categories.glyphcast": "Glyphcast",
-  "key.glyphcast.spells": "Open Spell Selection",
-  "key.glyphcast.spells.1": "Select Spell 1",
-  "key.glyphcast.spells.2": "Select Spell 2",
-  "key.glyphcast.spells.3": "Select Spell 3",
-  "key.glyphcast.spells.4": "Select Spell 4",
-  "key.glyphcast.spells.5": "Select Spell 5",
-  "key.glyphcast.spells.6": "Select Spell 6",
-  "key.glyphcast.spells.7": "Select Spell 7",
-  "key.glyphcast.spells.8": "Select Spell 8",
-  "key.glyphcast.spells.9": "Select Spell 9"
+  "key.glyphcast.spells": "Spell Wheel"
 }
