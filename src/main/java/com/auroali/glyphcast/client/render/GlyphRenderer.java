@@ -38,35 +38,9 @@ public class GlyphRenderer {
                 }
             }
         }
-//        if(glyphs.size() == 0)
-//            return;
-//        drawBaseGlyph(pPoseStack, x, y, glyphs.get(0));
-//
-//        if(glyphs.size() <= 1)
-//            return;
-//
-//        int maxPerRing = Math.min(glyphs.size() - 1, 6);
-//        int offset = 0;
-//        int distance = 35;
-//
-//        GuiComponent.blit(pPoseStack, x - 20, y - 20, 256 - 40, 0, 40, 40, 256, 256);
-//        GuiComponent.blit(pPoseStack, x - 54, y - 54, 256 - 108, 40, 108, 108, 256, 256);
-//
-//        for(int i = 1; i < glyphs.size(); i++) {
-//            renderGlyphOnRing(pPoseStack, x, y, glyphs.get(i), i - offset, maxPerRing, distance);
-//            if((i - offset) % (maxPerRing) == 0) {
-//                offset = i;
-//                maxPerRing = Math.min(maxPerRing + 5, Math.max(glyphs.size() - 1 - offset, 0));
-//                distance += 35;
-//                if(glyphs.size() - 1 - offset > 0) {
-//                    RenderSystem.setShaderTexture(0, OUTER_RING);
-//                    GuiComponent.blit(pPoseStack, x - 88, y - 88, 0, 0, 176, 176, 256, 256);
-//                    RenderSystem.setShaderTexture(0, GLYPHS);
-//                }
-//            }
-//        }
     }
     public static void drawBaseGlyph(PoseStack pPoseStack, int x, int y, Glyph glyph) {
+        RenderSystem.setShaderTexture(0, GLYPHS);
         int texOffsetX = 16;
         int texOffsetY = 16;
         drawGlyphIcon(pPoseStack, glyph, x - texOffsetX, y - texOffsetY);

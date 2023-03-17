@@ -4,6 +4,8 @@ import com.auroali.glyphcast.GlyphCast;
 import com.auroali.glyphcast.common.network.NetworkMessage;
 import com.auroali.glyphcast.common.network.client.SpawnParticlesMessage;
 import com.auroali.glyphcast.common.network.client.SyncSpellUserDataMessage;
+import com.auroali.glyphcast.common.network.server.SelectSpellSlotMessage;
+import com.auroali.glyphcast.common.network.server.SetSlotSpellMessage;
 import com.auroali.glyphcast.common.network.server.WriteParchmentMessage;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
@@ -28,8 +30,8 @@ public class GCNetwork {
         registerPlayToClient(SpawnParticlesMessage.class, SpawnParticlesMessage::new);
         registerPlayToClient(SyncSpellUserDataMessage.class, SyncSpellUserDataMessage::new);
         registerPlayToServer(WriteParchmentMessage.class, WriteParchmentMessage::new);
-        //registerPlayToServer(SetSlotSpellMessage.class, SetSlotSpellMessage::new);
-        //registerPlayToServer(SelectSpellSlotMessage.class, SelectSpellSlotMessage::new);
+        registerPlayToServer(SetSlotSpellMessage.class, SetSlotSpellMessage::new);
+        registerPlayToServer(SelectSpellSlotMessage.class, SelectSpellSlotMessage::new);
         //registerPlayToServer(ClearSpellSlotMessage.class, ClearSpellSlotMessage::new);
     }
 

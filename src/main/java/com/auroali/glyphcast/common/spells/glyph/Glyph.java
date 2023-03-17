@@ -6,8 +6,8 @@ public enum Glyph {
     FIRE(Component.translatable("glyph.glyphcast.fire"), -2536930),
     LIGHT(Component.translatable("glyph.glyphcast.light"), -15327),
     ICE(Component.translatable("glyph.glyphcast.ice"), -13537324),
-    EARTH(Component.translatable("glyph.glyphcast.earth"), -15357153);
-
+    EARTH(Component.translatable("glyph.glyphcast.earth"), -15357153),
+    NONE(Component.empty(), 0);
     final Component component;
     final int color;
 
