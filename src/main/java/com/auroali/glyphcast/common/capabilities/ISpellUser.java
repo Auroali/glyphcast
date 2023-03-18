@@ -88,6 +88,8 @@ public interface ISpellUser extends INBTSerializable<CompoundTag> {
      * @param other a lazy optional containing the other capability
      */
     default void cloneTo(LazyOptional<ISpellUser> other) {
-        other.ifPresent(otherCap -> otherCap.deserializeNBT(this.serializeNBT()));
+        other.ifPresent(otherCap -> {
+            otherCap.deserializeNBT(this.serializeNBT());
+        });
     }
 }

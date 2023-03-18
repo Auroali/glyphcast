@@ -11,6 +11,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 /**
  * Light Engine Mixin to allow dynamic lighting
+ * <br> Based on <a href="https://github.com/infernalstudios/Infernal-Expansion/blob/dde9a0b951bb2de303697e3d58914b3d03c24125/src/main/java/org/infernalstudios/infernalexp/mixin/client/MixinBlockGetter.java">MixinBlockGetter</a>
  * @author Auroali
  */
 @Mixin(BlockLightEngine.class)

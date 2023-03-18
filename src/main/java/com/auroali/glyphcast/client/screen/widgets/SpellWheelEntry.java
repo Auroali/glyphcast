@@ -5,6 +5,7 @@ import com.auroali.glyphcast.client.screen.SpellWheelScreen;
 import com.auroali.glyphcast.common.spells.Spell;
 import com.auroali.glyphcast.common.spells.glyph.Glyph;
 import com.auroali.glyphcast.common.spells.glyph.GlyphSequence;
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.client.gui.components.Widget;
@@ -47,11 +48,13 @@ public class SpellWheelEntry extends GuiComponent implements Widget, GuiEventLis
 
     @Override
     public void updateNarration(NarrationElementOutput pNarrationElementOutput) {
-        pNarrationElementOutput.add(NarratedElementType.HINT, spell.getName());
+        if(spell != null)
+            pNarrationElementOutput.add(NarratedElementType.HINT, spell.getName());
     }
 
     @Override
     public void render(PoseStack pPoseStack, int pMouseX, int pMouseY, float pPartialTick) {
+        RenderSystem.setShaderTexture(0, GlyphRenderer.GLYPHS);
         if(isMouseOver(pMouseX, pMouseY))
             screen.selectedEntry = this;
 
@@ -76,6 +79,6 @@ public class SpellWheelEntry extends GuiComponent implements Widget, GuiEventLis
 
     @Override
     public NarrationPriority narrationPriority() {
-        return NarrationPriority.HOVERED;
+        return spell != null ? NarrationPriority.HOVERED : NarrationPriority.NONE;
     }
 }

@@ -58,8 +58,10 @@ public class GCCapabilities {
     }
 
     @SubscribeEvent
-    public static void clone(PlayerEvent.Clone event) {
+    public static void clonePlayer(final PlayerEvent.Clone event) {
+        event.getOriginal().reviveCaps();
         SpellUser.get(event.getOriginal()).ifPresent(user -> user.cloneTo(SpellUser.get(event.getEntity())));
+        event.getOriginal().invalidateCaps();
     }
 
     /*

@@ -154,8 +154,11 @@ public class SpellUser implements ISpellUser {
         for(int i = 0; i < discoveredSpellsList.size(); i++) {
             ResourceLocation id = new ResourceLocation(discoveredSpellsList.getString(i));
             Spell spell = GlyphCast.SPELL_REGISTRY.get().getValue(id);
-            if(spell != null)
-                discoveredSpells.add(spell);
+            if(spell == null) {
+                GlyphCast.LOGGER.error("Invalid spell id {} encountered while loading discovered spells", id);
+                continue;
+            }
+            discoveredSpells.add(spell);
         }
 
         for(int i = 0; i < spellSlotsList.size(); i++) {
@@ -167,6 +170,7 @@ public class SpellUser implements ISpellUser {
             ResourceLocation id = new ResourceLocation(spellSlotsList.getString(i));
             Spell spell = GlyphCast.SPELL_REGISTRY.get().getValue(id);
             if(spell == null) {
+                GlyphCast.LOGGER.error("Invalid spell id {} encountered while loading spell slots", id);
                 slots.set(i, new SpellSlot(i));
                 continue;
             }
