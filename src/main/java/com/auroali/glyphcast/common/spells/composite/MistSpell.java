@@ -24,6 +24,10 @@ public class MistSpell extends TickingSpell {
 
     @Override
     public boolean tick(Level level, Player player, int ticks, CompoundTag tag) {
+        if(!canDrainEnergy(player, 20))
+            return false;
+
+        drainEnergy(player, 20);
         Vec3 originPos = new Vec3(tag.getDouble("PosX"),tag.getDouble("PosY"), tag.getDouble("PosZ"));
         double radius = tag.getDouble("Radius");
         AABB bounds = new AABB(originPos, originPos).inflate(radius);

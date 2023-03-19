@@ -28,6 +28,6 @@ public class WandOverlay implements IGuiOverlay {
         if(player == null)
             return;
 
-        SpellUser.get(player).ifPresent(user -> user.getSlots().forEach(slot -> renderSlot(poseStack, slot)));
+        SpellUser.get(player).ifPresent(user -> user.getManuallyAssignedSlots().forEach(slot -> renderSlot(poseStack, slot)));
     }
 }

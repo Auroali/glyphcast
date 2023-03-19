@@ -25,9 +25,11 @@ public class WandItem extends Item {
         if(pPlayer.isCrouching() && other.is(GCItems.PARCHMENT.get())) {
             if(pLevel.isClientSide) {
                 ISpellHolder holder = (ISpellHolder) other.getItem();
-                holder.getSpell(other).ifPresent(spell -> {
-                    SpellWheelScreen.openScreen(entry -> GCNetwork.sendToServer(new SetSlotSpellMessage(entry.index, spell)), false, true);
-                });
+                holder.getSpell(other).ifPresent(spell ->
+                    SpellUser.get(pPlayer).ifPresent(user ->
+                        SpellWheelScreen.openScreenWith(user.getManuallyAssignedSlots(), entry -> GCNetwork.sendToServer(new SetSlotSpellMessage(entry.index, spell)), s -> {}, false, true)
+                    )
+                );
             }
             return InteractionResultHolder.sidedSuccess(stack, !pLevel.isClientSide);
         }

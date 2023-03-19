@@ -1,6 +1,7 @@
 package com.auroali.glyphcast.common.spells;
 
 import com.auroali.glyphcast.GlyphCast;
+import com.auroali.glyphcast.common.capabilities.chunk.IChunkEnergy;
 import com.auroali.glyphcast.common.spells.glyph.GlyphSequence;
 import net.minecraft.Util;
 import net.minecraft.network.chat.Component;
@@ -70,5 +71,13 @@ public abstract class Spell {
     @Nullable
     protected EntityHitResult clipEntityFromPlayer(Player player, double dist, Predicate<Entity> filter) {
         return clipEntity(player.level, player, player.getEyePosition(), player.getLookAngle(), filter, dist);
+    }
+
+    protected void drainEnergy(Player player, double amount) {
+        IChunkEnergy.drainAt(player.level, player.chunkPosition(), amount, false);
+    }
+
+    protected boolean canDrainEnergy(Player player, double amount) {
+        return IChunkEnergy.drainAt(player.level, player.chunkPosition(), amount, true) == amount;
     }
 }

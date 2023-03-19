@@ -2,10 +2,13 @@ package com.auroali.glyphcast.common.handlers;
 
 import com.auroali.glyphcast.GlyphCast;
 import com.auroali.glyphcast.common.capabilities.SpellUser;
+import com.auroali.glyphcast.common.capabilities.chunk.IChunkEnergy;
 import com.auroali.glyphcast.common.entities.FloatingLight;
+import com.auroali.glyphcast.common.registry.GCCapabilities;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.level.ChunkPos;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -48,5 +51,16 @@ public class CommonEventHandler {
             data.setTicks(data.getTicks() + 1);
             return flag;
         }));
+
+        for(int x = -5; x <= 5; x++) {
+            for(int z = -5; z <= 5; z++) {
+                ChunkPos pos = event.player.chunkPosition();
+                if(!event.player.level.hasChunk(pos.x + x, pos.z + z))
+                    return;
+
+                event.player.getLevel().getChunk(pos.x + x, pos.z + z).getCapability(GCCapabilities.CHUNK_ENERGY)
+                        .ifPresent(IChunkEnergy::tick);
+            }
+        }
     }
 }

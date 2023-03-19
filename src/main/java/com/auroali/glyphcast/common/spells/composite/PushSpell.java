@@ -20,6 +20,8 @@ public class PushSpell extends Spell {
 
     @Override
     public void activate(Level level, Player player) {
+        if(!canDrainEnergy(player, 25))
+            return;
         if(player.isCrouching())
             useOnSelf(player);
         else

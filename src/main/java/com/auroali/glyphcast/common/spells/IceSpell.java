@@ -29,6 +29,9 @@ public class IceSpell extends Spell{
 
     @Override
     public void activate(Level level, Player player) {
+        if(!canDrainEnergy(player, 10))
+            return;
+        drainEnergy(player, 10);
         if(level instanceof ServerLevel serverLevel) {
             Vec3 eyePos = player.getEyePosition();
             GCNetwork.sendToClient((ServerPlayer) player, new SpawnParticlesMessage(ParticleTypes.SNOWFLAKE, 0.16d, 40, eyePos.add(player.getLookAngle().scale(0.25f)), player.getLookAngle(), 0.5f));

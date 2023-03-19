@@ -39,9 +39,14 @@ public class SpellUser implements ISpellUser {
 
     public SpellUser(Player player) {
         this.discoveredSpells = new HashSet<>();
-        this.slots = SpellSlot.makeSlots(9);
+        this.slots = SpellSlot.makeSlots(18);
         this.tickingSpells = new ArrayList<>();
         this.player = player;
+        this.populateDefaultSpells();
+    }
+
+    void populateDefaultSpells() {
+
     }
 
     @Override
@@ -99,8 +104,13 @@ public class SpellUser implements ISpellUser {
     }
 
     @Override
-    public List<SpellSlot> getSlots() {
-        return Collections.unmodifiableList(slots);
+    public List<SpellSlot> getManuallyAssignedSlots() {
+        return Collections.unmodifiableList(slots.subList(0,9));
+    }
+
+    @Override
+    public List<SpellSlot> getDefaultSlots() {
+        return Collections.unmodifiableList(slots.subList(9, 18));
     }
 
     @Override

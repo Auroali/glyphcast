@@ -58,17 +58,23 @@ public interface ISpellUser extends INBTSerializable<CompoundTag> {
     void selectSpellSlot(int slot);
 
     /**
-     * Sets the spell for a slot
+     * Sets the spell for a modifiable slot
      * @param slot the slot index to set
      * @param spell the spell to set the slot to
      */
     void setSpellForSlot(int slot, @Nullable Spell spell);
 
     /**
-     * Gets all spell slots
-     * @return an unmodifiable list containing all spell slots
+     * Gets spell slots that the player can modify
+     * @return an unmodifiable list containing all modifiable spell slots
      */
-    List<SpellSlot> getSlots();
+    List<SpellSlot> getManuallyAssignedSlots();
+
+    /**
+     * Gets default spell slots
+     * @return an unmodifiable list containing all default spell slots
+     */
+    List<SpellSlot> getDefaultSlots();
 
     /**
      * Adds a ticking spell
@@ -88,8 +94,6 @@ public interface ISpellUser extends INBTSerializable<CompoundTag> {
      * @param other a lazy optional containing the other capability
      */
     default void cloneTo(LazyOptional<ISpellUser> other) {
-        other.ifPresent(otherCap -> {
-            otherCap.deserializeNBT(this.serializeNBT());
-        });
+        other.ifPresent(otherCap -> otherCap.deserializeNBT(this.serializeNBT()));
     }
 }
