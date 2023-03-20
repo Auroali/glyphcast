@@ -4,6 +4,7 @@ import com.auroali.glyphcast.GlyphCast;
 import com.auroali.glyphcast.common.network.client.SyncSpellUserDataMessage;
 import com.auroali.glyphcast.common.registry.GCCapabilities;
 import com.auroali.glyphcast.common.registry.GCNetwork;
+import com.auroali.glyphcast.common.registry.GCSpells;
 import com.auroali.glyphcast.common.spells.Spell;
 import com.auroali.glyphcast.common.spells.SpellSlot;
 import com.auroali.glyphcast.common.spells.TickingSpell;
@@ -46,7 +47,7 @@ public class SpellUser implements ISpellUser {
     }
 
     void populateDefaultSpells() {
-
+        slots.set(9, new SpellSlot(9, GCSpells.WAND_ATTACK.get()));
     }
 
     @Override
@@ -136,20 +137,21 @@ public class SpellUser implements ISpellUser {
         });
 
         ListTag spellSlotsTag = new ListTag();
-        this.slots.forEach(slot -> {
+        for(int i = 0; i < 9; i++) {
+            SpellSlot slot = slots.get(i);
             if(slot.isEmpty()) {
                 spellSlotsTag.add(StringTag.valueOf("empty"));
-                return;
+                continue;
             }
 
             ResourceLocation id = GlyphCast.SPELL_REGISTRY.get().getKey(slot.getSpell());
             if(id == null) {
                 spellSlotsTag.add(StringTag.valueOf("empty"));
-                return;
+                continue;
             }
 
             spellSlotsTag.add(StringTag.valueOf(id.toString()));
-        });
+        }
         tag.putInt("SelectedSlot", selectedSlot);
         tag.put("SpellSlots", spellSlotsTag);
         tag.put("DiscoveredSpells", discoveredSpellsTag);

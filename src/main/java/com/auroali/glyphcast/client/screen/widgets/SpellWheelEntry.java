@@ -20,6 +20,7 @@ public class SpellWheelEntry extends GuiComponent implements Widget, GuiEventLis
     public final int centerY;
     public final int index;
     public final Spell spell;
+    public final int slotIndex;
     private final Glyph glyph;
 
     public final int posX;
@@ -28,11 +29,12 @@ public class SpellWheelEntry extends GuiComponent implements Widget, GuiEventLis
 
     private final SpellWheelScreen screen;
 
-    public SpellWheelEntry(SpellWheelScreen screen, int centerX, int centerY, int index, Spell spell) {
+    public SpellWheelEntry(SpellWheelScreen screen, int centerX, int centerY, int index, int slotIndex, Spell spell) {
         this.screen = screen;
         this.centerX = centerX;
         this.centerY = centerY;
         this.index = index;
+        this.slotIndex = slotIndex;
         this.spell = spell;
 
         double angle = 2*Math.PI * ((double)this.index / 9);

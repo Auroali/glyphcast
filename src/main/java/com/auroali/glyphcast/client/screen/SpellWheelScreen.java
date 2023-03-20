@@ -31,8 +31,9 @@ public class SpellWheelScreen extends Screen {
     final Consumer<SpellWheelScreen> onRightClick;
 
     public static void openCombined() {
-        openWithModifiable(e -> GCNetwork.sendToServer(new SelectSpellSlotMessage(e.index)), true, false);
+        openWithModifiable(e -> GCNetwork.sendToServer(new SelectSpellSlotMessage(e.slotIndex)), true, false);
     }
+
     /**
      * Opens the spell wheel screen
      * @param onClose runs on the selected spell entry when the screen closes
@@ -86,7 +87,7 @@ public class SpellWheelScreen extends Screen {
     protected void init() {
         selectedEntry = null;
         for(int i = 0; i < slots.size(); i++) {
-            SpellWheelEntry entry = new SpellWheelEntry(this, width / 2, height / 2, i, slots.get(i).getSpell());
+            SpellWheelEntry entry = new SpellWheelEntry(this, width / 2, height / 2, i, slots.get(i).getIndex(), slots.get(i).getSpell());
             addRenderableWidget(entry);
         }
     }

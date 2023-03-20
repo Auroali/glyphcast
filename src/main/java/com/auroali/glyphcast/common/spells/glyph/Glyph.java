@@ -7,7 +7,8 @@ public enum Glyph {
     LIGHT(Component.translatable("glyph.glyphcast.light"), -15327),
     ICE(Component.translatable("glyph.glyphcast.ice"), -13537324),
     EARTH(Component.translatable("glyph.glyphcast.earth"), -15357153),
-    NONE(Component.empty(), 0);
+    // Special glyph for wand-only spells, needed for the icon to render properly
+    WAND(Component.empty(), -1);
     final Component component;
     final int color;
 

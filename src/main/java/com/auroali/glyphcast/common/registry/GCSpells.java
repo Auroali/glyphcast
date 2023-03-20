@@ -4,6 +4,7 @@ import com.auroali.glyphcast.GlyphCast;
 import com.auroali.glyphcast.common.spells.*;
 import com.auroali.glyphcast.common.spells.composite.MistSpell;
 import com.auroali.glyphcast.common.spells.composite.PushSpell;
+import com.auroali.glyphcast.common.spells.wand.MagicDamageSpell;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -20,4 +21,5 @@ public class GCSpells {
     public static final RegistryObject<Spell> EARTH_SPELL = SPELLS.register("earth", EarthSpell::new);
     public static final RegistryObject<Spell> MIST = SPELLS.register("mist", MistSpell::new);
     public static final RegistryObject<Spell> PUSH = SPELLS.register("push", PushSpell::new);
+    public static final RegistryObject<Spell> WAND_ATTACK = SPELLS.register("wand_attack", MagicDamageSpell::new);
 }

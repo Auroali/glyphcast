@@ -30,6 +30,7 @@
   "spell.glyphcast.earth": "Earth",
   "spell.glyphcast.mist": "Mist",
   "spell.glyphcast.push": "Push",
+  "spell.glyphcast.wand_attack": "Focused Stream",
 
   "__comment7": "Spell Descriptions",
   "spell.glyphcast.fire.desc": "Shoots a stream of fire in the direction the caster is looking",
@@ -38,8 +39,13 @@
   "spell.glyphcast.earth.desc": "Causes plants the caster is looking at to grow",
   "spell.glyphcast.mist.desc": "Conjures a thick mist that blocks the view of others",
   "spell.glyphcast.push.desc": "Pushes either the caster or the entity the caster is looking at back",
+  "spell.glyphcast.wand_attack.desc": "Focuses magic into a stream to cause damage",
 
   "__comment8": "Key Mappings",
   "key.categories.glyphcast": "Glyphcast",
-  "key.glyphcast.spells": "Spell Wheel"
+  "key.glyphcast.spells": "Spell Wheel",
+
+  "__comment9": "Death Messages",
+  "death.attack.glyphcast.magic": "%s's body was consumed by magic",
+  "death.attack.glyphcast.magic.player": "%s's body was consumed by %s's magic"
 }

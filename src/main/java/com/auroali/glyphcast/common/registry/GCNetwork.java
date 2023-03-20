@@ -61,6 +61,10 @@ public class GCNetwork {
         CHANNEL.send(PacketDistributor.NEAR.with(PacketDistributor.TargetPoint.p(pos.x, pos.y, pos.z, radius, level.dimension())), message);
     }
 
+    public static void sendNearPlayer(ServerPlayer player, double radius, SpawnParticlesMessage msg) {
+        sendToNear(player.level, player.position(), radius, msg);
+    }
+
     public static void sendToServer(Object message) {
         CHANNEL.sendToServer(message);
     }
