@@ -2,6 +2,7 @@ package com.auroali.glyphcast.common.registry;
 
 import com.auroali.glyphcast.GlyphCast;
 import com.auroali.glyphcast.common.entities.FireSpellProjectile;
+import com.auroali.glyphcast.common.entities.Flare;
 import com.auroali.glyphcast.common.entities.FloatingLight;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;
@@ -30,4 +31,13 @@ public class GCEntities {
                     .updateInterval(20)
                     .sized(0.5f, 0.5f)
                     .build(new ResourceLocation(GlyphCast.MODID, "floating_light").toString()));
+
+    public static final RegistryObject<EntityType<Flare>> FLARE = ENTITIES.register("flare", () ->
+            EntityType.Builder.<Flare>of(Flare::new, MobCategory.MISC)
+                    .clientTrackingRange(256)
+                    .fireImmune()
+                    .setShouldReceiveVelocityUpdates(true)
+                    .updateInterval(3)
+                    .sized(0.25f, 0.25f)
+                    .build(new ResourceLocation(GlyphCast.MODID, "flare").toString()));
 }

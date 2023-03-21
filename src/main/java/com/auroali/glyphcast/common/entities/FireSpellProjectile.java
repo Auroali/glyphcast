@@ -42,7 +42,7 @@ public class FireSpellProjectile extends Projectile {
     public void tick() {
         super.tick();
         if(getDeltaMovement().length() <= 0.1d) {
-            this.remove(RemovalReason.KILLED);
+            this.discard();
             return;
         }
 
@@ -67,7 +67,7 @@ public class FireSpellProjectile extends Projectile {
 
                 for(AABB aabb : voxelshape.toAabbs()) {
                     if (aabb.move(blockpos).contains(vec31)) {
-                        this.remove(RemovalReason.KILLED);
+                        this.discard();
                         break;
                     }
                 }
@@ -75,7 +75,7 @@ public class FireSpellProjectile extends Projectile {
         }
         if (this.isInWaterOrRain() || blockstate.is(Blocks.POWDER_SNOW) || this.isInFluidType((fluidType, height) -> this.canFluidExtinguish(fluidType))) {
             level.playSound(null, this, SoundEvents.FIRE_EXTINGUISH, SoundSource.PLAYERS, 1.0f, 1.0f);
-            this.remove(RemovalReason.KILLED);
+            this.discard();
         }
     }
 
@@ -114,7 +114,7 @@ public class FireSpellProjectile extends Projectile {
             // If the block can be lit, we light it
             if(state.hasProperty(BlockStateProperties.LIT) && !state.getValue(BlockStateProperties.LIT)) {
                 level.setBlockAndUpdate(result.getBlockPos(), state.setValue(BlockStateProperties.LIT, true));
-                this.remove(RemovalReason.KILLED);
+                this.discard();
                 return;
             }
             // Otherwise we try to burn it
@@ -133,7 +133,7 @@ public class FireSpellProjectile extends Projectile {
             return;
         pResult.getEntity().setSecondsOnFire(2);
         pResult.getEntity().hurt(DamageSource.IN_FIRE, 8);
-        this.remove(RemovalReason.KILLED);
+        this.discard();
         if (!level.isClientSide) {
             GCNetwork.sendToNear(level, position(), 32, new SpawnParticlesMessage(ParticleTypes.FLAME, 0.15, 15, position().add(0, 0.25, 0), getDeltaMovement().normalize().scale(-1), 0.05, 0.07));
             GCNetwork.sendToNear(level, position(), 32, new SpawnParticlesMessage(ParticleTypes.SOUL_FIRE_FLAME, 0.15, 15, position().add(0, 0.25, 0), getDeltaMovement().normalize().scale(-1), 0.05,0.07));

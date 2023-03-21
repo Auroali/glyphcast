@@ -2,6 +2,7 @@ package com.auroali.glyphcast.common.registry;
 
 import com.auroali.glyphcast.GlyphCast;
 import com.auroali.glyphcast.common.spells.*;
+import com.auroali.glyphcast.common.spells.composite.FlareSpell;
 import com.auroali.glyphcast.common.spells.composite.MistSpell;
 import com.auroali.glyphcast.common.spells.composite.PushSpell;
 import com.auroali.glyphcast.common.spells.wand.MagicDamageSpell;
@@ -22,4 +23,5 @@ public class GCSpells {
     public static final RegistryObject<Spell> MIST = SPELLS.register("mist", MistSpell::new);
     public static final RegistryObject<Spell> PUSH = SPELLS.register("push", PushSpell::new);
     public static final RegistryObject<Spell> WAND_ATTACK = SPELLS.register("wand_attack", MagicDamageSpell::new);
+    public static final RegistryObject<Spell> FLARE = SPELLS.register("flare", FlareSpell::new);
 }

@@ -107,6 +107,7 @@ public class FloatingLight extends Entity implements IEntityAdditionalSpawnData 
         double z = bb.minZ + (random.nextDouble() * (bb.maxZ - bb.minZ));
         level.addParticle(ParticleTypes.END_ROD, x, y, z, 0, 0, 0);
     }
+
     public void setOwner(Entity entity) {
         this.ownerUUID = entity.getUUID();
         this.cachedOwner = entity;

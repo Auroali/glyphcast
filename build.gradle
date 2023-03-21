@@ -13,7 +13,7 @@ plugins {
 
 apply plugin: 'org.spongepowered.mixin'
 
-version = '1.0'
+version = "${mod_version}"
 group = 'com.auroali.glyphcast' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = 'glyphcast'
 
@@ -169,7 +169,7 @@ jar {
                 "Specification-Vendor"    : "glyphcast",
                 "Specification-Version"   : "1", // We are version 1 of ourselves
                 "Implementation-Title"    : project.name,
-                "Implementation-Version"  : project.jar.archiveVersion,
+                "Implementation-Version"  : "${mod_version}",
                 "Implementation-Vendor"   : "glyphcast",
                 "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
         ])
