@@ -53,6 +53,7 @@ public class CommonEventHandler {
             boolean flag = !data.getSpell().tick(event.player.level, event.player, data.getTicks(), data.getTag());
             data.setTicks(data.getTicks() + 1);
             return flag;
+
         }));
 
         for(int x = -5; x <= 5; x++) {

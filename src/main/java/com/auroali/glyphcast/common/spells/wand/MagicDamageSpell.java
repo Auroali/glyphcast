@@ -3,11 +3,11 @@ package com.auroali.glyphcast.common.spells.wand;
 import com.auroali.glyphcast.common.damage.GCDamageSources;
 import com.auroali.glyphcast.common.network.client.SpawnParticlesMessage;
 import com.auroali.glyphcast.common.registry.GCNetwork;
+import com.auroali.glyphcast.common.registry.GCParticles;
 import com.auroali.glyphcast.common.spells.Spell;
 import com.auroali.glyphcast.common.spells.glyph.Glyph;
 import com.auroali.glyphcast.common.spells.glyph.GlyphSequence;
 import com.auroali.glyphcast.common.spells.glyph.Ring;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.ClipContext;
@@ -45,7 +45,7 @@ public class MagicDamageSpell extends Spell {
         for(int i = 2; i < (int) maxDist * 2; i++) {
             Vec3 pos = player.getEyePosition().add(player.getLookAngle().scale(maxDist * (i / (maxDist * 2))));
             // TODO: Custom particles
-            SpawnParticlesMessage msg = new SpawnParticlesMessage(ParticleTypes.SOUL_FIRE_FLAME, 0.02, 8, pos, player.getLookAngle(), 0.01);
+            SpawnParticlesMessage msg = new SpawnParticlesMessage(GCParticles.MAGIC_PULSE.get(), 0.0, 4, pos, player.getLookAngle(), 0.1, 0.2);
             GCNetwork.sendNearPlayer((ServerPlayer) player, 16, msg);
         }
     }

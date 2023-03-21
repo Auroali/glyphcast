@@ -4,11 +4,14 @@
   "item.glyphcast.parchment_of_spell": "Written Parchment of %s",
   "item.glyphcast.blank_parchment": "Blank Parchment",
   "item.glyphcast.wandering_wand": "Wandering Wand",
-
+  "item.glyphcast.raw_crystal": "Raw Crystal",
+  "item.glyphcast.cut_crystal": "Cut Crystal",
   "item.glyphcast.blue_glyph_petal": "Blue Glyph Petal",
 
   "__comment2": "Blocks",
   "block.glyphcast.blue_glyph_flower": "Blue Glyph Flower",
+  "block.glyphcast.crystal_ore": "Crystal Ore",
+  "block.glyphcast.deepslate_crystal_ore": "Deepslate Crystal Ore",
 
   "__comment3": "Item Groups",
   "itemGroup.glyphcast.glyphcast": "Glyphcast",
@@ -31,6 +34,7 @@
   "spell.glyphcast.mist": "Mist",
   "spell.glyphcast.push": "Push",
   "spell.glyphcast.wand_attack": "Focused Stream",
+  "spell.glyphcast.flare": "Flare",
 
   "__comment7": "Spell Descriptions",
   "spell.glyphcast.fire.desc": "Shoots a stream of fire in the direction the caster is looking",
@@ -40,6 +44,7 @@
   "spell.glyphcast.mist.desc": "Conjures a thick mist that blocks the view of others",
   "spell.glyphcast.push.desc": "Pushes either the caster or the entity the caster is looking at back",
   "spell.glyphcast.wand_attack.desc": "Focuses magic into a stream to cause damage",
+  "spell.glyphcast.flare.desc": "Shoots a stream of fire forward that explodes like a firework",
 
   "__comment8": "Key Mappings",
   "key.categories.glyphcast": "Glyphcast",

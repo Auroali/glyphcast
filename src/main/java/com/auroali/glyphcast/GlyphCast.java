@@ -45,6 +45,7 @@ public class GlyphCast
         GCSpells.SPELLS.register(modEventBus);
         GCEntities.ENTITIES.register(modEventBus);
         GCBlocks.BLOCKS.register(modEventBus);
+        GCParticles.PARTICLES.register(modEventBus);
 
         GCNetwork.registerPackets();
 

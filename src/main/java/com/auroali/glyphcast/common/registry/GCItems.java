@@ -19,5 +19,8 @@ public class GCItems {
     public static final RegistryObject<GlyphParchmentItem> PARCHMENT = ITEMS.register("parchment", GlyphParchmentItem::new);
     public static final RegistryObject<Item> BLUE_GLYPH_PETAL = ITEMS.register("blue_glyph_petal", () -> new Item(new Item.Properties().tab(GlyphCast.GLYPHCAST_TAB)));
     public static final RegistryObject<Item> BLUE_GLYPH_FLOWER = ITEMS.register("blue_glyph_flower", () -> new BlockItem(GCBlocks.BLUE_GLYPH_FLOWER.get(), new Item.Properties().tab(GlyphCast.GLYPHCAST_TAB)));
-
+    public static final RegistryObject<Item> RAW_CRYSTAL = ITEMS.register("raw_crystal", () -> new Item(new Item.Properties().tab(GlyphCast.GLYPHCAST_TAB)));
+    public static final RegistryObject<Item> CUT_CRYSTAL = ITEMS.register("cut_crystal", () -> new Item(new Item.Properties().tab(GlyphCast.GLYPHCAST_TAB)));
+    public static final RegistryObject<Item> CRYSTAL_ORE = ITEMS.register("crystal_ore", () -> new BlockItem(GCBlocks.CRYSTAL_ORE.get(), new Item.Properties().tab(GlyphCast.GLYPHCAST_TAB)));
+    public static final RegistryObject<Item> DEEPSLATE_CRYSTAL_ORE = ITEMS.register("deepslate_crystal_ore", () -> new BlockItem(GCBlocks.DEEPSLATE_CRYSTAL_ORE.get(), new Item.Properties().tab(GlyphCast.GLYPHCAST_TAB)));
 }

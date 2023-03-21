@@ -76,9 +76,13 @@ public class SpellWheelEntry extends GuiComponent implements Widget, GuiEventLis
         double upper_bound = angle + 0.34906585039;
         double lower_bound = angle - 0.34906585039;
 
-        return lower_bound < mouseAngle && mouseAngle < upper_bound;
+        return betweenAngle(mouseAngle, lower_bound, upper_bound);
     }
 
+    boolean betweenAngle(double angle, double lower, double upper) {
+
+        return (lower < angle && angle < upper) || (lower + 2*Math.PI < angle && angle < upper + 2*Math.PI);
+    }
     @Override
     public NarrationPriority narrationPriority() {
         return spell != null ? NarrationPriority.HOVERED : NarrationPriority.NONE;
