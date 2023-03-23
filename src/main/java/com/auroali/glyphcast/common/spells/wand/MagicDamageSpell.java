@@ -24,6 +24,10 @@ public class MagicDamageSpell extends Spell {
 
     @Override
     public void activate(Level level, Player player) {
+        if(!canDrainEnergy(player, 25))
+            return;
+
+        drainEnergy(player, 25);
         double maxDist = player.getReachDistance() * 2;
         EntityHitResult result = clipEntityFromPlayer(player, maxDist, e -> !e.isRemoved());
         if(result == null) {
@@ -31,7 +35,7 @@ public class MagicDamageSpell extends Spell {
             return;
         }
 
-        result.getEntity().hurt(GCDamageSources.magic(player), 10);
+        result.getEntity().hurt(GCDamageSources.magic(player), 8);
         double dist = Math.ceil(player.getEyePosition().distanceTo(result.getLocation()));
         spawnEffects(player, dist);
     }
@@ -44,7 +48,6 @@ public class MagicDamageSpell extends Spell {
     void spawnEffects(Player player, double maxDist) {
         for(int i = 2; i < (int) maxDist * 2; i++) {
             Vec3 pos = player.getEyePosition().add(player.getLookAngle().scale(maxDist * (i / (maxDist * 2))));
-            // TODO: Custom particles
             SpawnParticlesMessage msg = new SpawnParticlesMessage(GCParticles.MAGIC_PULSE.get(), 0.0, 4, pos, player.getLookAngle(), 0.1, 0.2);
             GCNetwork.sendNearPlayer((ServerPlayer) player, 16, msg);
         }

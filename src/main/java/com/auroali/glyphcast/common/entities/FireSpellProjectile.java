@@ -2,6 +2,7 @@ package com.auroali.glyphcast.common.entities;
 
 import com.auroali.glyphcast.client.LightTracker;
 import com.auroali.glyphcast.common.config.GCClientConfig;
+import com.auroali.glyphcast.common.damage.GCDamageSources;
 import com.auroali.glyphcast.common.network.client.ClientPacketHandler;
 import com.auroali.glyphcast.common.network.client.SpawnParticlesMessage;
 import com.auroali.glyphcast.common.registry.GCEntities;
@@ -10,7 +11,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.entity.projectile.ProjectileUtil;
@@ -132,7 +132,10 @@ public class FireSpellProjectile extends Projectile {
         if (ownedBy(pResult.getEntity()))
             return;
         pResult.getEntity().setSecondsOnFire(2);
-        pResult.getEntity().hurt(DamageSource.IN_FIRE, 8);
+        if(getOwner() != null)
+            pResult.getEntity().hurt(GCDamageSources.burnIndirect(this, getOwner()), 4);
+        else
+            pResult.getEntity().hurt(GCDamageSources.BURN, 4);
         this.discard();
         if (!level.isClientSide) {
             GCNetwork.sendToNear(level, position(), 32, new SpawnParticlesMessage(ParticleTypes.FLAME, 0.15, 15, position().add(0, 0.25, 0), getDeltaMovement().normalize().scale(-1), 0.05, 0.07));

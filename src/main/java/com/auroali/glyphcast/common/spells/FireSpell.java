@@ -19,6 +19,7 @@ public class FireSpell extends Spell {
         if(!canDrainEnergy(player, 10))
             return;
         drainEnergy(player, 10);
+
         FireSpellProjectile fire = new FireSpellProjectile(level, player.getX() + player.getLookAngle().x, player.getEyeY() - 0.25 + player.getLookAngle().y, player.getZ() + player.getLookAngle().z);
         fire.setOwner(player);
         fire.setDeltaMovement(player.getLookAngle().scale(1.25));

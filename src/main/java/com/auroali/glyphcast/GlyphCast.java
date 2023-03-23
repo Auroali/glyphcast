@@ -62,7 +62,7 @@ public class GlyphCast
 
     private void commonSetup(final FMLCommonSetupEvent event)
     {
-
+        event.enqueueWork(GCOres::init);
     }
     private void clientSetup(final FMLClientSetupEvent event)
     {

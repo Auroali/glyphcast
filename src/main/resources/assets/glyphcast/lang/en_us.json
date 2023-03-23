@@ -51,6 +51,11 @@
   "key.glyphcast.spells": "Spell Wheel",
 
   "__comment9": "Death Messages",
-  "death.attack.glyphcast.magic": "%s's body was consumed by magic",
-  "death.attack.glyphcast.magic.player": "%s's body was consumed by %s's magic"
+  "death.attack.glyphcast.magic": "%1$s's body was consumed by magic",
+  "death.attack.glyphcast.magic.entity": "%1$s's body was consumed by %2$s's magic",
+  "death.attack.glyphcast.magic.entity.item": "%1$s's body was consumed by %2$s's magic",
+  "death.attack.glyphcast.burn.entity": "%1$s was burnt by %2$s",
+  "death.attack.glyphcast.burn": "%1$s was burnt to death",
+  "death.attack.glyphcast.burn.player": "%1$s was burnt to death whilst fighting %2$s",
+  "death.attack.glyphcast.burn.entity.item": "%1$s was burnt by %2$s"
 }

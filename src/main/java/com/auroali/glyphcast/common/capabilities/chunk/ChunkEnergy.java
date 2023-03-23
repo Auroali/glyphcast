@@ -104,8 +104,8 @@ public class ChunkEnergy implements IChunkEnergy {
                 return;
 
             double diff = Math.min(getEnergy() - energy.getEnergy(), energy.getMaxEnergy() / 2);
-            boolean onCooldown = energy instanceof ChunkEnergy e && e.rechargeCooldown > 0;
-            energy.setEnergy(energy.getEnergy() + diff / (onCooldown ? 720 : 360));
+            double cooldown = energy instanceof ChunkEnergy e ? e.rechargeCooldown : 0;
+            energy.setEnergy(energy.getEnergy() + diff / ((1 - cooldown / 80) * 720 + 360));
         });
     }
 }
