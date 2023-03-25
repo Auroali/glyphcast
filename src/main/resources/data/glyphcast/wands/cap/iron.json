@@ -1,6 +1,6 @@
 {
   "items": [
-    "minecraft:iron_nugget"
+    "#forge:nuggets/iron"
   ],
   "efficiency": 0.05
 }

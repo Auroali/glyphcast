@@ -63,7 +63,7 @@ public class DynamicWandModel implements IUnbakedGeometry<DynamicWandModel> {
 
         if (capSprite != null)
         {
-            // Base texture
+            // Wand Cap
             var unbaked = UnbakedGeometryHelper.createUnbakedItemElements(1, capSprite);
             var quads = UnbakedGeometryHelper.bakeElements(unbaked, $ -> capSprite, modelState, modelLocation);
             builder.addQuads(normalRenderTypes, quads);

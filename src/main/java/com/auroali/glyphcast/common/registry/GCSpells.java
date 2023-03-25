@@ -6,6 +6,7 @@ import com.auroali.glyphcast.common.spells.composite.FlareSpell;
 import com.auroali.glyphcast.common.spells.composite.MistSpell;
 import com.auroali.glyphcast.common.spells.composite.PushSpell;
 import com.auroali.glyphcast.common.spells.wand.MagicDamageSpell;
+import com.auroali.glyphcast.common.spells.wand.MagicInfuseSpell;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -24,4 +25,5 @@ public class GCSpells {
     public static final RegistryObject<Spell> PUSH = SPELLS.register("push", PushSpell::new);
     public static final RegistryObject<Spell> WAND_ATTACK = SPELLS.register("wand_attack", MagicDamageSpell::new);
     public static final RegistryObject<Spell> FLARE = SPELLS.register("flare", FlareSpell::new);
+    public static final RegistryObject<Spell> INFUSE = SPELLS.register("infuse", MagicInfuseSpell::new);
 }

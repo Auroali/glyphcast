@@ -1,7 +1,7 @@
 package com.auroali.glyphcast.common.recipes;
 
 import com.auroali.glyphcast.common.registry.GCItems;
-import com.auroali.glyphcast.common.registry.GCRecipes;
+import com.auroali.glyphcast.common.registry.GCRecipesSerializers;
 import com.auroali.glyphcast.common.registry.GCWandCores;
 import com.auroali.glyphcast.common.registry.GCWandMaterials;
 import com.auroali.glyphcast.common.wands.WandCore;
@@ -58,6 +58,6 @@ public class WandCoreRecipe extends CustomRecipe {
 
     @Override
     public RecipeSerializer<?> getSerializer() {
-        return GCRecipes.WAND_CORE.get();
+        return GCRecipesSerializers.WAND_CORE.get();
     }
 }

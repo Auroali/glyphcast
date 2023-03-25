@@ -59,7 +59,8 @@ public class GlyphCast
         GCBlocks.BLOCKS.register(modEventBus);
         GCParticles.PARTICLES.register(modEventBus);
         GCMenus.MENUS.register(modEventBus);
-        GCRecipes.RECIPES.register(modEventBus);
+        GCRecipesSerializers.RECIPES.register(modEventBus);
+        GCRecipeTypes.RECIPE_TYPES.register(modEventBus);
 
         GCNetwork.registerPackets();
 
@@ -84,8 +85,8 @@ public class GlyphCast
 
     @SubscribeEvent
     public void addReloadListeners(AddReloadListenerEvent event) {
-        event.addListener(new WandCoreReloadListener(new Gson(), "wands/wand_core"));
-        event.addListener(new WandMaterialReloadListener(new Gson(), "wands/wand_material"));
-        event.addListener(new WandCapReloadListener(new Gson(), "wands/wand_cap"));
+        event.addListener(new WandCoreReloadListener(new Gson(), "wands/core"));
+        event.addListener(new WandMaterialReloadListener(new Gson(), "wands/material"));
+        event.addListener(new WandCapReloadListener(new Gson(), "wands/cap"));
     }
 }

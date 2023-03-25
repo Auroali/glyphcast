@@ -1,0 +1,10 @@
+{
+  "type": "glyphcast:infuse",
+  "cost": 50,
+  "input": {
+    "item": "minecraft:crafting_table"
+  },
+  "result": {
+    "item": "glyphcast:carving_table"
+  }
+}

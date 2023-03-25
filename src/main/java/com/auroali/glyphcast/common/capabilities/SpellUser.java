@@ -45,6 +45,7 @@ public class SpellUser implements ISpellUser {
 
     void populateDefaultSpells() {
         slots.set(9, new SpellSlot(9, GCSpells.WAND_ATTACK.get()));
+        slots.set(10, new SpellSlot(10, GCSpells.INFUSE.get()));
     }
 
 

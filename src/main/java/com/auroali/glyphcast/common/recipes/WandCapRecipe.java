@@ -1,7 +1,7 @@
 package com.auroali.glyphcast.common.recipes;
 
 import com.auroali.glyphcast.common.registry.GCItems;
-import com.auroali.glyphcast.common.registry.GCRecipes;
+import com.auroali.glyphcast.common.registry.GCRecipesSerializers;
 import com.auroali.glyphcast.common.registry.GCWandCaps;
 import com.auroali.glyphcast.common.wands.WandCap;
 import net.minecraft.resources.ResourceLocation;
@@ -50,6 +50,6 @@ public class WandCapRecipe extends UpgradeRecipe {
 
     @Override
     public RecipeSerializer<?> getSerializer() {
-        return GCRecipes.WAND_CAP.get();
+        return GCRecipesSerializers.WAND_CAP.get();
     }
 }

@@ -14,6 +14,7 @@
   "block.glyphcast.blue_glyph_flower": "Blue Glyph Flower",
   "block.glyphcast.crystal_ore": "Crystal Ore",
   "block.glyphcast.deepslate_crystal_ore": "Deepslate Crystal Ore",
+  "block.glyphcast.carving_table": "Carving Table",
 
   "__comment3": "Item Groups",
   "itemGroup.glyphcast.glyphcast": "Glyphcast",
@@ -38,6 +39,7 @@
   "spell.glyphcast.push": "Push",
   "spell.glyphcast.wand_attack": "Focused Stream",
   "spell.glyphcast.flare": "Flare",
+  "spell.glyphcast.infuse": "Focused Infuse",
 
   "__comment7": "Spell Descriptions",
   "spell.glyphcast.fire.desc": "Shoots a stream of fire in the direction the caster is looking",
@@ -46,8 +48,9 @@
   "spell.glyphcast.earth.desc": "Causes plants the caster is looking at to grow",
   "spell.glyphcast.mist.desc": "Conjures a thick mist that blocks the view of others",
   "spell.glyphcast.push.desc": "Pushes either the caster or the entity the caster is looking at back",
-  "spell.glyphcast.wand_attack.desc": "Focuses magic into a stream to cause damage",
+  "spell.glyphcast.wand_attack.desc": "Focuses magic into a stream shot from the wand",
   "spell.glyphcast.flare.desc": "Shoots a stream of fire forward that explodes like a firework",
+  "spell.glyphcast.infuse.desc": "Infuses magic from the surrounding area into a target",
 
   "__comment8": "Key Mappings",
   "key.categories.glyphcast": "Glyphcast",
@@ -74,6 +77,7 @@
 
   "__comment12": "Wand Caps",
   "wand_cap.glyphcast.iron": "Iron",
+  "wand_cap.glyphcast.gold": "Gold",
 
   "__comment13": "Wand Stats",
   "wand_stat.glyphcast.efficiency": "Efficiency: %d%%",
