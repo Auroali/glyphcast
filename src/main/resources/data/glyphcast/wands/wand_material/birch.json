@@ -1,0 +1,7 @@
+{
+  "items": [
+    "#minecraft:birch_logs"
+  ],
+  "cooldown": 10,
+  "affinityMod": -0.1
+}

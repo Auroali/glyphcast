@@ -3,7 +3,9 @@
   "item.glyphcast.parchment": "Written Parchment",
   "item.glyphcast.parchment_of_spell": "Written Parchment of %s",
   "item.glyphcast.blank_parchment": "Blank Parchment",
-  "item.glyphcast.wandering_wand": "Wandering Wand",
+  "item.glyphcast.wand": "%s Wand",
+  "item.glyphcast.wand_capped": "%1$s-Capped %2$s Wand",
+  "item.glyphcast.wand.tooltip": "Core: %s",
   "item.glyphcast.raw_crystal": "Raw Crystal",
   "item.glyphcast.cut_crystal": "Cut Crystal",
   "item.glyphcast.blue_glyph_petal": "Blue Glyph Petal",
@@ -25,6 +27,7 @@
   "__comment5": "GUI",
   "gui.glyphcast.save_glyphs": "Write Glyphs",
   "gui.glyphcast.select_spell": "Select Spell",
+  "menu.title.glyphcast.carving": "Carving",
 
   "__comment6": "Spells",
   "spell.glyphcast.fire": "Fire",
@@ -57,5 +60,32 @@
   "death.attack.glyphcast.burn.entity": "%1$s was burnt by %2$s",
   "death.attack.glyphcast.burn": "%1$s was burnt to death",
   "death.attack.glyphcast.burn.player": "%1$s was burnt to death whilst fighting %2$s",
-  "death.attack.glyphcast.burn.entity.item": "%1$s was burnt by %2$s"
+  "death.attack.glyphcast.burn.entity.item": "%1$s was burnt by %2$s",
+
+  "__comment10": "Wand Cores",
+  "wand_core.none": "None",
+  "wand_core.glyphcast.petal": "Petal",
+
+  "__comment11": "Wand Materials",
+  "wand_material.glyphcast.wandering": "Wandering",
+  "wand_material.glyphcast.spruce": "Spruce Wood",
+  "wand_material.glyphcast.birch": "Birch Wood",
+  "wand_material.glyphcast.jungle": "Jungle Wood",
+
+  "__comment12": "Wand Caps",
+  "wand_cap.glyphcast.iron": "Iron",
+
+  "__comment13": "Wand Stats",
+  "wand_stat.glyphcast.efficiency": "Efficiency: %d%%",
+  "wand_stat.glyphcast.cooldown": "Cooldown: %ds",
+  "wand_stat.glyphcast.fireAffinity": "Fire Affinity: %d%%",
+  "wand_stat.glyphcast.lightAffinity": "Light Affinity: %d%%",
+  "wand_stat.glyphcast.iceAffinity": "Ice Affinity: %d%%",
+  "wand_stat.glyphcast.earthAffinity": "Earth Affinity: %d%%",
+
+  "__comment14": "Tooltips",
+  "tooltip.glyphcast.more_info": "Hold [%s] for more info",
+
+  "__comment": "System Messages",
+  "msg.glyphcast.wand_material_error": "Could not load invalid material '%s'"
 }

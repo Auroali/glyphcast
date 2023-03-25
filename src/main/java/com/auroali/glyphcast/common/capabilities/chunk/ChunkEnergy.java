@@ -71,19 +71,20 @@ public class ChunkEnergy implements IChunkEnergy {
 
     @Override
     public void tick() {
-        if(rechargeCooldown > 0) {
-            rechargeCooldown--;
-            return;
-        }
-
         for(int x = -1; x <= 1; x++) {
             for(int z = -1; z <= 1; z++) {
                 tryRechargeNearby(pos.x + x, pos.z + z);
             }
         }
 
+
         if(energy >= maxEnergy) {
             energy = maxEnergy;
+            return;
+        }
+
+        if(rechargeCooldown > 0) {
+            rechargeCooldown--;
             return;
         }
 
@@ -106,6 +107,7 @@ public class ChunkEnergy implements IChunkEnergy {
             double diff = Math.min(getEnergy() - energy.getEnergy(), energy.getMaxEnergy() / 2);
             double cooldown = energy instanceof ChunkEnergy e ? e.rechargeCooldown : 0;
             energy.setEnergy(energy.getEnergy() + diff / ((1 - cooldown / 80) * 720 + 360));
+            this.rechargeCooldown = 1;
         });
     }
 }

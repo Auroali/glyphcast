@@ -1,6 +1,7 @@
 package com.auroali.glyphcast.common.registry;
 
 import com.auroali.glyphcast.GlyphCast;
+import com.auroali.glyphcast.common.blocks.CarvingTableBlock;
 import com.auroali.glyphcast.common.blocks.CrystalOreBlock;
 import com.auroali.glyphcast.common.blocks.GlyphFlowerBlock;
 import com.auroali.glyphcast.common.blocks.TrimmedGlyphFlowerBlock;
@@ -17,4 +18,5 @@ public class GCBlocks {
     public static final RegistryObject<Block> TRIMMED_GLYPH_FLOWER = BLOCKS.register("trimmed_glyph_flower", TrimmedGlyphFlowerBlock::new);
     public static final RegistryObject<Block> CRYSTAL_ORE = BLOCKS.register("crystal_ore", () -> new CrystalOreBlock(SoundType.STONE));
     public static final RegistryObject<Block> DEEPSLATE_CRYSTAL_ORE = BLOCKS.register("deepslate_crystal_ore", () -> new CrystalOreBlock(SoundType.DEEPSLATE));
+    public static final RegistryObject<Block> CARVING_TABLE = BLOCKS.register("carving_table", CarvingTableBlock::new);
 }

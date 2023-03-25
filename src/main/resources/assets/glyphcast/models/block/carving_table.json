@@ -1,0 +1,12 @@
+{
+  "parent": "minecraft:block/cube",
+  "textures": {
+    "north": "glyphcast:block/carving_table_side",
+    "south": "glyphcast:block/carving_table_side",
+    "east": "glyphcast:block/carving_table_side",
+    "west": "glyphcast:block/carving_table_side",
+    "up": "glyphcast:block/carving_table_top",
+    "down": "glyphcast:block/carving_table_bottom",
+    "particle": "glyphcast:block/carving_table_side"
+  }
+}

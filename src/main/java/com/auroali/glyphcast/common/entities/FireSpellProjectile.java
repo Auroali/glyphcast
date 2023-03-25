@@ -9,6 +9,9 @@ import com.auroali.glyphcast.common.registry.GCEntities;
 import com.auroali.glyphcast.common.registry.GCNetwork;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.EntityType;
@@ -29,6 +32,9 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import javax.annotation.Nullable;
 
 public class FireSpellProjectile extends Projectile {
+
+    public static final EntityDataAccessor<Float> DAMAGE = SynchedEntityData.defineId(FireSpellProjectile.class, EntityDataSerializers.FLOAT);
+
     public FireSpellProjectile(EntityType<? extends Projectile> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
     }
@@ -145,6 +151,6 @@ public class FireSpellProjectile extends Projectile {
 
     @Override
     protected void defineSynchedData() {
-
+        entityData.define(DAMAGE, 4.0f);
     }
 }

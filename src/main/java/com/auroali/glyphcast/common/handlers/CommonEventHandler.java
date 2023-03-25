@@ -50,7 +50,7 @@ public class CommonEventHandler {
             return;
 
         SpellUser.get(event.player).ifPresent(user -> user.getTickingSpells().removeIf(data -> {
-            boolean flag = !data.getSpell().tick(event.player.level, event.player, data.getTicks(), data.getTag());
+            boolean flag = !data.getSpell().tick(event.player.level, event.player, data.getStats(), data.getTicks(), data.getTag());
             data.setTicks(data.getTicks() + 1);
             return flag;
 

@@ -1,9 +1,6 @@
 package com.auroali.glyphcast.common.capabilities;
 
-import com.auroali.glyphcast.common.spells.Spell;
-import com.auroali.glyphcast.common.spells.SpellSlot;
-import com.auroali.glyphcast.common.spells.TickingSpell;
-import com.auroali.glyphcast.common.spells.TickingSpellData;
+import com.auroali.glyphcast.common.spells.*;
 import com.auroali.glyphcast.common.spells.glyph.Glyph;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraftforge.common.util.INBTSerializable;
@@ -14,13 +11,6 @@ import java.util.List;
 
 public interface ISpellUser extends INBTSerializable<CompoundTag> {
     /**
-     * Checks whether this spell user has discovered a spell
-     * @param spell the spell to check
-     * @return whether the spell has been discovered
-     */
-    boolean hasDiscoveredSpell(Spell spell);
-
-    /**
      * Checks whether this spell user has discovered a glyph
      * @param glyph the glyph to check
      * @return whether the glyph has been discovered
@@ -28,22 +18,10 @@ public interface ISpellUser extends INBTSerializable<CompoundTag> {
     boolean hasDiscoveredGlyph(Glyph glyph);
 
     /**
-     * Marks a spell as discovered
-     * @param spell the spell to mark as discovered
-     */
-    void markSpellDiscovered(Spell spell);
-
-    /**
      * Mark a glyph as discovered
      * @param glyph the glyph to mark as discovered
      */
     void markGlyphDiscovered(Glyph glyph);
-
-    /**
-     * Gets the list of spells this spell user has discovered
-     * @return an unmodifiable list containing all discovered spells
-     */
-    List<Spell> getDiscoveredSpells();
 
     /**
      * Gets the spell from the currently selected spell slot
@@ -81,7 +59,7 @@ public interface ISpellUser extends INBTSerializable<CompoundTag> {
      * @param spell the spell to add
      * @param tag the spell's data
      */
-    void addTickingSpell(TickingSpell spell, CompoundTag tag);
+    void addTickingSpell(TickingSpell spell, SpellStats stats, CompoundTag tag);
 
     /**
      * Gets all active ticking spells data

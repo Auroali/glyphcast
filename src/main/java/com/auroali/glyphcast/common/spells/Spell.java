@@ -57,10 +57,25 @@ public abstract class Spell {
     public GlyphSequence getSequence() {
         return sequence;
     }
+    public abstract double getCost();
     public boolean isSequence(GlyphSequence sequence) {
         return this.sequence.equals(sequence);
     }
-    public abstract void activate(Level level, Player player);
+    public abstract void activate(Level level, Player player, SpellStats stats);
+
+    /**
+     * Wrapper around activate that automatically handles verifying stats and energy costs
+     * @param level the level this spell is activated in
+     * @param player the player who activated this spell
+     * @param stats the stats used to activate this spell
+     */
+    public void tryActivate(Level level, Player player, SpellStats stats) {
+        if(stats.efficiency() <= 0 || stats.averageAffinity() <= 0 || !canDrainEnergy(stats, player, getCost()))
+            return;
+
+        drainEnergy(stats, player, getCost());
+        activate(level, player, stats);
+    }
     @Nullable
     protected EntityHitResult clipEntity(Level level, Entity entity, Vec3 startVec, Vec3 direction, Predicate<Entity> filter, double dist) {
         Vec3 endVec = startVec.add(direction.scale(dist));
@@ -73,11 +88,11 @@ public abstract class Spell {
         return clipEntity(player.level, player, player.getEyePosition(), player.getLookAngle(), filter, dist);
     }
 
-    protected void drainEnergy(Player player, double amount) {
-        IChunkEnergy.drainAt(player.level, player.chunkPosition(), amount, false);
+    protected void drainEnergy(SpellStats stats, Player player, double amount) {
+        IChunkEnergy.drainAt(player.level, player.chunkPosition(), amount / stats.efficiency(), false);
     }
 
-    protected boolean canDrainEnergy(Player player, double amount) {
-        return IChunkEnergy.drainAt(player.level, player.chunkPosition(), amount, true) == amount;
+    protected boolean canDrainEnergy(SpellStats stats, Player player, double amount) {
+        return IChunkEnergy.drainAt(player.level, player.chunkPosition(), amount / stats.efficiency(), true) == amount / stats.efficiency();
     }
 }

@@ -2,6 +2,7 @@ package com.auroali.glyphcast.common.spells.composite;
 
 import com.auroali.glyphcast.common.entities.Flare;
 import com.auroali.glyphcast.common.spells.Spell;
+import com.auroali.glyphcast.common.spells.SpellStats;
 import com.auroali.glyphcast.common.spells.glyph.Glyph;
 import com.auroali.glyphcast.common.spells.glyph.GlyphSequence;
 import com.auroali.glyphcast.common.spells.glyph.Ring;
@@ -16,10 +17,12 @@ public class FlareSpell extends Spell {
     }
 
     @Override
-    public void activate(Level level, Player player) {
-        if(!canDrainEnergy(player, 35))
-            return;
-        drainEnergy(player, 35);
+    public double getCost() {
+        return 20;
+    }
+
+    @Override
+    public void activate(Level level, Player player, SpellStats stats) {
         Flare flare = new Flare(level, player.getX() + player.getLookAngle().x, player.getEyeY() - 0.25 + player.getLookAngle().y, player.getZ() + player.getLookAngle().z);
         flare.setDeltaMovement(player.getLookAngle().scale(1.25));
         level.addFreshEntity(flare);

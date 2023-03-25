@@ -1,14 +1,23 @@
 package com.auroali.glyphcast;
 
+import com.auroali.glyphcast.client.screen.CarvingTableScreen;
 import com.auroali.glyphcast.common.config.GCClientConfig;
 import com.auroali.glyphcast.common.config.GCCommonConfig;
 import com.auroali.glyphcast.common.registry.*;
+import com.auroali.glyphcast.common.registry.listeners.WandCapReloadListener;
+import com.auroali.glyphcast.common.registry.listeners.WandCoreReloadListener;
+import com.auroali.glyphcast.common.registry.listeners.WandMaterialReloadListener;
 import com.auroali.glyphcast.common.spells.Spell;
+import com.google.gson.Gson;
 import com.mojang.logging.LogUtils;
+import net.minecraft.client.gui.screens.MenuScreens;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.AddReloadListenerEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
@@ -33,7 +42,10 @@ public class GlyphCast
     public static final CreativeModeTab GLYPHCAST_TAB = new CreativeModeTab(MODID + ".glyphcast") {
         @Override
         public ItemStack makeIcon() {
-            return new ItemStack(GCItems.WAND.get());
+            ItemStack stack = new ItemStack(GCItems.WAND.get());
+            GCItems.WAND.get().setCap(stack, new ResourceLocation(MODID, "iron"));
+            GCItems.WAND.get().setMaterial(stack, new ResourceLocation(MODID, "wandering"));
+            return stack;
         }
     };
     // Create a Deferred Register to hold Blocks which will all be registered under the "examplemod" namespace
@@ -46,6 +58,8 @@ public class GlyphCast
         GCEntities.ENTITIES.register(modEventBus);
         GCBlocks.BLOCKS.register(modEventBus);
         GCParticles.PARTICLES.register(modEventBus);
+        GCMenus.MENUS.register(modEventBus);
+        GCRecipes.RECIPES.register(modEventBus);
 
         GCNetwork.registerPackets();
 
@@ -64,7 +78,14 @@ public class GlyphCast
     {
         event.enqueueWork(GCOres::init);
     }
-    private void clientSetup(final FMLClientSetupEvent event)
-    {
+    private void clientSetup(final FMLClientSetupEvent event) {
+        event.enqueueWork(() -> MenuScreens.register(GCMenus.CARVING_TABLE.get(), CarvingTableScreen::new));
+    }
+
+    @SubscribeEvent
+    public void addReloadListeners(AddReloadListenerEvent event) {
+        event.addListener(new WandCoreReloadListener(new Gson(), "wands/wand_core"));
+        event.addListener(new WandMaterialReloadListener(new Gson(), "wands/wand_material"));
+        event.addListener(new WandCapReloadListener(new Gson(), "wands/wand_cap"));
     }
 }

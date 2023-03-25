@@ -1,0 +1,7 @@
+{
+  "items": [
+    "#minecraft:spruce_logs"
+  ],
+  "cooldown": 15,
+  "affinityMod": 0.15
+}

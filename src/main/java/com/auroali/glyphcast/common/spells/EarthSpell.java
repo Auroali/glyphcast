@@ -24,11 +24,12 @@ public class EarthSpell extends Spell {
     }
 
     @Override
-    public void activate(Level level, Player player) {
-        if(!canDrainEnergy(player, 10))
-            return;
+    public double getCost() {
+        return 10;
+    }
 
-        drainEnergy(player, 10);
+    @Override
+    public void activate(Level level, Player player, SpellStats stats) {
         var result = getTargetBlock(level, player);
         if(result.getType() != HitResult.Type.BLOCK)
             return;

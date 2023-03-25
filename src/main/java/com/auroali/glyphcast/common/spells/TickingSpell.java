@@ -12,11 +12,11 @@ public abstract class TickingSpell extends Spell {
     }
 
     @Override
-    public void activate(Level level, Player player) {
+    public void activate(Level level, Player player, SpellStats stats) {
         SpellUser.get(player).ifPresent(user -> {
             CompoundTag tag = new CompoundTag();
-            this.onActivate(level, player, tag);
-            user.addTickingSpell(this, tag);
+            this.onActivate(level, player, stats, tag);
+            user.addTickingSpell(this, stats, tag);
         });
     }
 
@@ -27,7 +27,7 @@ public abstract class TickingSpell extends Spell {
      * @param tag the tag containing data for the spell
      * @return whether this spell should continue ticking or not
      */
-    public abstract boolean tick(Level level, Player player, int ticks, CompoundTag tag);
+    public abstract boolean tick(Level level, Player player, SpellStats stats, int ticks, CompoundTag tag);
 
     /**
      * Called when this spell first activates,
@@ -36,6 +36,6 @@ public abstract class TickingSpell extends Spell {
      * @param player the player casting this spell
      * @param tag the tag containing data for the spell
      */
-    public abstract void onActivate(Level level, Player player, CompoundTag tag);
+    public abstract void onActivate(Level level, Player player, SpellStats stats, CompoundTag tag);
 
 }

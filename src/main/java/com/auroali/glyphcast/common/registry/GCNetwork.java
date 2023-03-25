@@ -2,8 +2,7 @@ package com.auroali.glyphcast.common.registry;
 
 import com.auroali.glyphcast.GlyphCast;
 import com.auroali.glyphcast.common.network.NetworkMessage;
-import com.auroali.glyphcast.common.network.client.SpawnParticlesMessage;
-import com.auroali.glyphcast.common.network.client.SyncSpellUserDataMessage;
+import com.auroali.glyphcast.common.network.client.*;
 import com.auroali.glyphcast.common.network.server.SelectSpellSlotMessage;
 import com.auroali.glyphcast.common.network.server.SetSlotSpellMessage;
 import com.auroali.glyphcast.common.network.server.WriteParchmentMessage;
@@ -29,6 +28,9 @@ public class GCNetwork {
     public static void registerPackets() {
         registerPlayToClient(SpawnParticlesMessage.class, SpawnParticlesMessage::new);
         registerPlayToClient(SyncSpellUserDataMessage.class, SyncSpellUserDataMessage::new);
+        registerPlayToClient(SyncWandCoresMessage.class, SyncWandCoresMessage::new);
+        registerPlayToClient(SyncWandMaterialsMessage.class, SyncWandMaterialsMessage::new);
+        registerPlayToClient(SyncWandCapsMessage.class, SyncWandCapsMessage::new);
         registerPlayToServer(WriteParchmentMessage.class, WriteParchmentMessage::new);
         registerPlayToServer(SetSlotSpellMessage.class, SetSlotSpellMessage::new);
         registerPlayToServer(SelectSpellSlotMessage.class, SelectSpellSlotMessage::new);

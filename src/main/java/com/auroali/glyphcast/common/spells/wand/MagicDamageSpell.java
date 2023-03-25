@@ -5,6 +5,7 @@ import com.auroali.glyphcast.common.network.client.SpawnParticlesMessage;
 import com.auroali.glyphcast.common.registry.GCNetwork;
 import com.auroali.glyphcast.common.registry.GCParticles;
 import com.auroali.glyphcast.common.spells.Spell;
+import com.auroali.glyphcast.common.spells.SpellStats;
 import com.auroali.glyphcast.common.spells.glyph.Glyph;
 import com.auroali.glyphcast.common.spells.glyph.GlyphSequence;
 import com.auroali.glyphcast.common.spells.glyph.Ring;
@@ -23,19 +24,20 @@ public class MagicDamageSpell extends Spell {
     }
 
     @Override
-    public void activate(Level level, Player player) {
-        if(!canDrainEnergy(player, 25))
-            return;
+    public double getCost() {
+        return 35;
+    }
 
-        drainEnergy(player, 25);
-        double maxDist = player.getReachDistance() * 2;
+    @Override
+    public void activate(Level level, Player player, SpellStats stats) {
+        double maxDist = player.getReachDistance() * 1.5;
         EntityHitResult result = clipEntityFromPlayer(player, maxDist, e -> !e.isRemoved());
         if(result == null) {
             spawnEffects(player, getDist(player, maxDist));
             return;
         }
 
-        result.getEntity().hurt(GCDamageSources.magic(player), 8);
+        result.getEntity().hurt(GCDamageSources.magic(player), (float)stats.averageAffinity() * 12);
         double dist = Math.ceil(player.getEyePosition().distanceTo(result.getLocation()));
         spawnEffects(player, dist);
     }

@@ -6,6 +6,9 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -21,7 +24,7 @@ import java.util.List;
 import java.util.UUID;
 
 public class FloatingLight extends Entity implements IEntityAdditionalSpawnData {
-
+    public static EntityDataAccessor<Integer> BRIGHTNESS = SynchedEntityData.defineId(FloatingLight.class, EntityDataSerializers.INT);
     UUID ownerUUID;
     Entity cachedOwner;
 
@@ -124,7 +127,7 @@ public class FloatingLight extends Entity implements IEntityAdditionalSpawnData 
     }
     @Override
     protected void defineSynchedData() {
-
+        entityData.define(BRIGHTNESS, 15);
     }
 
     @Override

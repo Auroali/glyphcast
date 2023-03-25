@@ -5,10 +5,7 @@ import com.auroali.glyphcast.common.network.client.SyncSpellUserDataMessage;
 import com.auroali.glyphcast.common.registry.GCCapabilities;
 import com.auroali.glyphcast.common.registry.GCNetwork;
 import com.auroali.glyphcast.common.registry.GCSpells;
-import com.auroali.glyphcast.common.spells.Spell;
-import com.auroali.glyphcast.common.spells.SpellSlot;
-import com.auroali.glyphcast.common.spells.TickingSpell;
-import com.auroali.glyphcast.common.spells.TickingSpellData;
+import com.auroali.glyphcast.common.spells.*;
 import com.auroali.glyphcast.common.spells.glyph.Glyph;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -20,11 +17,12 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.common.util.LazyOptional;
 
 import javax.annotation.Nullable;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 public class SpellUser implements ISpellUser {
     int glyphMask;
-    Set<Spell> discoveredSpells;
     List<SpellSlot> slots;
     List<TickingSpellData> tickingSpells;
     int selectedSlot;
@@ -39,7 +37,6 @@ public class SpellUser implements ISpellUser {
     }
 
     public SpellUser(Player player) {
-        this.discoveredSpells = new HashSet<>();
         this.slots = SpellSlot.makeSlots(18);
         this.tickingSpells = new ArrayList<>();
         this.player = player;
@@ -50,10 +47,6 @@ public class SpellUser implements ISpellUser {
         slots.set(9, new SpellSlot(9, GCSpells.WAND_ATTACK.get()));
     }
 
-    @Override
-    public boolean hasDiscoveredSpell(Spell spell) {
-        return discoveredSpells.contains(spell);
-    }
 
     @Override
     public boolean hasDiscoveredGlyph(Glyph glyph) {
@@ -61,22 +54,9 @@ public class SpellUser implements ISpellUser {
     }
 
     @Override
-    public void markSpellDiscovered(Spell spell) {
-        if(!discoveredSpells.contains(spell)) {
-            discoveredSpells.add(spell);
-            sync();
-        }
-    }
-
-    @Override
     public void markGlyphDiscovered(Glyph glyph) {
         glyphMask |= 0x01 << glyph.ordinal();
         sync();
-    }
-
-    @Override
-    public List<Spell> getDiscoveredSpells() {
-        return discoveredSpells.stream().toList();
     }
 
     @Override
@@ -115,8 +95,8 @@ public class SpellUser implements ISpellUser {
     }
 
     @Override
-    public void addTickingSpell(TickingSpell spell, CompoundTag tag) {
-        tickingSpells.add(new TickingSpellData(spell, tag));
+    public void addTickingSpell(TickingSpell spell, SpellStats stats, CompoundTag tag) {
+        tickingSpells.add(new TickingSpellData(spell, stats, tag));
     }
 
     @Override
@@ -127,14 +107,6 @@ public class SpellUser implements ISpellUser {
     @Override
     public CompoundTag serializeNBT() {
         CompoundTag tag = new CompoundTag();
-        ListTag discoveredSpellsTag = new ListTag();
-        this.discoveredSpells.forEach(spell -> {
-            ResourceLocation id = GlyphCast.SPELL_REGISTRY.get().getKey(spell);
-            if(id == null)
-                return;
-
-            discoveredSpellsTag.add(StringTag.valueOf(id.toString()));
-        });
 
         ListTag spellSlotsTag = new ListTag();
         for(int i = 0; i < 9; i++) {
@@ -154,24 +126,13 @@ public class SpellUser implements ISpellUser {
         }
         tag.putInt("SelectedSlot", selectedSlot);
         tag.put("SpellSlots", spellSlotsTag);
-        tag.put("DiscoveredSpells", discoveredSpellsTag);
         tag.putInt("DiscoveredGlyphs", glyphMask);
         return tag;
     }
 
     @Override
     public void deserializeNBT(CompoundTag nbt) {
-        ListTag discoveredSpellsList = nbt.getList("DiscoveredSpells", Tag.TAG_STRING);
         ListTag spellSlotsList = nbt.getList("SpellSlots", Tag.TAG_STRING);
-        for(int i = 0; i < discoveredSpellsList.size(); i++) {
-            ResourceLocation id = new ResourceLocation(discoveredSpellsList.getString(i));
-            Spell spell = GlyphCast.SPELL_REGISTRY.get().getValue(id);
-            if(spell == null) {
-                GlyphCast.LOGGER.error("Invalid spell id {} encountered while loading discovered spells", id);
-                continue;
-            }
-            discoveredSpells.add(spell);
-        }
 
         for(int i = 0; i < spellSlotsList.size(); i++) {
             if(spellSlotsList.getString(i).equals("empty")) {

@@ -15,10 +15,12 @@ public class LightSpell extends Spell {
     }
 
     @Override
-    public void activate(Level level, Player player) {
-        if(!canDrainEnergy(player, 5))
-            return;
-        drainEnergy(player, 5);
+    public double getCost() {
+        return 5;
+    }
+
+    @Override
+    public void activate(Level level, Player player, SpellStats stats) {
         AABB bounds = player.getBoundingBox().inflate(10.0f);
 
         var entities = level.getEntities(player, bounds, e -> e instanceof FloatingLight && ((FloatingLight) e).getOwner() == player);
@@ -29,6 +31,7 @@ public class LightSpell extends Spell {
 
         FloatingLight entity = new FloatingLight(level, player.getX(), player.getEyeY(), player.getZ());
         entity.setOwner(player);
+        entity.getEntityData().set(FloatingLight.BRIGHTNESS, (int) Math.max(8, Math.min(15, 15 * stats.lightAffinity())));
         level.addFreshEntity(entity);
     }
 }

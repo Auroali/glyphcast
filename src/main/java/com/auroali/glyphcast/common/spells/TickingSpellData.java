@@ -6,9 +6,11 @@ public class TickingSpellData {
     private final TickingSpell spell;
     private int ticks;
     private final CompoundTag tag;
-    public TickingSpellData(TickingSpell spell, CompoundTag tag) {
+    private final SpellStats stats;
+    public TickingSpellData(TickingSpell spell, SpellStats stats, CompoundTag tag) {
         this.spell = spell;
         this.ticks = 0;
+        this.stats = stats;
         this.tag = tag;
     }
 
@@ -26,5 +28,9 @@ public class TickingSpellData {
 
     public TickingSpell getSpell() {
         return spell;
+    }
+
+    public SpellStats getStats() {
+        return stats;
     }
 }

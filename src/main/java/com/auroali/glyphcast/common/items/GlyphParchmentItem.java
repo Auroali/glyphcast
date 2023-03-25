@@ -4,6 +4,7 @@ import com.auroali.glyphcast.GlyphCast;
 import com.auroali.glyphcast.common.capabilities.SpellUser;
 import com.auroali.glyphcast.common.items.tooltip.GlyphTooltipComponent;
 import com.auroali.glyphcast.common.spells.Spell;
+import com.auroali.glyphcast.common.spells.SpellStats;
 import com.auroali.glyphcast.common.spells.glyph.Glyph;
 import com.auroali.glyphcast.common.spells.glyph.GlyphSequence;
 import com.auroali.glyphcast.common.spells.glyph.Ring;
@@ -63,8 +64,8 @@ public class GlyphParchmentItem extends Item implements ISpellHolder {
         if(!pLevel.isClientSide) {
             Optional<Spell> spell = getSpell(stack);
             spell.ifPresent(_spell -> {
-                _spell.activate(pLevel, pPlayer);
-                pPlayer.getCooldowns().addCooldown(this, 10);
+                _spell.tryActivate(pLevel, pPlayer, SpellStats.PARCHMENT);
+                pPlayer.getCooldowns().addCooldown(this, SpellStats.PARCHMENT.cooldown());
             });
 
             if(spell.isPresent() && !pPlayer.isCreative())
@@ -74,7 +75,6 @@ public class GlyphParchmentItem extends Item implements ISpellHolder {
             SpellUser.get(pPlayer).ifPresent(user -> {
                 GlyphSequence sequence = spell.map(Spell::getSequence).orElse(GlyphSequence.EMPTY);
                 sequence.asList().forEach(user::markGlyphDiscovered);
-                spell.ifPresent(user::markSpellDiscovered);
             });
 
             return spell.isPresent() ? InteractionResultHolder.consume(stack) : InteractionResultHolder.pass(stack);

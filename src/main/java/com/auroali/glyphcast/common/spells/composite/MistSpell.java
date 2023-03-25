@@ -2,6 +2,7 @@ package com.auroali.glyphcast.common.spells.composite;
 
 import com.auroali.glyphcast.common.network.client.SpawnParticlesMessage;
 import com.auroali.glyphcast.common.registry.GCNetwork;
+import com.auroali.glyphcast.common.spells.SpellStats;
 import com.auroali.glyphcast.common.spells.TickingSpell;
 import com.auroali.glyphcast.common.spells.glyph.Glyph;
 import com.auroali.glyphcast.common.spells.glyph.GlyphSequence;
@@ -23,11 +24,11 @@ public class MistSpell extends TickingSpell {
     }
 
     @Override
-    public boolean tick(Level level, Player player, int ticks, CompoundTag tag) {
-        if(!canDrainEnergy(player, 20))
+    public boolean tick(Level level, Player player, SpellStats stats, int ticks, CompoundTag tag) {
+        if(!canDrainEnergy(stats, player, 0.25))
             return false;
 
-        drainEnergy(player, 20);
+        drainEnergy(stats, player, 0.25);
         Vec3 originPos = new Vec3(tag.getDouble("PosX"),tag.getDouble("PosY"), tag.getDouble("PosZ"));
         double radius = tag.getDouble("Radius");
         AABB bounds = new AABB(originPos, originPos).inflate(radius);
@@ -42,14 +43,19 @@ public class MistSpell extends TickingSpell {
             LivingEntity living = (LivingEntity) entity;
             living.addEffect(new MobEffectInstance(MobEffects.BLINDNESS, 40, 2, true, false, false));
         });
-        return ticks < 600;
+        return ticks < (600 * Math.max(stats.iceAffinity(), stats.fireAffinity()));
     }
 
     @Override
-    public void onActivate(Level level, Player player, CompoundTag tag) {
+    public void onActivate(Level level, Player player, SpellStats stats, CompoundTag tag) {
         tag.putDouble("PosX", player.getX());
         tag.putDouble("PosY", player.getY());
         tag.putDouble("PosZ", player.getZ());
         tag.putDouble("Radius", 2.5);
+    }
+
+    @Override
+    public double getCost() {
+        return 0;
     }
 }
