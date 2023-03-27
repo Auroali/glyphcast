@@ -1,0 +1,26 @@
+{
+  "display": {
+    "icon": {
+      "item": "glyphcast:parchment"
+    },
+    "title": {
+      "translate": "advancements.glyphcast.root"
+    },
+    "hidden": true,
+    "description": {
+      "translate": "advancements.glyphcast.root.description"
+    }
+  },
+  "criteria": {
+    "use_parchment": {
+      "trigger": "minecraft:using_item",
+      "conditions": {
+        "item": {
+          "items": [
+            "glyphcast:parchment"
+          ]
+        }
+      }
+    }
+  }
+}

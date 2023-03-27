@@ -132,6 +132,7 @@ repositories {
     // flatDir {
     //     dir 'libs'
     // }
+    maven { url 'https://maven.blamejared.com' }
 }
 
 dependencies {
@@ -151,6 +152,8 @@ dependencies {
     // http://www.gradle.org/docs/current/userguide/dependency_management.html
 
     annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
+    compileOnly fg.deobf("vazkii.patchouli:Patchouli:${patchouli_version}:api")
+    runtimeOnly fg.deobf("vazkii.patchouli:Patchouli:${patchouli_version}")
 }
 
 mixin {

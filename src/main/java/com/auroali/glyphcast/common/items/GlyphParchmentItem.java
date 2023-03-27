@@ -8,8 +8,10 @@ import com.auroali.glyphcast.common.spells.SpellStats;
 import com.auroali.glyphcast.common.spells.glyph.Glyph;
 import com.auroali.glyphcast.common.spells.glyph.GlyphSequence;
 import com.auroali.glyphcast.common.spells.glyph.Ring;
+import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
@@ -61,11 +63,15 @@ public class GlyphParchmentItem extends Item implements ISpellHolder {
     @Override
     public InteractionResultHolder<ItemStack> use(Level pLevel, Player pPlayer, InteractionHand pUsedHand) {
         ItemStack stack = pPlayer.getItemInHand(pUsedHand);
+
         if(!pLevel.isClientSide) {
             Optional<Spell> spell = getSpell(stack);
             spell.ifPresent(_spell -> {
                 _spell.tryActivate(pLevel, pPlayer, SpellStats.PARCHMENT);
                 pPlayer.getCooldowns().addCooldown(this, SpellStats.PARCHMENT.cooldown());
+                if (pPlayer instanceof ServerPlayer) {
+                    CriteriaTriggers.USING_ITEM.trigger((ServerPlayer)pPlayer, stack);
+                }
             });
 
             if(spell.isPresent() && !pPlayer.isCreative())

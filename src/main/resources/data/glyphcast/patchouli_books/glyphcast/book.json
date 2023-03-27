@@ -1,0 +1,9 @@
+{
+  "name": "item.glyphcast.guide_book",
+  "landing_text": "guide.glyphcast.landing",
+  "version": 1,
+  "model": "glyphcast:guide",
+  "i18n": true,
+  "show_progress": false,
+  "creative_tab": "glyphcast.glyphcast"
+}
