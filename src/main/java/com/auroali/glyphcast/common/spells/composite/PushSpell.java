@@ -1,7 +1,6 @@
 package com.auroali.glyphcast.common.spells.composite;
 
 import com.auroali.glyphcast.common.spells.Spell;
-import com.auroali.glyphcast.common.spells.SpellStats;
 import com.auroali.glyphcast.common.spells.glyph.Glyph;
 import com.auroali.glyphcast.common.spells.glyph.GlyphSequence;
 import com.auroali.glyphcast.common.spells.glyph.Ring;
@@ -10,7 +9,6 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.Vec3;
 
@@ -25,11 +23,11 @@ public class PushSpell extends Spell {
     }
 
     @Override
-    public void activate(Level level, Player player, SpellStats stats) {
-        if(player.isCrouching())
-            useOnSelf(player);
+    public void activate(IContext ctx) {
+        if(ctx.player().isCrouching())
+            useOnSelf(ctx.player());
         else
-            useOnTargetEntity(player);
+            useOnTargetEntity(ctx.player());
     }
 
     private void useOnSelf(Player player) {

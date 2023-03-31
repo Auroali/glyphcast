@@ -1,12 +1,11 @@
 package com.auroali.glyphcast.common.spells.wand;
 
+import com.auroali.glyphcast.common.network.client.ClientPacketHandler;
 import com.auroali.glyphcast.common.network.client.SpawnParticlesMessage;
 import com.auroali.glyphcast.common.recipes.InfuseRecipe;
-import com.auroali.glyphcast.common.registry.GCNetwork;
 import com.auroali.glyphcast.common.registry.GCParticles;
 import com.auroali.glyphcast.common.registry.GCRecipeTypes;
 import com.auroali.glyphcast.common.spells.Spell;
-import com.auroali.glyphcast.common.spells.SpellStats;
 import com.auroali.glyphcast.common.spells.glyph.Glyph;
 import com.auroali.glyphcast.common.spells.glyph.GlyphSequence;
 import com.auroali.glyphcast.common.spells.glyph.Ring;
@@ -41,34 +40,34 @@ public class MagicInfuseSpell extends Spell {
     }
 
     @Override
-    public void activate(Level level, Player player, SpellStats stats) {
-        var blockStackPair = getTargetedBlock(level, player);
-        var entityPair = getTargetedEntityStack(level, player);
+    public void activate(IContext ctx) {
+        var blockStackPair = getTargetedBlock(ctx.level(), ctx.player());
+        var entityPair = getTargetedEntityStack(ctx.level(), ctx.player());
         if(blockStackPair == null && entityPair == null)
             return;
         ItemStack stack = entityPair != null ? entityPair.first() : blockStackPair.first();
-        List<InfuseRecipe> recipes = level.getServer().getRecipeManager().getAllRecipesFor(GCRecipeTypes.INFUSE_RECIPE.get());
+        List<InfuseRecipe> recipes = ctx.level().getServer().getRecipeManager().getAllRecipesFor(GCRecipeTypes.INFUSE_RECIPE.get());
         recipes.stream().filter(r -> r.input.test(stack)).findFirst().ifPresent(r -> {
-            if (!canDrainEnergy(stats, player, r.cost))
+            if (!canDrainEnergy(ctx.stats(), ctx.player(), r.cost))
                 return;
             ItemStack result = r.result;
             result.setCount(stack.getCount());
-            drainEnergy(stats, player, r.cost);
+            drainEnergy(ctx.stats(), ctx.player(), r.cost);
             if (entityPair != null)
-                transformEntity(level, entityPair, result);
+                transformEntity(ctx, ctx.level(), entityPair, result);
             else
-                transformBlock(level, blockStackPair, result);
+                transformBlock(ctx, ctx.level(), blockStackPair, result);
         });
     }
 
-    void transformBlock(Level level, Pair<ItemStack, BlockPos> pair, ItemStack stack) {
+    void transformBlock(IContext ctx, Level level, Pair<ItemStack, BlockPos> pair, ItemStack stack) {
         BlockState state = Block.byItem(stack.getItem()).defaultBlockState();
         level.setBlockAndUpdate(pair.right(), state);
         float f = EntityType.ITEM.getHeight() / 2.0F;
         double d0 = (double)((float)pair.second().getX() + 0.5F) + Mth.nextDouble(level.random, -0.25D, 0.25D);
         double d1 = (double)((float)pair.second().getY() + 0.5F) + Mth.nextDouble(level.random, -0.25D, 0.25D) - (double)f;
         double d2 = (double)((float)pair.second().getZ() + 0.5F) + Mth.nextDouble(level.random, -0.25D, 0.25D);
-        spawnParticles(level, pair.right());
+        triggerEvent((byte) 0, PositionedContext.with(ctx, new Vec3(pair.right().getX(), pair.right().getY(), pair.right().getZ())));
         if(state.isAir()) {
             ItemEntity entity = new ItemEntity(level, d0, d1, d2, stack);
             entity.setDefaultPickUpDelay();
@@ -77,7 +76,7 @@ public class MagicInfuseSpell extends Spell {
 
     }
 
-    void transformEntity(Level level, Pair<ItemStack, ItemEntity> pair, ItemStack stack) {
+    void transformEntity(IContext ctx, Level level, Pair<ItemStack, ItemEntity> pair, ItemStack stack) {
         float f = EntityType.ITEM.getHeight() / 2.0F;
         double d0 = (double)((float)pair.second().getX()) + Mth.nextDouble(level.random, -0.25D, 0.25D);
         double d1 = (double)((float)pair.second().getY() + 0.5) + Mth.nextDouble(level.random, -0.25D, 0.25D) - (double)f;
@@ -86,7 +85,15 @@ public class MagicInfuseSpell extends Spell {
         entity.setDefaultPickUpDelay();
         pair.second().remove(Entity.RemovalReason.DISCARDED);
         level.addFreshEntity(entity);
-        spawnParticles(level, entity.position());
+        triggerEvent((byte) 1, PositionedContext.with(ctx, entity.position()));
+    }
+
+    @Override
+    public void handleEvent(Byte id, PositionedContext ctx) {
+        if(id == 0)
+            spawnParticles(ctx.level(), new BlockPos(ctx.start()));
+        if(id == 1)
+            spawnParticles(ctx.level(), ctx.start());
     }
 
     void spawnParticles(Level level, BlockPos pos) {
@@ -100,7 +107,7 @@ public class MagicInfuseSpell extends Spell {
                 double d2 = direction$axis == Direction.Axis.Y ? 0.5D + 0.5625D * (double) direction.getStepY() : (double) level.random.nextFloat();
                 double d3 = direction$axis == Direction.Axis.Z ? 0.5D + 0.5625D * (double) direction.getStepZ() : (double) level.random.nextFloat();
                 SpawnParticlesMessage msg = new SpawnParticlesMessage(GCParticles.MAGIC_AMBIENCE.get(), 0, 1, new Vec3((double) pos.getX() + d1, (double) pos.getY() + d2, (double) pos.getZ() + d3), Vec3.ZERO, 0);
-                GCNetwork.sendToNear(level, new Vec3(pos.getX(), pos.getY(), pos.getZ()), 16, msg);
+                ClientPacketHandler.spawnParticles(msg);
             }
         }
     }
@@ -115,7 +122,7 @@ public class MagicInfuseSpell extends Spell {
                 d2 *= 0.35;
                 d3 *= 0.35;
                 SpawnParticlesMessage msg = new SpawnParticlesMessage(GCParticles.MAGIC_AMBIENCE.get(), 0, 1, new Vec3(pos.x + d1, pos.y + d2, pos.z + d3), Vec3.ZERO, 0);
-                GCNetwork.sendToNear(level, pos, 16, msg);
+                ClientPacketHandler.spawnParticles(msg);
             }
         }
     }

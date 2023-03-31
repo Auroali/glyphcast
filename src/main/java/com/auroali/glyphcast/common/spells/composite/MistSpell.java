@@ -2,7 +2,6 @@ package com.auroali.glyphcast.common.spells.composite;
 
 import com.auroali.glyphcast.common.network.client.SpawnParticlesMessage;
 import com.auroali.glyphcast.common.registry.GCNetwork;
-import com.auroali.glyphcast.common.spells.SpellStats;
 import com.auroali.glyphcast.common.spells.TickingSpell;
 import com.auroali.glyphcast.common.spells.glyph.Glyph;
 import com.auroali.glyphcast.common.spells.glyph.GlyphSequence;
@@ -13,8 +12,6 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 
@@ -24,11 +21,11 @@ public class MistSpell extends TickingSpell {
     }
 
     @Override
-    public boolean tick(Level level, Player player, SpellStats stats, int ticks, CompoundTag tag) {
-        if(!canDrainEnergy(stats, player, 0.25))
+    public boolean tick(IContext ctx, int ticks, CompoundTag tag) {
+        if(!canDrainEnergy(ctx.stats(), ctx.player(), 0.25))
             return false;
 
-        drainEnergy(stats, player, 0.25);
+        drainEnergy(ctx.stats(), ctx.player(), 0.25);
         Vec3 originPos = new Vec3(tag.getDouble("PosX"),tag.getDouble("PosY"), tag.getDouble("PosZ"));
         double radius = tag.getDouble("Radius");
         AABB bounds = new AABB(originPos, originPos).inflate(radius);
@@ -36,21 +33,21 @@ public class MistSpell extends TickingSpell {
             BlockPos.betweenClosedStream(bounds).forEach(pos -> {
                 Vec3 particlePos = new Vec3(pos.getX(), pos.getY(), pos.getZ());
                 SpawnParticlesMessage msg = new SpawnParticlesMessage(ParticleTypes.CAMPFIRE_COSY_SMOKE, 2, 1, particlePos, Vec3.ZERO, 0.04, 0.07);
-                GCNetwork.sendToNear(level, particlePos, 32, msg);
+                GCNetwork.sendToNear(ctx.level(), particlePos, 32, msg);
             });
         }
-        level.getEntities(player, bounds, e -> e instanceof LivingEntity).forEach(entity -> {
+        ctx.level().getEntities(ctx.player(), bounds, e -> e instanceof LivingEntity).forEach(entity -> {
             LivingEntity living = (LivingEntity) entity;
             living.addEffect(new MobEffectInstance(MobEffects.BLINDNESS, 40, 2, true, false, false));
         });
-        return ticks < (600 * Math.max(stats.iceAffinity(), stats.fireAffinity()));
+        return ticks < (600 * Math.max(ctx.stats().iceAffinity(), ctx.stats().fireAffinity()));
     }
 
     @Override
-    public void onActivate(Level level, Player player, SpellStats stats, CompoundTag tag) {
-        tag.putDouble("PosX", player.getX());
-        tag.putDouble("PosY", player.getY());
-        tag.putDouble("PosZ", player.getZ());
+    public void onActivate(IContext ctx, CompoundTag tag) {
+        tag.putDouble("PosX", ctx.player().getX());
+        tag.putDouble("PosY", ctx.player().getY());
+        tag.putDouble("PosZ", ctx.player().getZ());
         tag.putDouble("Radius", 2.5);
     }
 

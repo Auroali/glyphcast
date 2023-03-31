@@ -2,8 +2,12 @@ package com.auroali.glyphcast.common.spells;
 
 import com.auroali.glyphcast.GlyphCast;
 import com.auroali.glyphcast.common.capabilities.chunk.IChunkEnergy;
+import com.auroali.glyphcast.common.network.client.SpellEventMessage;
+import com.auroali.glyphcast.common.registry.GCNetwork;
 import com.auroali.glyphcast.common.spells.glyph.GlyphSequence;
 import net.minecraft.Util;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
@@ -61,7 +65,13 @@ public abstract class Spell {
     public boolean isSequence(GlyphSequence sequence) {
         return this.sequence.equals(sequence);
     }
-    public abstract void activate(Level level, Player player, SpellStats stats);
+    public abstract void activate(IContext ctx);
+
+    public void handleEvent(Byte id, PositionedContext ctx) {}
+    public void triggerEvent(Byte id, PositionedContext ctx) {
+        GCNetwork.sendToNear(ctx.level(), ctx.player().position(), 64, new SpellEventMessage(id, this, ctx));
+    }
+
 
     /**
      * Wrapper around activate that automatically handles verifying stats and energy costs
@@ -74,7 +84,7 @@ public abstract class Spell {
             return;
 
         drainEnergy(stats, player, getCost());
-        activate(level, player, stats);
+        activate(new BasicContext(level, player, stats));
     }
     @Nullable
     protected EntityHitResult clipEntity(Level level, Entity entity, Vec3 startVec, Vec3 direction, Predicate<Entity> filter, double dist) {
@@ -94,5 +104,65 @@ public abstract class Spell {
 
     protected boolean canDrainEnergy(SpellStats stats, Player player, double amount) {
         return IChunkEnergy.drainAt(player.level, player.chunkPosition(), amount / stats.efficiency(), true) == amount / stats.efficiency();
+    }
+
+    public interface IContext {
+        Level level();
+        Player player();
+        SpellStats stats();
+        default void toNetwork(FriendlyByteBuf buf) {
+            buf.writeInt(ctxType());
+            buf.writeInt(player().getId());
+            buf.writeDouble(stats().efficiency());
+            buf.writeInt(stats().cooldown());
+            buf.writeDouble(stats().fireAffinity());
+            buf.writeDouble(stats().lightAffinity());
+            buf.writeDouble(stats().iceAffinity());
+            buf.writeDouble(stats().earthAffinity());
+            writeAdditional(buf);
+        }
+
+        int ctxType();
+        void writeAdditional(FriendlyByteBuf buf);
+    }
+
+    public record BasicContext(Level level, Player player, SpellStats stats) implements IContext {
+        @Override
+        public int ctxType() {
+            return 0;
+        }
+
+        @Override
+        public void writeAdditional(FriendlyByteBuf buf) {
+
+        }
+    }
+
+    public record PositionedContext(Level level, Player player, SpellStats stats, Vec3 start, Vec3 end) implements IContext {
+
+        public static PositionedContext with(IContext ctx, Vec3 pos) {
+            return new PositionedContext(ctx.level(), ctx.player(), ctx.stats(), pos, Vec3.ZERO);
+        }
+        public static PositionedContext with(IContext ctx, BlockPos pos) {
+            return new PositionedContext(ctx.level(), ctx.player(), ctx.stats(), new Vec3(pos.getX(), pos.getY(), pos.getZ()), Vec3.ZERO);
+        }
+        public static PositionedContext withRange(IContext ctx, Vec3 start, Vec3 end) {
+            return new PositionedContext(ctx.level(), ctx.player(), ctx.stats(), start, end);
+        }
+
+        @Override
+        public int ctxType() {
+            return 1;
+        }
+
+        @Override
+        public void writeAdditional(FriendlyByteBuf buf) {
+            buf.writeDouble(start.x);
+            buf.writeDouble(start.y);
+            buf.writeDouble(start.z);
+            buf.writeDouble(end.x);
+            buf.writeDouble(end.y);
+            buf.writeDouble(end.z);
+        }
     }
 }

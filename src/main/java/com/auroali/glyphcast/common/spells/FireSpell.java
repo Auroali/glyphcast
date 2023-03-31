@@ -6,8 +6,6 @@ import com.auroali.glyphcast.common.spells.glyph.GlyphSequence;
 import com.auroali.glyphcast.common.spells.glyph.Ring;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.level.Level;
 
 public class FireSpell extends Spell {
     public FireSpell() {
@@ -20,12 +18,12 @@ public class FireSpell extends Spell {
     }
 
     @Override
-    public void activate(Level level, Player player, SpellStats stats) {
-        FireSpellProjectile fire = new FireSpellProjectile(level, player.getX() + player.getLookAngle().x, player.getEyeY() - 0.25 + player.getLookAngle().y, player.getZ() + player.getLookAngle().z);
-        fire.setOwner(player);
-        fire.setDeltaMovement(player.getLookAngle().scale(1.25));
-        fire.getEntityData().set(FireSpellProjectile.DAMAGE, (float)(8 * stats.fireAffinity()));
-        level.addFreshEntity(fire);
-        level.playSound(null, player, SoundEvents.FIRECHARGE_USE, SoundSource.PLAYERS, 1.0f, 1.0f);
+    public void activate(IContext ctx) {
+        FireSpellProjectile fire = new FireSpellProjectile(ctx.level(), ctx.player().getX() + ctx.player().getLookAngle().x, ctx.player().getEyeY() - 0.25 + ctx.player().getLookAngle().y, ctx.player().getZ() + ctx.player().getLookAngle().z);
+        fire.setOwner(ctx.player());
+        fire.setDeltaMovement(ctx.player().getLookAngle().scale(1.25));
+        fire.getEntityData().set(FireSpellProjectile.DAMAGE, (float)(8 * ctx.stats().fireAffinity()));
+        ctx.level().addFreshEntity(fire);
+        ctx.level().playSound(null, ctx.player(), SoundEvents.FIRECHARGE_USE, SoundSource.PLAYERS, 1.0f, 1.0f);
     }
 }

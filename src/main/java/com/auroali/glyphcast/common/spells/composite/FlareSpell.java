@@ -2,14 +2,11 @@ package com.auroali.glyphcast.common.spells.composite;
 
 import com.auroali.glyphcast.common.entities.Flare;
 import com.auroali.glyphcast.common.spells.Spell;
-import com.auroali.glyphcast.common.spells.SpellStats;
 import com.auroali.glyphcast.common.spells.glyph.Glyph;
 import com.auroali.glyphcast.common.spells.glyph.GlyphSequence;
 import com.auroali.glyphcast.common.spells.glyph.Ring;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.level.Level;
 
 public class FlareSpell extends Spell {
     public FlareSpell() {
@@ -22,10 +19,10 @@ public class FlareSpell extends Spell {
     }
 
     @Override
-    public void activate(Level level, Player player, SpellStats stats) {
-        Flare flare = new Flare(level, player.getX() + player.getLookAngle().x, player.getEyeY() - 0.25 + player.getLookAngle().y, player.getZ() + player.getLookAngle().z);
-        flare.setDeltaMovement(player.getLookAngle().scale(1.25));
-        level.addFreshEntity(flare);
-        level.playSound(null, player, SoundEvents.FIRECHARGE_USE, SoundSource.PLAYERS, 1.0f, 1.0f);
+    public void activate(IContext ctx) {
+        Flare flare = new Flare(ctx.level(), ctx.player().getX() + ctx.player().getLookAngle().x, ctx.player().getEyeY() - 0.25 + ctx.player().getLookAngle().y, ctx.player().getZ() + ctx.player().getLookAngle().z);
+        flare.setDeltaMovement(ctx.player().getLookAngle().scale(1.25));
+        ctx.level().addFreshEntity(flare);
+        ctx.level().playSound(null, ctx.player(), SoundEvents.FIRECHARGE_USE, SoundSource.PLAYERS, 1.0f, 1.0f);
     }
 }

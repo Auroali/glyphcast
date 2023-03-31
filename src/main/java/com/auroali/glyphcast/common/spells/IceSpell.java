@@ -11,9 +11,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.ClipContext;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.SupportType;
 import net.minecraft.world.level.block.state.BlockState;
@@ -33,13 +31,13 @@ public class IceSpell extends Spell{
     }
 
     @Override
-    public void activate(Level level, Player player, SpellStats stats) {
-        if(level instanceof ServerLevel serverLevel) {
-            Vec3 eyePos = player.getEyePosition();
-            GCNetwork.sendToClient((ServerPlayer) player, new SpawnParticlesMessage(ParticleTypes.SNOWFLAKE, 0.16d, 40, eyePos.add(player.getLookAngle().scale(0.25f)), player.getLookAngle(), 0.5f));
-            rayTraceBlocks(eyePos.add(player.getLookAngle().cross(new Vec3(0, 1, 0))), player.getLookAngle().scale(6), 12, serverLevel);
-            rayTraceBlocks(eyePos, player.getLookAngle().scale(6), 12, serverLevel);
-            rayTraceBlocks(eyePos.subtract(player.getLookAngle().cross(new Vec3(0, 1, 0))), player.getLookAngle().scale(6), 12, serverLevel);
+    public void activate(IContext ctx) {
+        if(ctx.level() instanceof ServerLevel serverLevel) {
+            Vec3 eyePos = ctx.player().getEyePosition();
+            GCNetwork.sendToClient((ServerPlayer) ctx.player(), new SpawnParticlesMessage(ParticleTypes.SNOWFLAKE, 0.16d, 40, eyePos.add(ctx.player().getLookAngle().scale(0.25f)), ctx.player().getLookAngle(), 0.5f));
+            rayTraceBlocks(eyePos.add(ctx.player().getLookAngle().cross(new Vec3(0, 1, 0))), ctx.player().getLookAngle().scale(6), 12, serverLevel);
+            rayTraceBlocks(eyePos, ctx.player().getLookAngle().scale(6), 12, serverLevel);
+            rayTraceBlocks(eyePos.subtract(ctx.player().getLookAngle().cross(new Vec3(0, 1, 0))), ctx.player().getLookAngle().scale(6), 12, serverLevel);
         }
     }
 

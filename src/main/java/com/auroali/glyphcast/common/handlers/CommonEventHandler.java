@@ -5,6 +5,7 @@ import com.auroali.glyphcast.common.capabilities.SpellUser;
 import com.auroali.glyphcast.common.capabilities.chunk.IChunkEnergy;
 import com.auroali.glyphcast.common.entities.FloatingLight;
 import com.auroali.glyphcast.common.registry.GCCapabilities;
+import com.auroali.glyphcast.common.spells.Spell;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -50,7 +51,7 @@ public class CommonEventHandler {
             return;
 
         SpellUser.get(event.player).ifPresent(user -> user.getTickingSpells().removeIf(data -> {
-            boolean flag = !data.getSpell().tick(event.player.level, event.player, data.getStats(), data.getTicks(), data.getTag());
+            boolean flag = !data.getSpell().tick(new Spell.BasicContext(event.player.level, event.player, data.getStats()), data.getTicks(), data.getTag());
             data.setTicks(data.getTicks() + 1);
             return flag;
 

@@ -1,10 +1,12 @@
 package com.auroali.glyphcast.common.network.client;
 
 import com.auroali.glyphcast.common.capabilities.SpellUser;
+import com.auroali.glyphcast.common.spells.Spell;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.phys.Vec3;
 
 public class ClientPacketHandler {
@@ -25,5 +27,16 @@ public class ClientPacketHandler {
 
     public static void syncSpellUserData(CompoundTag tag) {
         SpellUser.get(Minecraft.getInstance().player).ifPresent(user -> user.deserializeNBT(tag));
+    }
+
+    public static void triggerSpellEvent(Byte id, Spell spell, Spell.IContext ctx) {
+        if(ctx instanceof Spell.PositionedContext posCtx)
+            spell.handleEvent(id, posCtx);
+    }
+
+    public static Entity fromId(int id) {
+        if(Minecraft.getInstance().level == null)
+            return null;
+        return Minecraft.getInstance().level.getEntity(id);
     }
 }

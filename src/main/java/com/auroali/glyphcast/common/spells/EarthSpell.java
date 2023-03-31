@@ -1,8 +1,8 @@
 package com.auroali.glyphcast.common.spells;
 
+import com.auroali.glyphcast.common.network.client.ClientPacketHandler;
 import com.auroali.glyphcast.common.network.client.SpawnParticlesMessage;
 import com.auroali.glyphcast.common.registry.GCBlocks;
-import com.auroali.glyphcast.common.registry.GCNetwork;
 import com.auroali.glyphcast.common.spells.glyph.Glyph;
 import com.auroali.glyphcast.common.spells.glyph.GlyphSequence;
 import com.auroali.glyphcast.common.spells.glyph.Ring;
@@ -29,32 +29,39 @@ public class EarthSpell extends Spell {
     }
 
     @Override
-    public void activate(Level level, Player player, SpellStats stats) {
-        var result = getTargetBlock(level, player);
+    public void activate(IContext ctx) {
+        var result = getTargetBlock(ctx.level(), ctx.player());
         if(result.getType() != HitResult.Type.BLOCK)
             return;
 
-        BlockState state = level.getBlockState(result.getBlockPos());
-        BlockState otherState = level.getBlockState(result.getBlockPos().relative(result.getDirection()));
+        BlockState state = ctx.level().getBlockState(result.getBlockPos());
+        BlockState otherState = ctx.level().getBlockState(result.getBlockPos().relative(result.getDirection()));
         if (state.getBlock() instanceof BonemealableBlock bonemealableblock) {
-            if (bonemealableblock.isValidBonemealTarget(level, result.getBlockPos(), state, level.isClientSide)) {
-                if (bonemealableblock.isBonemealSuccess(level, level.random, result.getBlockPos(), state)) {
-                    boneMealBlock(level, result, state, otherState, bonemealableblock);
+            if (bonemealableblock.isValidBonemealTarget(ctx.level(), result.getBlockPos(), state, ctx.level().isClientSide)) {
+                if (bonemealableblock.isBonemealSuccess(ctx.level(), ctx.level().random, result.getBlockPos(), state)) {
+                    boneMealBlock(ctx, ctx.level(), result, state, otherState, bonemealableblock);
                 }
             }
         }
     }
 
-    private void boneMealBlock(Level level, BlockHitResult result, BlockState state, BlockState otherState, BonemealableBlock bonemealableblock) {
+    private void boneMealBlock(IContext ctx, Level level, BlockHitResult result, BlockState state, BlockState otherState, BonemealableBlock bonemealableblock) {
         BlockPos pos = result.getBlockPos();
         if(otherState.isAir() && state.canSustainPlant(level, result.getBlockPos(), result.getDirection(), GCBlocks.BLUE_GLYPH_FLOWER.get())) {
             level.setBlockAndUpdate(result.getBlockPos().relative(result.getDirection()), GCBlocks.BLUE_GLYPH_FLOWER.get().defaultBlockState());
             pos = result.getBlockPos().relative(result.getDirection());
         }
-        spawnParticles(level, pos);
+        triggerEvent((byte) 0, PositionedContext.with(ctx, pos));
         bonemealableblock.performBonemeal((ServerLevel) level, level.random, result.getBlockPos(), state);
     }
 
+    @Override
+    public void handleEvent(Byte id, PositionedContext ctx) {
+        spawnParticles(ctx.level(), new BlockPos(ctx.start()));
+    }
+
+    // TODO: Move to event packets
+    // TODO: It will require custom data support though
     public void spawnParticles(Level level, BlockPos pos) {
         Vec3 basePos = new Vec3(pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5);
         final Vec3 UP = new Vec3(0, 1, 0);
@@ -62,7 +69,7 @@ public class EarthSpell extends Spell {
             double dist = i / 25.0;
             Vec3 particlePosition = basePos.add(dist * Math.sin(i),0,dist * Math.cos(i));
             SpawnParticlesMessage msg = new SpawnParticlesMessage(ParticleTypes.HAPPY_VILLAGER, 0, 3, particlePosition, UP, i / 50.0);
-            GCNetwork.sendToNear(level, basePos, 16, msg);
+            ClientPacketHandler.spawnParticles(msg);
         }
     }
     private BlockHitResult getTargetBlock(Level level, Player player) {
