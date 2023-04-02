@@ -63,7 +63,7 @@ public class SpellWheelEntry extends GuiComponent implements Widget, GuiEventLis
         if(spell == null || glyph == null)
             return;
 
-        GlyphRenderer.drawBaseGlyph(pPoseStack, centerX + posX, centerY + posY, glyph);
+        GlyphRenderer.drawSpell(pPoseStack, centerX + posX, centerY + posY, spell);
     }
 
 

@@ -20,13 +20,15 @@ public class InfuseRecipe implements Recipe<Container> {
 
     public final double cost;
     public final Ingredient input;
+    public final Ingredient other;
     public final ItemStack result;
     final ResourceLocation id;
 
-    public InfuseRecipe(ResourceLocation id, double cost, Ingredient input, ItemStack result) {
+    public InfuseRecipe(ResourceLocation id, double cost, Ingredient input, Ingredient other, ItemStack result) {
         this.id = id;
         this.cost = cost;
         this.input = input;
+        this.other = other;
         this.result = result;
     }
 
@@ -65,6 +67,13 @@ public class InfuseRecipe implements Recipe<Container> {
         return GCRecipeTypes.INFUSE_RECIPE.get();
     }
 
+    public boolean itemsMatch(ItemStack input, ItemStack other) {
+        return this.input.test(input) && (!this.consumesOther() || this.other.test(other));
+    }
+
+    public boolean consumesOther() {
+        return other != Ingredient.EMPTY;
+    }
     public static class Serializer implements RecipeSerializer<InfuseRecipe> {
         @Override
         public InfuseRecipe fromJson(ResourceLocation pRecipeId, JsonObject pSerializedRecipe) {
@@ -76,23 +85,26 @@ public class InfuseRecipe implements Recipe<Container> {
                 throw new JsonParseException("No cost for infuse recipe");
 
             Ingredient input = Ingredient.fromJson(pSerializedRecipe.get("input"));
+            Ingredient other = pSerializedRecipe.has("other") ? Ingredient.fromJson(pSerializedRecipe.get("other")) : Ingredient.EMPTY;
             double cost = pSerializedRecipe.get("cost").getAsDouble();
             ItemStack result = CraftingHelper.getItemStack(pSerializedRecipe.getAsJsonObject("result"), true, true);
-            return new InfuseRecipe(pRecipeId, cost, input, result);
+            return new InfuseRecipe(pRecipeId, cost, input, other, result);
         }
 
         @Override
         public @Nullable InfuseRecipe fromNetwork(ResourceLocation pRecipeId, FriendlyByteBuf pBuffer) {
             double cost = pBuffer.readDouble();
             Ingredient input = Ingredient.fromNetwork(pBuffer);
+            Ingredient other = Ingredient.fromNetwork(pBuffer);
             ItemStack result = pBuffer.readItem();
-            return new InfuseRecipe(pRecipeId, cost, input, result);
+            return new InfuseRecipe(pRecipeId, cost, input, other, result);
         }
 
         @Override
         public void toNetwork(FriendlyByteBuf pBuffer, InfuseRecipe pRecipe) {
             pBuffer.writeDouble(pRecipe.cost);
             pRecipe.input.toNetwork(pBuffer);
+            pRecipe.other.toNetwork(pBuffer);
             pBuffer.writeItem(pRecipe.result);
         }
     }

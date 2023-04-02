@@ -1,19 +1,41 @@
 package com.auroali.glyphcast.client.render;
 
 import com.auroali.glyphcast.GlyphCast;
+import com.auroali.glyphcast.common.spells.Spell;
 import com.auroali.glyphcast.common.spells.glyph.Glyph;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.resources.ResourceLocation;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class GlyphRenderer {
     public static final ResourceLocation GLYPHS = new ResourceLocation(GlyphCast.MODID, "textures/gui/glyphs/glyph_icons.png");
     public static final ResourceLocation OUTER_RING = new ResourceLocation(GlyphCast.MODID, "textures/gui/glyphs/glyph_outer_ring.png");
 
+    private static final Map<Spell, ResourceLocation> TEXTURE_ID_CACHE = new HashMap<>();
+
+    public static ResourceLocation getSpellPath(Spell spell) {
+        if(spell == null)
+            return null;
+
+        ResourceLocation cachedTexPath = TEXTURE_ID_CACHE.get(spell);
+        if(cachedTexPath != null)
+            return cachedTexPath;
+
+        ResourceLocation location = GlyphCast.SPELL_REGISTRY.get().getKey(spell);
+        if(location == null)
+            return null;
+
+        ResourceLocation tex = new ResourceLocation(location.getNamespace(), "textures/spell/" + location.getPath() + ".png");
+        TEXTURE_ID_CACHE.put(spell, tex);
+        return tex;
+    }
     public static void drawAllGlyphs(PoseStack pPoseStack, int x, int y, List<List<Glyph>> glyphs) {
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
         RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f);
@@ -67,5 +89,13 @@ public class GlyphRenderer {
 
         drawGlyphIcon(stack, glyph, glyphX - 16, glyphY - 16);
         GuiComponent.blit(stack, glyphX - 16, glyphY - 16, 0, 0, 32, 32, 256, 256);
+    }
+
+    public static void drawSpell(PoseStack stack, int x, int y, Spell spell) {
+        RenderSystem.setShaderTexture(0, getSpellPath(spell));
+        GuiComponent.blit(stack, x - 16, y - 16, 0, 0, 32, 32, 32, 32);
+        RenderSystem.setShaderTexture(0, GLYPHS);
+        GuiComponent.blit(stack, x - 16, y - 16, 0, 0, 32, 32, 256, 256);
+
     }
 }

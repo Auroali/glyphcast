@@ -1,5 +1,6 @@
 package com.auroali.glyphcast.common.spells.wand;
 
+import com.auroali.glyphcast.common.items.WandItem;
 import com.auroali.glyphcast.common.network.client.ClientPacketHandler;
 import com.auroali.glyphcast.common.network.client.SpawnParticlesMessage;
 import com.auroali.glyphcast.common.recipes.InfuseRecipe;
@@ -46,10 +47,13 @@ public class MagicInfuseSpell extends Spell {
         if(blockStackPair == null && entityPair == null)
             return;
         ItemStack stack = entityPair != null ? entityPair.first() : blockStackPair.first();
+        ItemStack offhandStack = ctx.player().getMainHandItem().getItem() instanceof WandItem ? ctx.player().getOffhandItem() : ctx.player().getMainHandItem();
         List<InfuseRecipe> recipes = ctx.level().getServer().getRecipeManager().getAllRecipesFor(GCRecipeTypes.INFUSE_RECIPE.get());
-        recipes.stream().filter(r -> r.input.test(stack)).findFirst().ifPresent(r -> {
+        recipes.stream().filter(r -> r.itemsMatch(stack, offhandStack)).findFirst().ifPresent(r -> {
             if (!canDrainEnergy(ctx.stats(), ctx.player(), r.cost))
                 return;
+            if(!ctx.player().isCreative() && r.consumesOther())
+                offhandStack.shrink(1);
             ItemStack result = r.result;
             result.setCount(stack.getCount());
             drainEnergy(ctx.stats(), ctx.player(), r.cost);
