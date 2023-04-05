@@ -5,7 +5,6 @@ import com.auroali.glyphcast.common.spells.Spell;
 import com.auroali.glyphcast.common.spells.glyph.Glyph;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.resources.ResourceLocation;
@@ -95,7 +94,6 @@ public class GlyphRenderer {
         RenderSystem.setShaderTexture(0, getSpellPath(spell));
         GuiComponent.blit(stack, x - 16, y - 16, 0, 0, 32, 32, 32, 32);
         RenderSystem.setShaderTexture(0, GLYPHS);
-        GuiComponent.blit(stack, x - 16, y - 16, 0, 0, 32, 32, 256, 256);
-
+        GuiComponent.blit(stack, x - 16, y - 16, 0, 98, 32, 32, 256, 256);
     }
 }

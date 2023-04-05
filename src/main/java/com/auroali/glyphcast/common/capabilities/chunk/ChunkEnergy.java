@@ -33,6 +33,7 @@ public class ChunkEnergy implements IChunkEnergy {
         }
     }
 
+
     @Override
     public CompoundTag serializeNBT() {
         CompoundTag tag = new CompoundTag();

@@ -8,6 +8,7 @@ import com.auroali.glyphcast.client.particles.MagicPulseProvider;
 import com.auroali.glyphcast.client.render.GlyphClientTooltipComponent;
 import com.auroali.glyphcast.client.render.entity.EmptyEntityRenderer;
 import com.auroali.glyphcast.client.render.entity.LightEntityRenderer;
+import com.auroali.glyphcast.client.render.overlays.EnergyGaugeOverlay;
 import com.auroali.glyphcast.common.items.tooltip.GlyphTooltipComponent;
 import com.auroali.glyphcast.common.registry.GCEntities;
 import com.auroali.glyphcast.common.registry.GCParticles;
@@ -16,6 +17,7 @@ import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.*;
+import net.minecraftforge.client.gui.overlay.VanillaGuiOverlay;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
@@ -45,7 +47,7 @@ public class ClientEvents {
 
     @SubscribeEvent
     public static void registerOverlays(RegisterGuiOverlaysEvent event) {
-        //event.registerBelow(VanillaGuiOverlay.CHAT_PANEL.id(), "wand_overlay", new WandOverlay());
+        event.registerBelow(VanillaGuiOverlay.CHAT_PANEL.id(), "energy_gauge", new EnergyGaugeOverlay());
     }
 
     @SubscribeEvent

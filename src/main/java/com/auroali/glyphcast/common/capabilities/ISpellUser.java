@@ -67,6 +67,7 @@ public interface ISpellUser extends INBTSerializable<CompoundTag> {
      */
     List<TickingSpellData> getTickingSpells();
 
+    boolean canOpenSpellWheel();
     /**
      * Clones this capability to another
      * @param other a lazy optional containing the other capability

@@ -1,6 +1,7 @@
 package com.auroali.glyphcast.common.capabilities;
 
 import com.auroali.glyphcast.GlyphCast;
+import com.auroali.glyphcast.common.items.WandItem;
 import com.auroali.glyphcast.common.network.client.SyncSpellUserDataMessage;
 import com.auroali.glyphcast.common.registry.GCCapabilities;
 import com.auroali.glyphcast.common.registry.GCNetwork;
@@ -103,6 +104,11 @@ public class SpellUser implements ISpellUser {
     @Override
     public List<TickingSpellData> getTickingSpells() {
         return tickingSpells;
+    }
+
+    @Override
+    public boolean canOpenSpellWheel() {
+        return player.getMainHandItem().getItem() instanceof WandItem || player.getOffhandItem().getItem() instanceof WandItem;
     }
 
     @Override

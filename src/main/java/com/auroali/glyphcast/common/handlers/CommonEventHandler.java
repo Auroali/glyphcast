@@ -6,7 +6,6 @@ import com.auroali.glyphcast.common.capabilities.chunk.IChunkEnergy;
 import com.auroali.glyphcast.common.entities.FloatingLight;
 import com.auroali.glyphcast.common.registry.GCCapabilities;
 import com.auroali.glyphcast.common.spells.Spell;
-import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
@@ -16,8 +15,6 @@ import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.fml.common.Mod;
-
-import java.text.DecimalFormat;
 
 @Mod.EventBusSubscriber(modid = GlyphCast.MODID)
 public class CommonEventHandler {
@@ -54,7 +51,6 @@ public class CommonEventHandler {
             boolean flag = !data.getSpell().tick(new Spell.BasicContext(event.player.level, event.player, data.getStats()), data.getTicks(), data.getTag());
             data.setTicks(data.getTicks() + 1);
             return flag;
-
         }));
 
         for(int x = -5; x <= 5; x++) {
@@ -67,13 +63,5 @@ public class CommonEventHandler {
                         .ifPresent(IChunkEnergy::tick);
             }
         }
-
-
-        DecimalFormat format = new DecimalFormat("####");
-        double energy = IChunkEnergy.getEnergyAt(event.player.level, event.player.blockPosition());
-        double maxEnergy = IChunkEnergy.getMaxEnergyAt(event.player.level, event.player.blockPosition());
-        double energyPercent = (energy / maxEnergy) * 100;
-        event.player.displayClientMessage(Component.literal("%s/%s (%s%%)".formatted(format.format(energy), format.format(maxEnergy), format.format(energyPercent))), true);
-
     }
 }
