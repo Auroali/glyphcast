@@ -99,11 +99,11 @@ public abstract class Spell {
     }
 
     protected void drainEnergy(SpellStats stats, Player player, double amount) {
-        IChunkEnergy.drainAt(player.level, player.chunkPosition(), amount / stats.efficiency(), false);
+        IChunkEnergy.drainAt(player.level, player.blockPosition(), amount / stats.efficiency(), false);
     }
 
     protected boolean canDrainEnergy(SpellStats stats, Player player, double amount) {
-        return IChunkEnergy.drainAt(player.level, player.chunkPosition(), amount / stats.efficiency(), true) == amount / stats.efficiency();
+        return IChunkEnergy.drainAt(player.level, player.blockPosition(), amount / stats.efficiency(), true) == (amount / stats.efficiency());
     }
 
     public interface IContext {

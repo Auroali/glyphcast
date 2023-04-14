@@ -12,7 +12,7 @@ import java.util.Map;
 import java.util.function.Supplier;
 
 public class SyncWandCapsMessage extends NetworkMessage {
-    Map<ResourceLocation, WandCap> map;
+    final Map<ResourceLocation, WandCap> map;
     public SyncWandCapsMessage() {
         map = GCWandCaps.KEY_MAP;
     }

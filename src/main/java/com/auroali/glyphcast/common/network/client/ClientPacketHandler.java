@@ -1,6 +1,8 @@
 package com.auroali.glyphcast.common.network.client;
 
 import com.auroali.glyphcast.common.capabilities.SpellUser;
+import com.auroali.glyphcast.common.capabilities.chunk.ChunkEnergy;
+import com.auroali.glyphcast.common.registry.GCCapabilities;
 import com.auroali.glyphcast.common.spells.Spell;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
@@ -27,6 +29,19 @@ public class ClientPacketHandler {
 
     public static void syncSpellUserData(CompoundTag tag) {
         SpellUser.get(Minecraft.getInstance().player).ifPresent(user -> user.deserializeNBT(tag));
+    }
+
+    public static void handleChunkEnergy(SyncChunkEnergyMessage msg) {
+        ClientLevel level = Minecraft.getInstance().level;
+        if(level == null || !level.hasChunk(msg.pos.x, msg.pos.z))
+            return;
+
+        level.getChunk(msg.pos.x, msg.pos.z).getCapability(GCCapabilities.CHUNK_ENERGY).ifPresent(e -> {
+            if(e instanceof ChunkEnergy energy) {
+                energy.values = msg.values;
+                energy.maxValues = msg.maxValues;
+            }
+        });
     }
 
     public static void triggerSpellEvent(Byte id, Spell spell, Spell.IContext ctx) {

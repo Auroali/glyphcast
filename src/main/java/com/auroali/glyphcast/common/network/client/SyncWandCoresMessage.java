@@ -12,7 +12,7 @@ import java.util.Map;
 import java.util.function.Supplier;
 
 public class SyncWandCoresMessage extends NetworkMessage {
-    Map<ResourceLocation, WandCore> coreMap;
+    final Map<ResourceLocation, WandCore> coreMap;
     public SyncWandCoresMessage() {
         coreMap = GCWandCores.KEY_MAP;
     }

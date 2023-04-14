@@ -28,7 +28,7 @@ public class SpellEventMessage extends NetworkMessage {
     }
 
     public Spell.IContext readCtx(FriendlyByteBuf buf) {
-        int type = buf.readInt();
+        buf.readInt();
         Player player = (Player) ClientPacketHandler.fromId(buf.readInt());
         if(player == null)
             return null;
@@ -39,10 +39,10 @@ public class SpellEventMessage extends NetworkMessage {
         double iceAffinity = buf.readDouble();
         double earthAffinity = buf.readDouble();
         final SpellStats stats = new SpellStats(efficiency, cooldown, fireAffinity, lightAffinity, iceAffinity, earthAffinity);
-        return switch (type) {
-            default -> new Spell.BasicContext(player.level, player, stats);
-            case 1 -> new Spell.PositionedContext(player.level, player, stats, new Vec3(buf.readDouble(), buf.readDouble(), buf.readDouble()), new Vec3(buf.readDouble(), buf.readDouble(), buf.readDouble()));
-        };
+
+        // A spell event is only ever triggered with a positioned context
+        return new Spell.PositionedContext(player.level, player, stats, new Vec3(buf.readDouble(), buf.readDouble(), buf.readDouble()), new Vec3(buf.readDouble(), buf.readDouble(), buf.readDouble()));
+
     }
     @Override
     public void encode(FriendlyByteBuf buf) {

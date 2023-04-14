@@ -1,114 +1,185 @@
 package com.auroali.glyphcast.common.capabilities.chunk;
 
-import com.auroali.glyphcast.common.registry.GCCapabilities;
+import com.auroali.glyphcast.GlyphCast;
+import com.auroali.glyphcast.common.network.client.SyncChunkEnergyMessage;
+import com.auroali.glyphcast.common.registry.GCNetwork;
+import com.mojang.serialization.Codec;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.SectionPos;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtOps;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
+import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.chunk.LevelChunk;
-import net.minecraft.world.level.levelgen.WorldgenRandom;
+import net.minecraft.world.level.levelgen.LegacyRandomSource;
+import net.minecraft.world.level.levelgen.synth.PerlinSimplexNoise;
+import net.minecraftforge.network.PacketDistributor;
+
+import java.util.Arrays;
+import java.util.List;
 
 public class ChunkEnergy implements IChunkEnergy {
-    double energy = 1000;
-    double maxEnergy = 0;
-    double rechargeCooldown = 0;
-    int rechargeRate = 0;
-
+    public double[] values;
+    public double[] maxValues;
     final Level level;
     final ChunkPos pos;
 
     public ChunkEnergy(LevelChunk chunk) {
         this.level = chunk.getLevel();
         this.pos = chunk.getPos();
-        calculateMaxEnergy();
     }
 
+    int posToIndex(int x, int z) {
+        return x * 16 + z;
+    }
+
+    boolean isOutOfBounds(int y) {
+        return y <= level.getMinBuildHeight() || y >= level.getMaxBuildHeight();
+    }
+
+    int getDataSize() {
+        return 16*16;
+    }
     void calculateMaxEnergy() {
         if(level instanceof ServerLevel serverLevel) {
-            RandomSource source = WorldgenRandom.seedSlimeChunk(pos.x, pos.z, serverLevel.getSeed(), 907234411L);
-            maxEnergy = Math.min(250 * source.nextDouble(), 50);
-            energy = maxEnergy;
-            rechargeRate = source.nextInt(1, 3);
+            ProfilerFiller profiler = level.getServer().getProfiler();
+            profiler.push("glyphcast chunk energy gen");
+            RandomSource source = new LegacyRandomSource(serverLevel.getSeed());
+            PerlinSimplexNoise noise = new PerlinSimplexNoise(source, List.of(1));
+            values = new double[getDataSize()];
+            maxValues = new double[getDataSize()];
+            for (int x = 0; x < 16; x++) {
+                for (int z = 0; z < 16; z++) {
+                    double noiseV = (2 + noise.getValue(SectionPos.sectionToBlockCoord(pos.x) + x, SectionPos.sectionToBlockCoord(pos.z) + z, true)) / 2;
+                    float maxVal = (float) (250 * noiseV);
+                    int index = posToIndex(x, z);
+                    values[index] = maxVal;
+                    maxValues[index] = maxVal;
+                }
+            }
+
+            profiler.pop();
         }
     }
 
 
     @Override
     public CompoundTag serializeNBT() {
+        if(failedValidation())
+            calculateMaxEnergy();
         CompoundTag tag = new CompoundTag();
-        tag.putDouble("Energy", energy);
-        tag.putDouble("MaxEnergy", maxEnergy);
-        tag.putDouble("RechargeCooldown", rechargeCooldown);
-        tag.putInt("RechargeRate", rechargeRate);
+        writeValues(tag);
+        writeMaxValues(tag);
+
         return tag;
+    }
+
+    private void writeMaxValues(CompoundTag tag) {
+
+        Codec.DOUBLE.listOf().encodeStart(NbtOps.INSTANCE, Arrays.stream(maxValues).boxed().toList())
+                .resultOrPartial(GlyphCast.LOGGER::error)
+                .ifPresent(t -> tag.put("maxVals", t));
+    }
+
+    private void writeValues(CompoundTag tag) {
+        Codec.DOUBLE.listOf().encodeStart(NbtOps.INSTANCE, Arrays.stream(values).boxed().toList())
+                .resultOrPartial(GlyphCast.LOGGER::error)
+                .ifPresent(t -> tag.put("vals", t));
     }
 
     @Override
     public void deserializeNBT(CompoundTag nbt) {
-        energy = nbt.getDouble("Energy");
-        rechargeCooldown = nbt.getDouble("RechargeCooldown");
-        maxEnergy = nbt.getDouble("MaxEnergy");
-        rechargeRate = nbt.getInt("RechargeRate");
-        // We have an invalid value, so we should recalculate the max energy
-        if(maxEnergy <= 0 || rechargeRate <= 0)
+        if(!nbt.contains("maxVals") || !nbt.contains("vals")) {
             calculateMaxEnergy();
+            return;
+        }
+        Codec.DOUBLE.listOf().parse(NbtOps.INSTANCE, nbt.get("maxVals"))
+                .resultOrPartial(GlyphCast.LOGGER::error)
+                .ifPresent(l -> {
+                    values = new double[l.size()];
+                    int i = 0;
+                    for(Double f : l) {
+                        values[i++] = f;
+                    }
+                });
+        Codec.DOUBLE.listOf().parse(NbtOps.INSTANCE, nbt.get("vals"))
+                .resultOrPartial(GlyphCast.LOGGER::error)
+                .ifPresent(l -> {
+                    maxValues = new double[l.size()];
+                    int i = 0;
+                    for(Double f : l) {
+                        maxValues[i++] = f;
+                    }
+                });
+        if (failedValidation()) {
+            calculateMaxEnergy();
+        }
+    }
+
+    boolean failedValidation() {
+        return values == null || maxValues == null || values.length != getDataSize() || maxValues.length != getDataSize() || values.length != maxValues.length;
     }
 
     @Override
-    public double getEnergy() {
-        return energy;
+    public double getEnergy(BlockPos pos) {
+        if (isOutOfBounds(pos.getY()))
+            return 0;
+        int localX = Math.abs(pos.getX() - SectionPos.blockToSectionCoord(pos.getX()) * 16);
+        int localZ = Math.abs(pos.getZ() - SectionPos.blockToSectionCoord(pos.getZ()) * 16);
+        int i = posToIndex(localX, localZ);
+        return values != null ? values[i] : 0.f;
     }
 
     @Override
-    public void setEnergy(double energy) {
-        this.energy = Math.min(energy, maxEnergy);
+    public void setEnergy(BlockPos pos, double energy) {
+        if (isOutOfBounds(pos.getY()))
+            return;
+        if (values == null || maxValues == null)
+            return;
+        int localX = Math.abs(pos.getX() - SectionPos.blockToSectionCoord(pos.getX()) * 16);
+        int localZ = Math.abs(pos.getZ() - SectionPos.blockToSectionCoord(pos.getZ()) * 16);
+        int i = posToIndex(localX, localZ);
+        values[i] = Math.min(energy, maxValues[i]);
+        syncEnergy();
     }
 
     @Override
     public void startRechargeCooldown() {
-        rechargeCooldown = 80;
     }
 
     @Override
     public void tick() {
-        for(int x = -1; x <= 1; x++) {
-            for(int z = -1; z <= 1; z++) {
-                tryRechargeNearby(pos.x + x, pos.z + z);
-            }
+        if(failedValidation())
+            calculateMaxEnergy();
+
+        boolean needsSync = false;
+        for(int i = 0; i < getDataSize(); i++) {
+            if(values[i] == maxValues[i])
+                continue;
+
+            needsSync = true;
+            values[i] = Math.min(maxValues[i], values[i] + maxValues[i] / 1200);
         }
 
-
-        if(energy >= maxEnergy) {
-            energy = maxEnergy;
-            return;
-        }
-
-        if(rechargeCooldown > 0) {
-            rechargeCooldown--;
-            return;
-        }
-
-        energy += rechargeRate / 20.0;
+        if(needsSync)
+            syncEnergy();
     }
 
     @Override
-    public double getMaxEnergy() {
-        return maxEnergy;
+    public double getMaxEnergy(BlockPos pos) {
+        if (isOutOfBounds(pos.getY()))
+            return 0;
+        int localX = Math.abs(pos.getX() - SectionPos.blockToSectionCoord(pos.getX()) * 16);
+        int localZ = Math.abs(pos.getZ() - SectionPos.blockToSectionCoord(pos.getZ()) * 16);
+        int i = posToIndex(localX, localZ);
+        return maxValues != null ? maxValues[i] : 0.f;
     }
 
-    public void tryRechargeNearby(int x, int z) {
-        if(!level.hasChunk(x, z) || (pos.x == x && pos.z == z))
-            return;
-
-        level.getChunk(x, z).getCapability(GCCapabilities.CHUNK_ENERGY).ifPresent(energy -> {
-            if(energy.getEnergy() >= getEnergy() || energy.getEnergy() >= energy.getMaxEnergy())
-                return;
-
-            double diff = Math.min(getEnergy() - energy.getEnergy(), energy.getMaxEnergy() / 2);
-            double cooldown = energy instanceof ChunkEnergy e ? e.rechargeCooldown : 0;
-            energy.setEnergy(energy.getEnergy() + diff / ((1 - cooldown / 80) * 720 + 360));
-            this.rechargeCooldown = 1;
-        });
+    void syncEnergy() {
+        if (!level.isClientSide)
+            GCNetwork.CHANNEL.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunk(pos.x, pos.z)), new SyncChunkEnergyMessage(pos, values, maxValues));
     }
 }

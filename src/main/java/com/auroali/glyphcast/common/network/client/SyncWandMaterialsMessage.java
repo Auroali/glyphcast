@@ -12,7 +12,7 @@ import java.util.Map;
 import java.util.function.Supplier;
 
 public class SyncWandMaterialsMessage extends NetworkMessage {
-    Map<ResourceLocation, WandMaterial> map;
+    final Map<ResourceLocation, WandMaterial> map;
     public SyncWandMaterialsMessage() {
         map = GCWandMaterials.KEY_MAP;
     }

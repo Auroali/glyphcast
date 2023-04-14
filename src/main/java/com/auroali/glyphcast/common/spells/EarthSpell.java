@@ -57,12 +57,10 @@ public class EarthSpell extends Spell {
 
     @Override
     public void handleEvent(Byte id, PositionedContext ctx) {
-        spawnParticles(ctx.level(), new BlockPos(ctx.start()));
+        spawnParticles(new BlockPos(ctx.start()));
     }
 
-    // TODO: Move to event packets
-    // TODO: It will require custom data support though
-    public void spawnParticles(Level level, BlockPos pos) {
+    public void spawnParticles(BlockPos pos) {
         Vec3 basePos = new Vec3(pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5);
         final Vec3 UP = new Vec3(0, 1, 0);
         for(int i = 0; i < 50; i++) {

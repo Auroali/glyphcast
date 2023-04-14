@@ -22,8 +22,8 @@ public class ClearSpellSlotMessage extends NetworkMessage {
 
     public ClearSpellSlotMessage(FriendlyByteBuf buf) {
         slot = buf.readInt();
-
     }
+
     @Override
     public void handle(Supplier<NetworkEvent.Context> ctx) {
         ctx.get().enqueueWork(() -> {

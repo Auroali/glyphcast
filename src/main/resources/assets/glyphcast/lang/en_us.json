@@ -72,9 +72,13 @@
 
   "__comment11": "Wand Materials",
   "wand_material.glyphcast.wandering": "Wandering",
-  "wand_material.glyphcast.spruce": "Spruce Wood",
-  "wand_material.glyphcast.birch": "Birch Wood",
-  "wand_material.glyphcast.jungle": "Jungle Wood",
+  "wand_material.glyphcast.spruce": "Spruce",
+  "wand_material.glyphcast.birch": "Birch",
+  "wand_material.glyphcast.jungle": "Jungle",
+  "wand_material.glyphcast.oak": "Oak",
+  "wand_material.glyphcast.dark_oak": "Dark Oak",
+  "wand_material.glyphcast.acacia": "Acacia",
+  "wand_material.glyphcast.mangrove": "Mangrove",
 
   "__comment12": "Wand Caps",
   "wand_cap.glyphcast.iron": "Iron",

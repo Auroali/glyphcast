@@ -49,7 +49,7 @@ public class DynamicWandModel implements IUnbakedGeometry<DynamicWandModel> {
         var wandSprite = wandTex != null ? spriteGetter.apply(new Material(TextureAtlas.LOCATION_BLOCKS, wandTex)) : null;
         var capSprite = capTex != null ? spriteGetter.apply(new Material(TextureAtlas.LOCATION_BLOCKS, capTex)) : null;
 
-        var builder = CompositeModel.Baked.builder(itemContext, spriteGetter.apply(texture), new DynWandOverride(overrides, this, bakery, itemContext), context.getTransforms());
+        var builder = CompositeModel.Baked.builder(itemContext, spriteGetter.apply(texture), new DynWandOverride(overrides, bakery, itemContext), context.getTransforms());
 
         var normalRenderTypes = getLayerRenderTypes(false);
 
@@ -92,13 +92,11 @@ public class DynamicWandModel implements IUnbakedGeometry<DynamicWandModel> {
         }
     }
     public static class DynWandOverride extends ItemOverrides {
-        DynamicWandModel model;
         private final Map<String, BakedModel> cache = Maps.newHashMap(); // contains all the baked models since they'll never change
         private final ModelBakery bakery;
         private final IGeometryBakingContext owner;
         private final ItemOverrides nested;
-        public DynWandOverride(ItemOverrides nested, DynamicWandModel model, ModelBakery bakery, IGeometryBakingContext owner) {
-            this.model = model;
+        public DynWandOverride(ItemOverrides nested, ModelBakery bakery, IGeometryBakingContext owner) {
             this.bakery = bakery;
             this.owner = owner;
             this.nested = nested;

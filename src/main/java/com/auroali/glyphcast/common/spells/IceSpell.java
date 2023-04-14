@@ -35,18 +35,18 @@ public class IceSpell extends Spell{
         if(ctx.level() instanceof ServerLevel serverLevel) {
             Vec3 eyePos = ctx.player().getEyePosition();
             GCNetwork.sendToClient((ServerPlayer) ctx.player(), new SpawnParticlesMessage(ParticleTypes.SNOWFLAKE, 0.16d, 40, eyePos.add(ctx.player().getLookAngle().scale(0.25f)), ctx.player().getLookAngle(), 0.5f));
-            rayTraceBlocks(eyePos.add(ctx.player().getLookAngle().cross(new Vec3(0, 1, 0))), ctx.player().getLookAngle().scale(6), 12, serverLevel);
-            rayTraceBlocks(eyePos, ctx.player().getLookAngle().scale(6), 12, serverLevel);
-            rayTraceBlocks(eyePos.subtract(ctx.player().getLookAngle().cross(new Vec3(0, 1, 0))), ctx.player().getLookAngle().scale(6), 12, serverLevel);
+            rayTraceBlocks(eyePos.add(ctx.player().getLookAngle().cross(new Vec3(0, 1, 0))), ctx.player().getLookAngle().scale(6), serverLevel);
+            rayTraceBlocks(eyePos, ctx.player().getLookAngle().scale(6), serverLevel);
+            rayTraceBlocks(eyePos.subtract(ctx.player().getLookAngle().cross(new Vec3(0, 1, 0))), ctx.player().getLookAngle().scale(6), serverLevel);
         }
     }
 
-    void rayTraceBlocks(Vec3 start, Vec3 end, float numMarches, ServerLevel serverLevel) {
+    void rayTraceBlocks(Vec3 start, Vec3 end, ServerLevel serverLevel) {
         var endCheck = serverLevel.clip(new ClipContext(start, start.add(end), ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, null));
         if(endCheck.getType() != HitResult.Type.MISS)
             end = endCheck.getLocation().subtract(start);
-        for(int i = 0; i < numMarches; i++) {
-            Vec3 start1 = start.add(end.scale((double) i / (double)numMarches));
+        for(int i = 0; i < (float) 12; i++) {
+            Vec3 start1 = start.add(end.scale((double) i / (double) (float) 12));
             Vec3 end1 = start1.add(new Vec3(0, -8, 0));
             var result = serverLevel.clip(new ClipContext(start1, end1, ClipContext.Block.COLLIDER, ClipContext.Fluid.ANY, null));
             if(result.getType() == HitResult.Type.BLOCK) {

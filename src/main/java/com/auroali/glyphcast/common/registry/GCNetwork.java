@@ -32,6 +32,7 @@ public class GCNetwork {
         registerPlayToClient(SyncWandMaterialsMessage.class, SyncWandMaterialsMessage::new);
         registerPlayToClient(SyncWandCapsMessage.class, SyncWandCapsMessage::new);
         registerPlayToClient(SpellEventMessage.class, SpellEventMessage::new);
+        registerPlayToClient(SyncChunkEnergyMessage.class, SyncChunkEnergyMessage::new);
         registerPlayToServer(WriteParchmentMessage.class, WriteParchmentMessage::new);
         registerPlayToServer(SetSlotSpellMessage.class, SetSlotSpellMessage::new);
         registerPlayToServer(SelectSpellSlotMessage.class, SelectSpellSlotMessage::new);

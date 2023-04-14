@@ -24,7 +24,7 @@ import java.util.List;
 import java.util.UUID;
 
 public class FloatingLight extends Entity implements IEntityAdditionalSpawnData {
-    public static EntityDataAccessor<Integer> BRIGHTNESS = SynchedEntityData.defineId(FloatingLight.class, EntityDataSerializers.INT);
+    public static final EntityDataAccessor<Integer> BRIGHTNESS = SynchedEntityData.defineId(FloatingLight.class, EntityDataSerializers.INT);
     UUID ownerUUID;
     Entity cachedOwner;
 

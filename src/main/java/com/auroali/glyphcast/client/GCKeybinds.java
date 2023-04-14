@@ -21,7 +21,6 @@ public class GCKeybinds {
             SpellUser.get(Minecraft.getInstance().player).ifPresent(cap -> {
                 if(!cap.canOpenSpellWheel())
                     return;
-                System.out.printf("testvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv");
                 SpellWheelScreen.openCombined();
             });
     }

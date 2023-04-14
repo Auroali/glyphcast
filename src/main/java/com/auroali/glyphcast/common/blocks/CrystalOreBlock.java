@@ -24,7 +24,6 @@ public class CrystalOreBlock extends Block {
      * @see net.minecraft.world.level.block.RedStoneOreBlock#animateTick(BlockState, Level, BlockPos, RandomSource) 
      */
     private static void spawnParticles(Level pLevel, BlockPos pPos) {
-        double d0 = 0.5625D;
         RandomSource randomsource = pLevel.random;
 
         for(Direction direction : Direction.values()) {

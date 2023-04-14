@@ -24,8 +24,8 @@ import java.util.List;
 
 public class SpellUser implements ISpellUser {
     int glyphMask;
-    List<SpellSlot> slots;
-    List<TickingSpellData> tickingSpells;
+    final List<SpellSlot> slots;
+    final List<TickingSpellData> tickingSpells;
     int selectedSlot;
 
     // The player this capability is attached to
