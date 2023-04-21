@@ -31,7 +31,7 @@ public class EarthSpell extends Spell {
     @Override
     public void activate(IContext ctx) {
         var result = getTargetBlock(ctx.level(), ctx.player());
-        if(result.getType() != HitResult.Type.BLOCK)
+        if (result.getType() != HitResult.Type.BLOCK)
             return;
 
         BlockState state = ctx.level().getBlockState(result.getBlockPos());
@@ -47,7 +47,7 @@ public class EarthSpell extends Spell {
 
     private void boneMealBlock(IContext ctx, Level level, BlockHitResult result, BlockState state, BlockState otherState, BonemealableBlock bonemealableblock) {
         BlockPos pos = result.getBlockPos();
-        if(otherState.isAir() && state.canSustainPlant(level, result.getBlockPos(), result.getDirection(), GCBlocks.BLUE_GLYPH_FLOWER.get())) {
+        if (otherState.isAir() && state.canSustainPlant(level, result.getBlockPos(), result.getDirection(), GCBlocks.BLUE_GLYPH_FLOWER.get())) {
             level.setBlockAndUpdate(result.getBlockPos().relative(result.getDirection()), GCBlocks.BLUE_GLYPH_FLOWER.get().defaultBlockState());
             pos = result.getBlockPos().relative(result.getDirection());
         }
@@ -63,13 +63,14 @@ public class EarthSpell extends Spell {
     public void spawnParticles(BlockPos pos) {
         Vec3 basePos = new Vec3(pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5);
         final Vec3 UP = new Vec3(0, 1, 0);
-        for(int i = 0; i < 50; i++) {
+        for (int i = 0; i < 50; i++) {
             double dist = i / 25.0;
-            Vec3 particlePosition = basePos.add(dist * Math.sin(i),0,dist * Math.cos(i));
+            Vec3 particlePosition = basePos.add(dist * Math.sin(i), 0, dist * Math.cos(i));
             SpawnParticlesMessage msg = new SpawnParticlesMessage(ParticleTypes.HAPPY_VILLAGER, 0, 3, particlePosition, UP, i / 50.0);
             ClientPacketHandler.spawnParticles(msg);
         }
     }
+
     private BlockHitResult getTargetBlock(Level level, Player player) {
         return level.clip(new ClipContext(player.getEyePosition(), player.getEyePosition().add(player.getLookAngle().scale(player.getReachDistance())), ClipContext.Block.OUTLINE, ClipContext.Fluid.NONE, null));
     }

@@ -14,6 +14,7 @@ import net.minecraft.nbt.StringTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.common.util.LazyOptional;
 
@@ -23,19 +24,12 @@ import java.util.Collections;
 import java.util.List;
 
 public class SpellUser implements ISpellUser {
-    int glyphMask;
     final List<SpellSlot> slots;
     final List<TickingSpellData> tickingSpells;
-    int selectedSlot;
-
     // The player this capability is attached to
     final Player player;
-
-    public static LazyOptional<ISpellUser> get(@Nullable Player player) {
-        if(player == null)
-            return LazyOptional.empty();
-        return player.getCapability(GCCapabilities.SPELL_USER);
-    }
+    int glyphMask;
+    int selectedSlot;
 
     public SpellUser(Player player) {
         this.slots = SpellSlot.makeSlots(18);
@@ -44,9 +38,16 @@ public class SpellUser implements ISpellUser {
         this.populateDefaultSpells();
     }
 
+    public static LazyOptional<ISpellUser> get(@Nullable Player player) {
+        if (player == null)
+            return LazyOptional.empty();
+        return player.getCapability(GCCapabilities.SPELL_USER);
+    }
+
     void populateDefaultSpells() {
         slots.set(9, new SpellSlot(9, GCSpells.WAND_ATTACK.get()));
         slots.set(10, new SpellSlot(10, GCSpells.INFUSE.get()));
+        slots.set(11, new SpellSlot(11, GCSpells.EXTRACT.get()));
     }
 
 
@@ -68,16 +69,17 @@ public class SpellUser implements ISpellUser {
 
     @Override
     public void selectSpellSlot(int slot) {
-        if(slot >= slots.size()) {
+        if (slot >= slots.size()) {
             GlyphCast.LOGGER.error("Attempted to select spell slot index {} when size is {}", slot, slots.size());
             return;
         }
         selectedSlot = slot;
+        sync();
     }
 
     @Override
     public void setSpellForSlot(int slot, Spell spell) {
-        if(slot >= slots.size()) {
+        if (slot >= slots.size()) {
             GlyphCast.LOGGER.error("Attempted to select spell slot index {} when size is {}", slot, slots.size());
             return;
         }
@@ -88,7 +90,7 @@ public class SpellUser implements ISpellUser {
 
     @Override
     public List<SpellSlot> getManuallyAssignedSlots() {
-        return Collections.unmodifiableList(slots.subList(0,9));
+        return Collections.unmodifiableList(slots.subList(0, 9));
     }
 
     @Override
@@ -97,8 +99,8 @@ public class SpellUser implements ISpellUser {
     }
 
     @Override
-    public void addTickingSpell(TickingSpell spell, SpellStats stats, CompoundTag tag) {
-        tickingSpells.add(new TickingSpellData(spell, stats, tag));
+    public void addTickingSpell(TickingSpell spell, InteractionHand hand, SpellStats stats, CompoundTag tag) {
+        tickingSpells.add(new TickingSpellData(spell, hand, stats, tag));
     }
 
     @Override
@@ -116,15 +118,15 @@ public class SpellUser implements ISpellUser {
         CompoundTag tag = new CompoundTag();
 
         ListTag spellSlotsTag = new ListTag();
-        for(int i = 0; i < 9; i++) {
+        for (int i = 0; i < 9; i++) {
             SpellSlot slot = slots.get(i);
-            if(slot.isEmpty()) {
+            if (slot.isEmpty()) {
                 spellSlotsTag.add(StringTag.valueOf("empty"));
                 continue;
             }
 
             ResourceLocation id = GlyphCast.SPELL_REGISTRY.get().getKey(slot.getSpell());
-            if(id == null) {
+            if (id == null) {
                 spellSlotsTag.add(StringTag.valueOf("empty"));
                 continue;
             }
@@ -141,15 +143,15 @@ public class SpellUser implements ISpellUser {
     public void deserializeNBT(CompoundTag nbt) {
         ListTag spellSlotsList = nbt.getList("SpellSlots", Tag.TAG_STRING);
 
-        for(int i = 0; i < spellSlotsList.size(); i++) {
-            if(spellSlotsList.getString(i).equals("empty")) {
+        for (int i = 0; i < spellSlotsList.size(); i++) {
+            if (spellSlotsList.getString(i).equals("empty")) {
                 slots.set(i, new SpellSlot(i));
                 continue;
             }
 
             ResourceLocation id = new ResourceLocation(spellSlotsList.getString(i));
             Spell spell = GlyphCast.SPELL_REGISTRY.get().getValue(id);
-            if(spell == null) {
+            if (spell == null) {
                 GlyphCast.LOGGER.error("Invalid spell id {} encountered while loading spell slots", id);
                 slots.set(i, new SpellSlot(i));
                 continue;
@@ -164,7 +166,7 @@ public class SpellUser implements ISpellUser {
     // Syncs current spell user data to the client
     void sync() {
         // If we aren't on the client, don't do anything
-        if(player instanceof ServerPlayer serverPlayer)
+        if (player instanceof ServerPlayer serverPlayer)
             GCNetwork.sendToClient(serverPlayer, new SyncSpellUserDataMessage(this));
     }
 }

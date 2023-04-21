@@ -20,46 +20,48 @@ public class GlyphRenderer {
     private static final Map<Spell, ResourceLocation> TEXTURE_ID_CACHE = new HashMap<>();
 
     public static ResourceLocation getSpellPath(Spell spell) {
-        if(spell == null)
+        if (spell == null)
             return null;
 
         ResourceLocation cachedTexPath = TEXTURE_ID_CACHE.get(spell);
-        if(cachedTexPath != null)
+        if (cachedTexPath != null)
             return cachedTexPath;
 
         ResourceLocation location = GlyphCast.SPELL_REGISTRY.get().getKey(spell);
-        if(location == null)
+        if (location == null)
             return null;
 
         ResourceLocation tex = new ResourceLocation(location.getNamespace(), "textures/spell/" + location.getPath() + ".png");
         TEXTURE_ID_CACHE.put(spell, tex);
         return tex;
     }
+
     public static void drawAllGlyphs(PoseStack pPoseStack, int x, int y, List<List<Glyph>> glyphs) {
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
         RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f);
         RenderSystem.setShaderTexture(0, GLYPHS);
-        for(int i = 0; i < glyphs.size(); i++) {
-            if(i == 0 && glyphs.get(i).size() > 0) {
+        for (int i = 0; i < glyphs.size(); i++) {
+            if (i == 0 && glyphs.get(i).size() > 0) {
                 drawBaseGlyph(pPoseStack, x, y, glyphs.get(i).get(0));
             }
-            if(i == 1) {
+            if (i == 1) {
                 GuiComponent.blit(pPoseStack, x - 20, y - 20, 256 - 40, 0, 40, 40, 256, 256);
                 GuiComponent.blit(pPoseStack, x - 54, y - 54, 256 - 108, 40, 108, 108, 256, 256);
-                for(int j = 0; j < glyphs.get(i).size(); j++) {
+                for (int j = 0; j < glyphs.get(i).size(); j++) {
                     renderGlyphOnRing(pPoseStack, x, y, glyphs.get(i).get(j), j, glyphs.get(i).size(), 35);
                 }
             }
-            if(i == 2) {
+            if (i == 2) {
                 RenderSystem.setShaderTexture(0, OUTER_RING);
                 GuiComponent.blit(pPoseStack, x - 88, y - 88, 0, 0, 176, 176, 256, 256);
                 RenderSystem.setShaderTexture(0, GLYPHS);
-                for(int j = 0; j < glyphs.get(i).size(); j++) {
+                for (int j = 0; j < glyphs.get(i).size(); j++) {
                     renderGlyphOnRing(pPoseStack, x, y, glyphs.get(i).get(j), j, glyphs.get(i).size(), 70);
                 }
             }
         }
     }
+
     public static void drawBaseGlyph(PoseStack pPoseStack, int x, int y, Glyph glyph) {
         RenderSystem.setShaderTexture(0, GLYPHS);
         int texOffsetX = 16;
@@ -69,22 +71,22 @@ public class GlyphRenderer {
     }
 
     public static void drawGlyphIcon(PoseStack stack, Glyph glyph, int x, int y) {
-        float f3 = (float)(glyph.color() >> 24 & 255) / 255.0F;
-        float f = (float)(glyph.color() >> 16 & 255) / 255.0F;
-        float f1 = (float)(glyph.color() >> 8 & 255) / 255.0F;
-        float f2 = (float)(glyph.color() & 255) / 255.0F;
+        float f3 = (float) (glyph.color() >> 24 & 255) / 255.0F;
+        float f = (float) (glyph.color() >> 16 & 255) / 255.0F;
+        float f1 = (float) (glyph.color() >> 8 & 255) / 255.0F;
+        float f2 = (float) (glyph.color() & 255) / 255.0F;
         RenderSystem.setShaderColor(f, f1, f2, f3);
-        GuiComponent.blit(stack, x , y, 48, 32 * glyph.ordinal(), 32, 32, 256, 256);
+        GuiComponent.blit(stack, x, y, 48, 32 * glyph.ordinal(), 32, 32, 256, 256);
         RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f);
     }
 
     public static void renderGlyphOnRing(PoseStack stack, int x, int y, Glyph glyph, int index, int maxPerRing, int size) {
         // Get the angle the glyph should be at
-        double angle = (2*Math.PI * ((double) (index + 1) / (double)maxPerRing)) - Math.PI / 3;
+        double angle = (2 * Math.PI * ((double) (index + 1) / (double) maxPerRing)) - Math.PI / 3;
 
         // Convert the angle to screen coordinates, centered around the screen center
-        int glyphX = x + (int)(size * Math.cos(angle));
-        int glyphY = y + (int)(size * Math.sin(angle));
+        int glyphX = x + (int) (size * Math.cos(angle));
+        int glyphY = y + (int) (size * Math.sin(angle));
 
         drawGlyphIcon(stack, glyph, glyphX - 16, glyphY - 16);
         GuiComponent.blit(stack, glyphX - 16, glyphY - 16, 0, 0, 32, 32, 256, 256);
@@ -92,8 +94,8 @@ public class GlyphRenderer {
 
     public static void drawSpell(PoseStack stack, int x, int y, Spell spell) {
         RenderSystem.setShaderTexture(0, getSpellPath(spell));
-        GuiComponent.blit(stack, x - 16, y - 16, 0, 0, 32, 32, 32, 32);
+        GuiComponent.blit(stack, x, y, 0, 0, 32, 32, 32, 32);
         RenderSystem.setShaderTexture(0, GLYPHS);
-        GuiComponent.blit(stack, x - 16, y - 16, 0, 98, 32, 32, 256, 256);
+        GuiComponent.blit(stack, x, y, 0, 98, 32, 32, 256, 256);
     }
 }

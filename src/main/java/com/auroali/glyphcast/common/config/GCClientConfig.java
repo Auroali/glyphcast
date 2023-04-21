@@ -7,6 +7,7 @@ public class GCClientConfig {
 
     public static final ForgeConfigSpec CLIENT_SPEC;
     public static final GCClientConfig CLIENT;
+
     static {
         Pair<GCClientConfig, ForgeConfigSpec> pair = new ForgeConfigSpec.Builder()
                 .configure(GCClientConfig::new);
@@ -16,6 +17,7 @@ public class GCClientConfig {
 
     public ForgeConfigSpec.ConfigValue<Integer> updateFrequency;
     public ForgeConfigSpec.ConfigValue<Boolean> fireEmitsLight;
+
     public GCClientConfig(ForgeConfigSpec.Builder builder) {
         builder.push("lighting");
         updateFrequency = builder.comment("The frequency at which the dynamic lighting updates").define("updateFrequency", 1);

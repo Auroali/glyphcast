@@ -25,7 +25,7 @@ public class TrimmedGlyphFlowerBlock extends FlowerBlock {
     @SuppressWarnings("deprecation")
     public void randomTick(BlockState pState, ServerLevel pLevel, BlockPos pPos, RandomSource pRandom) {
         super.randomTick(pState, pLevel, pPos, pRandom);
-        if(pRandom.nextInt(32) == 0) {
+        if (pRandom.nextInt(32) == 0) {
             pLevel.setBlockAndUpdate(pPos, GCBlocks.BLUE_GLYPH_FLOWER.get().defaultBlockState());
         }
     }

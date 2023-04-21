@@ -32,8 +32,7 @@ import java.util.function.Supplier;
 
 // The value here should match an entry in the META-INF/mods.toml file
 @Mod(GlyphCast.MODID)
-public class GlyphCast
-{
+public class GlyphCast {
     // Define mod id in a common place for everything to reference
     public static final String MODID = "glyphcast";
     // Directly reference a slf4j logger
@@ -48,9 +47,9 @@ public class GlyphCast
             return stack;
         }
     };
+
     // Create a Deferred Register to hold Blocks which will all be registered under the "examplemod" namespace
-    public GlyphCast()
-    {
+    public GlyphCast() {
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
 
         GCItems.ITEMS.register(modEventBus);
@@ -75,10 +74,10 @@ public class GlyphCast
 
     }
 
-    private void commonSetup(final FMLCommonSetupEvent event)
-    {
+    private void commonSetup(final FMLCommonSetupEvent event) {
         event.enqueueWork(GCOres::init);
     }
+
     private void clientSetup(final FMLClientSetupEvent event) {
         event.enqueueWork(() -> MenuScreens.register(GCMenus.CARVING_TABLE.get(), CarvingTableScreen::new));
     }

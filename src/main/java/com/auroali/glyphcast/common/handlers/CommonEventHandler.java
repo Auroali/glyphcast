@@ -30,11 +30,11 @@ public class CommonEventHandler {
     }
 
     private static void teleportLights(PlayerEvent.PlayerChangedDimensionEvent event, ServerPlayer player) {
-        if(player.getServer() == null)
+        if (player.getServer() == null)
             return;
 
         ServerLevel level = player.getServer().getLevel(event.getFrom());
-        if(level == null)
+        if (level == null)
             return;
         var lights = FloatingLight.getAllFollowing(event.getEntity(), level);
         lights.forEach(e -> {
@@ -47,25 +47,29 @@ public class CommonEventHandler {
 
     @SubscribeEvent
     public static void playerTick(TickEvent.PlayerTickEvent event) {
-        if(event.phase != TickEvent.Phase.END || event.side != LogicalSide.SERVER)
+        if (event.phase != TickEvent.Phase.END)
             return;
 
-        SpellUser.get(event.player).ifPresent(user -> user.getTickingSpells().removeIf(data -> {
-            boolean flag = !data.getSpell().tick(new Spell.BasicContext(event.player.level, event.player, data.getStats()), data.getTicks(), data.getTag());
-            data.setTicks(data.getTicks() + 1);
-            return flag;
-        }));
-
-        for(int x = -5; x <= 5; x++) {
-            for(int z = -5; z <= 5; z++) {
+        for (int x = -5; x <= 5; x++) {
+            for (int z = -5; z <= 5; z++) {
                 ChunkPos pos = event.player.chunkPosition();
-                if(!event.player.level.hasChunk(pos.x + x, pos.z + z))
+                if (!event.player.level.hasChunk(pos.x + x, pos.z + z))
                     return;
 
                 event.player.getLevel().getChunk(pos.x + x, pos.z + z).getCapability(GCCapabilities.CHUNK_ENERGY)
                         .ifPresent(IChunkEnergy::tick);
             }
         }
+
+        if (event.side != LogicalSide.SERVER)
+            return;
+
+        SpellUser.get(event.player).ifPresent(user -> user.getTickingSpells().removeIf(data -> {
+            boolean flag = !data.getSpell().tick(new Spell.BasicContext(event.player.level, event.player, data.getHand(), data.getStats()), data.getTicks(), data.getTag());
+            data.setTicks(data.getTicks() + 1);
+            return flag;
+        }));
+
         DecimalFormat FORMAT = new DecimalFormat("###");
         event.player.displayClientMessage(Component.literal(FORMAT.format(IChunkEnergy.getEnergyAt(event.player.level, event.player.blockPosition()))), true);
     }

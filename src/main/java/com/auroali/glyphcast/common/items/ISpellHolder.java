@@ -13,14 +13,15 @@ import java.util.Optional;
 /**
  * Interface for items that can hold spells
  *
- * @see com.auroali.glyphcast.common.items.GlyphParchmentItem
  * @author Auroali
+ * @see com.auroali.glyphcast.common.items.GlyphParchmentItem
  */
 public interface ISpellHolder {
 
     /**
      * Write a sequence of glyphs to an item stack
-     * @param stack the stack to write to
+     *
+     * @param stack    the stack to write to
      * @param sequence the sequence of glyphs
      */
     default void writeSequence(ItemStack stack, GlyphSequence sequence) {
@@ -33,14 +34,15 @@ public interface ISpellHolder {
 
     /**
      * Gets a spell from an item stack
+     *
      * @param stack the item stack to get the spell from
      * @return an optional holding the spell if it could be read
      */
     default Optional<Spell> getSpell(ItemStack stack) {
         CompoundTag tag = stack.getOrCreateTag().getCompound("glyphcast:glyphs");
-        if(tag.isEmpty())
+        if (tag.isEmpty())
             return Optional.empty();
-        if(tag.contains("cachedSpellId")) {
+        if (tag.contains("cachedSpellId")) {
             return Optional.ofNullable(GlyphCast.SPELL_REGISTRY.get().getValue(new ResourceLocation(tag.getString("cachedSpellId"))));
         }
         // The item doesn't have a cached spell id, so we fall back to checking the glyph sequence instead.
@@ -56,7 +58,7 @@ public interface ISpellHolder {
     }
 
     default GlyphSequence getSequence(ItemStack stack) {
-        if(!stack.getOrCreateTag().contains("glyphcast:glyphs"))
+        if (!stack.getOrCreateTag().contains("glyphcast:glyphs"))
             return null;
         return GlyphSequence.fromTag(stack.getOrCreateTag().getCompound("glyphcast:glyphs"));
     }

@@ -74,14 +74,15 @@ public class InfuseRecipe implements Recipe<Container> {
     public boolean consumesOther() {
         return other != Ingredient.EMPTY;
     }
+
     public static class Serializer implements RecipeSerializer<InfuseRecipe> {
         @Override
         public InfuseRecipe fromJson(ResourceLocation pRecipeId, JsonObject pSerializedRecipe) {
-            if(!pSerializedRecipe.has("input"))
+            if (!pSerializedRecipe.has("input"))
                 throw new JsonParseException("No input item for infuse recipe");
-            if(!pSerializedRecipe.has("result"))
+            if (!pSerializedRecipe.has("result"))
                 throw new JsonParseException("No result item for infuse recipe");
-            if(!pSerializedRecipe.has("cost"))
+            if (!pSerializedRecipe.has("cost"))
                 throw new JsonParseException("No cost for infuse recipe");
 
             Ingredient input = Ingredient.fromJson(pSerializedRecipe.get("input"));

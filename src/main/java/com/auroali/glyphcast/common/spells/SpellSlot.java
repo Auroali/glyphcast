@@ -16,7 +16,17 @@ public class SpellSlot {
         this.index = index;
     }
 
-    public boolean isEmpty() { return spell == null; }
+    public static ArrayList<SpellSlot> makeSlots(int size) {
+        ArrayList<SpellSlot> slots = new ArrayList<>();
+        for (int i = 0; i < size; i++) {
+            slots.add(new SpellSlot(i));
+        }
+        return slots;
+    }
+
+    public boolean isEmpty() {
+        return spell == null;
+    }
 
     public Spell getSpell() {
         return spell;
@@ -24,13 +34,5 @@ public class SpellSlot {
 
     public int getIndex() {
         return index;
-    }
-
-    public static ArrayList<SpellSlot> makeSlots(int size) {
-        ArrayList<SpellSlot> slots = new ArrayList<>();
-        for(int i = 0; i < size; i++) {
-            slots.add(new SpellSlot(i));
-        }
-        return slots;
     }
 }

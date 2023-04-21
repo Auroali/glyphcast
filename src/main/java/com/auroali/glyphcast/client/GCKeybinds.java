@@ -17,9 +17,9 @@ public class GCKeybinds {
 
     @SubscribeEvent
     public static void onInput(InputEvent event) {
-        if(SPELL_SELECTION.isDown())
+        if (SPELL_SELECTION.isDown())
             SpellUser.get(Minecraft.getInstance().player).ifPresent(cap -> {
-                if(!cap.canOpenSpellWheel())
+                if (!cap.canOpenSpellWheel())
                     return;
                 SpellWheelScreen.openCombined();
             });

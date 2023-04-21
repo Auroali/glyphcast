@@ -11,6 +11,7 @@ public class TextureButton extends Button {
     final ResourceLocation texture;
     final int uOffset;
     final int vOffset;
+
     public TextureButton(ResourceLocation texture, int pX, int pY, int width, int height, int uOffset, int vOffset, OnPress pOnPress) {
         super(pX, pY, width, height, GameNarrator.NO_TITLE, pOnPress);
         this.texture = texture;
@@ -20,7 +21,7 @@ public class TextureButton extends Button {
 
     @Override
     public void renderButton(PoseStack pPoseStack, int pMouseX, int pMouseY, float pPartialTick) {
-        if(!this.visible)
+        if (!this.visible)
             return;
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
         RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f);

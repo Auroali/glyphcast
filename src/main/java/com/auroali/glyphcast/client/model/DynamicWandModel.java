@@ -40,6 +40,11 @@ public class DynamicWandModel implements IUnbakedGeometry<DynamicWandModel> {
         this.wandTex = wandTex;
         this.capTex = capTex;
     }
+
+    public static RenderTypeGroup getLayerRenderTypes(boolean unlit) {
+        return new RenderTypeGroup(RenderType.translucent(), unlit ? ForgeRenderTypes.ITEM_UNSORTED_UNLIT_TRANSLUCENT.get() : ForgeRenderTypes.ITEM_UNSORTED_TRANSLUCENT.get());
+    }
+
     @SuppressWarnings("deprecation")
     @Override
     public BakedModel bake(IGeometryBakingContext context, ModelBakery bakery, Function<Material, TextureAtlasSprite> spriteGetter, ModelState modelState, ItemOverrides overrides, ResourceLocation modelLocation) {
@@ -53,16 +58,14 @@ public class DynamicWandModel implements IUnbakedGeometry<DynamicWandModel> {
 
         var normalRenderTypes = getLayerRenderTypes(false);
 
-        if (wandSprite != null)
-        {
+        if (wandSprite != null) {
             // Base texture
             var unbaked = UnbakedGeometryHelper.createUnbakedItemElements(0, wandSprite);
             var quads = UnbakedGeometryHelper.bakeElements(unbaked, $ -> wandSprite, modelState, modelLocation);
             builder.addQuads(normalRenderTypes, quads);
         } else GlyphCast.LOGGER.warn("No wand texture found for path {}", wandTex);
 
-        if (capSprite != null)
-        {
+        if (capSprite != null) {
             // Wand Cap
             var unbaked = UnbakedGeometryHelper.createUnbakedItemElements(1, capSprite);
             var quads = UnbakedGeometryHelper.bakeElements(unbaked, $ -> capSprite, modelState, modelLocation);
@@ -72,15 +75,10 @@ public class DynamicWandModel implements IUnbakedGeometry<DynamicWandModel> {
         return builder.build();
     }
 
-    public static RenderTypeGroup getLayerRenderTypes(boolean unlit)
-    {
-        return new RenderTypeGroup(RenderType.translucent(), unlit ? ForgeRenderTypes.ITEM_UNSORTED_UNLIT_TRANSLUCENT.get() : ForgeRenderTypes.ITEM_UNSORTED_TRANSLUCENT.get());
-    }
-
     @Override
     public Collection<Material> getMaterials(IGeometryBakingContext context, Function<ResourceLocation, UnbakedModel> modelGetter, Set<Pair<String, String>> missingTextureErrors) {
         Set<Material> materials = Sets.newHashSet();
-        if(context.hasMaterial("layer0")) materials.add(context.getMaterial("layer0"));
+        if (context.hasMaterial("layer0")) materials.add(context.getMaterial("layer0"));
         return materials;
     }
 
@@ -91,22 +89,25 @@ public class DynamicWandModel implements IUnbakedGeometry<DynamicWandModel> {
             return new DynamicWandModel(new ResourceLocation(GlyphCast.MODID, "item/wand/wandering"), null);
         }
     }
+
     public static class DynWandOverride extends ItemOverrides {
         private final Map<String, BakedModel> cache = Maps.newHashMap(); // contains all the baked models since they'll never change
         private final ModelBakery bakery;
         private final IGeometryBakingContext owner;
         private final ItemOverrides nested;
+
         public DynWandOverride(ItemOverrides nested, ModelBakery bakery, IGeometryBakingContext owner) {
             this.bakery = bakery;
             this.owner = owner;
             this.nested = nested;
         }
+
         @Nullable
         @Override
         public BakedModel resolve(BakedModel pModel, ItemStack pStack, @Nullable ClientLevel pLevel, @Nullable LivingEntity pEntity, int pSeed) {
             BakedModel overridden = nested.resolve(pModel, pStack, pLevel, pEntity, pSeed);
             if (overridden != pModel) return overridden;
-            if(pStack.getItem() instanceof WandItem wand) {
+            if (pStack.getItem() instanceof WandItem wand) {
                 ResourceLocation material = wand.getMaterial(pStack).map(GCWandMaterials::getKey).orElse(null);
                 ResourceLocation cap = wand.getCap(pStack).map(GCWandCaps::getKey).orElse(null);
                 if (material == null)

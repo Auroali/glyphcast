@@ -29,12 +29,12 @@ public class MagicDamageSpell extends Spell {
     public void activate(IContext ctx) {
         double maxDist = ctx.player().getReachDistance() * 1.5;
         EntityHitResult result = clipEntityFromPlayer(ctx.player(), maxDist, e -> !e.isRemoved());
-        if(result == null) {
+        if (result == null) {
             triggerEvent((byte) 0, PositionedContext.with(ctx, new Vec3(getDist(ctx.player(), maxDist), 0, 0)));
             return;
         }
 
-        result.getEntity().hurt(GCDamageSources.magic(ctx.player()), (float)ctx.stats().averageAffinity() * 12);
+        result.getEntity().hurt(GCDamageSources.magic(ctx.player()), (float) ctx.stats().averageAffinity() * 12);
         double dist = Math.ceil(ctx.player().getEyePosition().distanceTo(result.getLocation()));
         triggerEvent((byte) 0, PositionedContext.with(ctx, new Vec3(dist, 0, 0)));
         spawnEffects(ctx.player(), dist);
@@ -51,7 +51,7 @@ public class MagicDamageSpell extends Spell {
     }
 
     void spawnEffects(Player player, double maxDist) {
-        for(int i = 2; i < (int) maxDist * 2; i++) {
+        for (int i = 2; i < (int) maxDist * 2; i++) {
             Vec3 pos = player.getEyePosition().add(player.getLookAngle().scale(maxDist * (i / (maxDist * 2))));
             SpawnParticlesMessage msg = new SpawnParticlesMessage(GCParticles.MAGIC_PULSE.get(), 0.0, 4, pos, player.getLookAngle(), 0.1, 0.2);
             ClientPacketHandler.spawnParticles(msg);

@@ -15,19 +15,20 @@ public class ClearSpellSlotMessage extends NetworkMessage {
     public ClearSpellSlotMessage(int slot) {
         this.slot = slot;
     }
-    @Override
-    public void encode(FriendlyByteBuf buf) {
-        buf.writeInt(slot);
-    }
 
     public ClearSpellSlotMessage(FriendlyByteBuf buf) {
         slot = buf.readInt();
     }
 
     @Override
+    public void encode(FriendlyByteBuf buf) {
+        buf.writeInt(slot);
+    }
+
+    @Override
     public void handle(Supplier<NetworkEvent.Context> ctx) {
         ctx.get().enqueueWork(() -> {
-            if(ctx.get().getSender() == null)
+            if (ctx.get().getSender() == null)
                 return;
 
             SpellUser.get(ctx.get().getSender()).ifPresent(user -> user.setSpellForSlot(slot, null));

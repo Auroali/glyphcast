@@ -31,6 +31,7 @@ public class CarvingMenu extends AbstractContainerMenu {
     public CarvingMenu(int pContainerId, Inventory inv) {
         this(pContainerId, inv, ContainerLevelAccess.NULL);
     }
+
     public CarvingMenu(int pContainerId, Inventory inv, ContainerLevelAccess access) {
         super(GCMenus.CARVING_TABLE.get(), pContainerId);
         this.inv = inv;
@@ -40,13 +41,13 @@ public class CarvingMenu extends AbstractContainerMenu {
         this.addSlot(new Slot(this.craftSlots, 0, 48, 35));
 
 
-        for(int k = 0; k < 3; ++k) {
-            for(int i1 = 0; i1 < 9; ++i1) {
+        for (int k = 0; k < 3; ++k) {
+            for (int i1 = 0; i1 < 9; ++i1) {
                 this.addSlot(new Slot(inv, i1 + k * 9 + 9, 8 + i1 * 18, 84 + k * 18));
             }
         }
 
-        for(int l = 0; l < 9; ++l) {
+        for (int l = 0; l < 9; ++l) {
             this.addSlot(new Slot(inv, l, 8 + l * 18, 142));
         }
     }
@@ -108,25 +109,25 @@ public class CarvingMenu extends AbstractContainerMenu {
     @Override
     public void slotsChanged(Container pContainer) {
         this.access.execute((level, pos) ->
-            inputSlotChanged(level, inv.player, resultSlots, craftSlots)
+                inputSlotChanged(level, inv.player, resultSlots, craftSlots)
         );
     }
 
     @Override
     public void removed(Player pPlayer) {
         Slot slot = getSlot(1);
-        if(!moveItemStackTo(slot.getItem(), 3, 38, false))
+        if (!moveItemStackTo(slot.getItem(), 3, 38, false))
             pPlayer.drop(slot.getItem(), false);
     }
 
     public void inputSlotChanged(Level level, Player player, CarvingResultsContainer results, CarvingTableContainer craftSlots) {
-        if(level.isClientSide)
+        if (level.isClientSide)
             return;
         ServerPlayer splayer = (ServerPlayer) player;
         ItemStack stack = craftSlots.getItem(0);
         ItemStack out = ItemStack.EMPTY;
         Optional<WandMaterial> opt = GCWandMaterials.fromItem(stack);
-        if(opt.isPresent()) {
+        if (opt.isPresent()) {
             ItemStack wand = new ItemStack(GCItems.WAND.get());
             GCItems.WAND.get().setMaterial(wand, GCWandMaterials.getKey(opt.get()));
             out = wand;

@@ -16,12 +16,12 @@ public class GCEntities {
 
     public static final RegistryObject<EntityType<FireSpellProjectile>> FIRE = ENTITIES.register("fire", () ->
             EntityType.Builder.<FireSpellProjectile>of(FireSpellProjectile::new, MobCategory.MISC)
-            .clientTrackingRange(64)
-            .fireImmune()
-            .setShouldReceiveVelocityUpdates(true)
-            .updateInterval(3)
-            .sized(0.5f, 0.5f)
-            .build(new ResourceLocation(GlyphCast.MODID, "fire").toString()));
+                    .clientTrackingRange(64)
+                    .fireImmune()
+                    .setShouldReceiveVelocityUpdates(true)
+                    .updateInterval(3)
+                    .sized(0.5f, 0.5f)
+                    .build(new ResourceLocation(GlyphCast.MODID, "fire").toString()));
 
     public static final RegistryObject<EntityType<FloatingLight>> FLOATING_LIGHT = ENTITIES.register("floating_light", () ->
             EntityType.Builder.<FloatingLight>of(FloatingLight::new, MobCategory.MISC)

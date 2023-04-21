@@ -15,6 +15,7 @@ public class CarvingTableContainer implements Container {
         items = NonNullList.withSize(pWidth * pHeight, ItemStack.EMPTY);
         this.menu = pMenu;
     }
+
     @Override
     public int getContainerSize() {
         return this.items.size();
@@ -22,7 +23,7 @@ public class CarvingTableContainer implements Container {
 
     @Override
     public boolean isEmpty() {
-        for(ItemStack itemstack : this.items) {
+        for (ItemStack itemstack : this.items) {
             if (!itemstack.isEmpty()) {
                 return false;
             }

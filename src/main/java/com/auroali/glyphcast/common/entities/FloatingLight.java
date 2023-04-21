@@ -28,22 +28,33 @@ public class FloatingLight extends Entity implements IEntityAdditionalSpawnData 
     UUID ownerUUID;
     Entity cachedOwner;
 
+    public FloatingLight(EntityType<?> pEntityType, Level pLevel) {
+        super(pEntityType, pLevel);
+    }
+
+    public FloatingLight(Level pLevel, double x, double y, double z) {
+        super(GCEntities.FLOATING_LIGHT.get(), pLevel);
+        setPos(x, y, z);
+    }
+
     /**
      * Returns an immutable list of all light entities owned by and currently orbiting the player
+     *
      * @param player the owning player
      * @return the list of orbiting lights
      */
     public static List<FloatingLight> getAllFollowing(Player player) {
         return player.level.getEntities(player, player.getBoundingBox().inflate(10),
-                e -> e instanceof FloatingLight && ((FloatingLight) e).ownerUUID.equals(player.getUUID()))
-                .stream().map(e -> (FloatingLight)e)
+                        e -> e instanceof FloatingLight && ((FloatingLight) e).ownerUUID.equals(player.getUUID()))
+                .stream().map(e -> (FloatingLight) e)
                 .toList();
     }
 
     /**
      * Returns all floating lights owned by the player in a level
+     *
      * @param player the owning player
-     * @param level the level to check
+     * @param level  the level to check
      * @return all lights owned by the player
      */
     public static List<FloatingLight> getAllFollowing(Player player, ServerLevel level) {
@@ -51,18 +62,10 @@ public class FloatingLight extends Entity implements IEntityAdditionalSpawnData 
         List<FloatingLight> entities = new ArrayList<>();
         while (it.hasNext()) {
             Entity entity = it.next();
-            if(entity instanceof FloatingLight light && light.getOwner().getUUID().equals(player.getUUID()))
+            if (entity instanceof FloatingLight light && light.getOwner().getUUID().equals(player.getUUID()))
                 entities.add(light);
         }
         return entities;
-    }
-
-    public FloatingLight(EntityType<?> pEntityType, Level pLevel) {
-        super(pEntityType, pLevel);
-    }
-    public FloatingLight(Level pLevel, double x, double y, double z) {
-        super(GCEntities.FLOATING_LIGHT.get(), pLevel);
-        setPos(x, y, z);
     }
 
     @Override
@@ -82,7 +85,7 @@ public class FloatingLight extends Entity implements IEntityAdditionalSpawnData 
     @Override
     public void tick() {
         super.tick();
-        if(getOwner() != null) {
+        if (getOwner() != null) {
             Vec3 target = getOwner().getEyePosition().add(0, 0.0, 0);
             double perc = position().distanceToSqr(target) > 400 ? 1.0f : 0.35f; //Math.max(Math.min(position().distanceTo(target) / 10, 1.0), 0.5f);
             Vec3 pos = position().lerp(target, perc);
@@ -94,9 +97,9 @@ public class FloatingLight extends Entity implements IEntityAdditionalSpawnData 
 
             setPos(pos);
         }
-        if(level.isClientSide) {
+        if (level.isClientSide) {
             LightTracker.update(this, 15);
-            if(level.getGameTime() % 10 == 0 && random.nextDouble() > 0.5)
+            if (level.getGameTime() % 10 == 0 && random.nextDouble() > 0.5)
                 spawnParticles();
         }
 
@@ -111,20 +114,21 @@ public class FloatingLight extends Entity implements IEntityAdditionalSpawnData 
         level.addParticle(ParticleTypes.END_ROD, x, y, z, 0, 0, 0);
     }
 
-    public void setOwner(Entity entity) {
-        this.ownerUUID = entity.getUUID();
-        this.cachedOwner = entity;
-    }
-
     public Entity getOwner() {
-        if(cachedOwner != null && !cachedOwner.isRemoved())
+        if (cachedOwner != null && !cachedOwner.isRemoved())
             return cachedOwner;
-        if(level instanceof ServerLevel serverLevel) {
+        if (level instanceof ServerLevel serverLevel) {
             cachedOwner = serverLevel.getEntity(ownerUUID);
             return cachedOwner;
         }
         return null;
     }
+
+    public void setOwner(Entity entity) {
+        this.ownerUUID = entity.getUUID();
+        this.cachedOwner = entity;
+    }
+
     @Override
     protected void defineSynchedData() {
         entityData.define(BRIGHTNESS, 15);
@@ -132,13 +136,13 @@ public class FloatingLight extends Entity implements IEntityAdditionalSpawnData 
 
     @Override
     protected void readAdditionalSaveData(CompoundTag pCompound) {
-        if(pCompound.contains("Owner"))
+        if (pCompound.contains("Owner"))
             ownerUUID = pCompound.getUUID("Owner");
     }
 
     @Override
     protected void addAdditionalSaveData(CompoundTag pCompound) {
-        if(ownerUUID != null)
+        if (ownerUUID != null)
             pCompound.putUUID("Owner", ownerUUID);
     }
 
@@ -149,16 +153,16 @@ public class FloatingLight extends Entity implements IEntityAdditionalSpawnData 
 
     @Override
     public void writeSpawnData(FriendlyByteBuf buffer) {
-        if(getOwner() != null) {
+        if (getOwner() != null) {
             buffer.writeInt(getOwner().getId());
         }
     }
 
     @Override
     public void readSpawnData(FriendlyByteBuf additionalData) {
-        if(additionalData.isReadable()) {
+        if (additionalData.isReadable()) {
             Entity e = level.getEntity(additionalData.readInt());
-            if(e == null)
+            if (e == null)
                 return;
             setOwner(e);
         }

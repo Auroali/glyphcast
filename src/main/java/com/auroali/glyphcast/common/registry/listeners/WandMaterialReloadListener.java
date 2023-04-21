@@ -28,11 +28,23 @@ public class WandMaterialReloadListener extends SimpleJsonResourceReloadListener
         super(p_10768_, p_10769_);
     }
 
+    @SubscribeEvent
+    public static void serverStartedEvent(ServerStartedEvent event) {
+        GCWandMaterials.syncToClients();
+    }
+
+    @SubscribeEvent
+    public static void playerJoined(PlayerEvent.PlayerLoggedInEvent event) {
+        if (event.getEntity() instanceof ServerPlayer player) {
+            GCNetwork.sendToClient(player, new SyncWandMaterialsMessage());
+        }
+    }
+
     @Override
     protected void apply(Map<ResourceLocation, JsonElement> pObject, ResourceManager pResourceManager, ProfilerFiller pProfiler) {
         pProfiler.push("wand materials");
         Map<ResourceLocation, WandMaterial> map = new HashMap<>();
-        for(var entry : pObject.entrySet()) {
+        for (var entry : pObject.entrySet()) {
             WandMaterial.CODEC.decode(JsonOps.INSTANCE, entry.getValue()).get()
                     .ifLeft(result -> map.put(entry.getKey(), result.getFirst()))
                     .ifRight(result -> GlyphCast.LOGGER.error("Failed to parse wand material {}: {}", entry.getKey(), result.message()));
@@ -41,24 +53,12 @@ public class WandMaterialReloadListener extends SimpleJsonResourceReloadListener
         GCWandMaterials.KEY_MAP.clear();
         GCWandMaterials.VALUE_MAP.clear();
 
-        for(Map.Entry<ResourceLocation, WandMaterial> entry : map.entrySet()) {
+        for (Map.Entry<ResourceLocation, WandMaterial> entry : map.entrySet()) {
             GCWandMaterials.KEY_MAP.put(entry.getKey(), entry.getValue());
             GCWandMaterials.VALUE_MAP.put(entry.getValue(), entry.getKey());
         }
-        if(ServerLifecycleHooks.getCurrentServer() != null)
+        if (ServerLifecycleHooks.getCurrentServer() != null)
             GCWandMaterials.syncToClients();
         pProfiler.pop();
-    }
-
-    @SubscribeEvent
-    public static void serverStartedEvent(ServerStartedEvent event) {
-        GCWandMaterials.syncToClients();
-    }
-
-    @SubscribeEvent
-    public static void playerJoined(PlayerEvent.PlayerLoggedInEvent event) {
-        if(event.getEntity() instanceof ServerPlayer player) {
-            GCNetwork.sendToClient(player, new SyncWandMaterialsMessage());
-        }
     }
 }

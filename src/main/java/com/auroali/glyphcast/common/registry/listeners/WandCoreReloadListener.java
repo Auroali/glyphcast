@@ -28,11 +28,23 @@ public class WandCoreReloadListener extends SimpleJsonResourceReloadListener {
         super(p_10768_, p_10769_);
     }
 
+    @SubscribeEvent
+    public static void serverStartedEvent(ServerStartedEvent event) {
+        GCWandCores.syncToClients();
+    }
+
+    @SubscribeEvent
+    public static void playerJoined(PlayerEvent.PlayerLoggedInEvent event) {
+        if (event.getEntity() instanceof ServerPlayer player) {
+            GCNetwork.sendToClient(player, new SyncWandCoresMessage());
+        }
+    }
+
     @Override
     protected void apply(Map<ResourceLocation, JsonElement> pObject, ResourceManager pResourceManager, ProfilerFiller pProfiler) {
         pProfiler.push("wand cores");
         Map<ResourceLocation, WandCore> map = new HashMap<>();
-        for(var entry : pObject.entrySet()) {
+        for (var entry : pObject.entrySet()) {
             WandCore.CODEC.decode(JsonOps.INSTANCE, entry.getValue()).get()
                     .ifLeft(result -> map.put(entry.getKey(), result.getFirst()))
                     .ifRight(result -> GlyphCast.LOGGER.error("Failed to parse wand core {}: {}", entry.getKey(), result.message()));
@@ -41,24 +53,12 @@ public class WandCoreReloadListener extends SimpleJsonResourceReloadListener {
         GCWandCores.KEY_MAP.clear();
         GCWandCores.VALUE_MAP.clear();
 
-        for(Map.Entry<ResourceLocation, WandCore> entry : map.entrySet()) {
+        for (Map.Entry<ResourceLocation, WandCore> entry : map.entrySet()) {
             GCWandCores.KEY_MAP.put(entry.getKey(), entry.getValue());
             GCWandCores.VALUE_MAP.put(entry.getValue(), entry.getKey());
         }
-        if(ServerLifecycleHooks.getCurrentServer() != null)
+        if (ServerLifecycleHooks.getCurrentServer() != null)
             GCWandCores.syncToClients();
         pProfiler.pop();
-    }
-
-    @SubscribeEvent
-    public static void serverStartedEvent(ServerStartedEvent event) {
-        GCWandCores.syncToClients();
-    }
-
-    @SubscribeEvent
-    public static void playerJoined(PlayerEvent.PlayerLoggedInEvent event) {
-        if(event.getEntity() instanceof ServerPlayer player) {
-            GCNetwork.sendToClient(player, new SyncWandCoresMessage());
-        }
     }
 }

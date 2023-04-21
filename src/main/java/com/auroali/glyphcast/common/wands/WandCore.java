@@ -7,7 +7,8 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.registries.ForgeRegistries;
 
-public record WandCore(ItemStack stack, double efficiency, double fireAffinity, double lightAffinity, double iceAffinity, double earthAffinity) {
+public record WandCore(ItemStack stack, double efficiency, double fireAffinity, double lightAffinity,
+                       double iceAffinity, double earthAffinity) {
 
     public static final Codec<WandCore> CODEC = RecordCodecBuilder.create((instance) ->
             instance.group(

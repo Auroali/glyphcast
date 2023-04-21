@@ -12,6 +12,7 @@ public class CarvingResultsContainer implements Container {
     public CarvingResultsContainer() {
         items = NonNullList.withSize(1, ItemStack.EMPTY);
     }
+
     @Override
     public int getContainerSize() {
         return this.items.size();
@@ -19,7 +20,7 @@ public class CarvingResultsContainer implements Container {
 
     @Override
     public boolean isEmpty() {
-        for(ItemStack itemstack : this.items) {
+        for (ItemStack itemstack : this.items) {
             if (!itemstack.isEmpty()) {
                 return false;
             }

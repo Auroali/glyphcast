@@ -22,14 +22,14 @@ public class MistSpell extends TickingSpell {
 
     @Override
     public boolean tick(IContext ctx, int ticks, CompoundTag tag) {
-        if(!canDrainEnergy(ctx.stats(), ctx.player(), 0.25))
+        if (!canDrainEnergy(ctx.stats(), ctx.player(), 0.25))
             return false;
 
         drainEnergy(ctx.stats(), ctx.player(), 0.25);
-        Vec3 originPos = new Vec3(tag.getDouble("PosX"),tag.getDouble("PosY"), tag.getDouble("PosZ"));
+        Vec3 originPos = new Vec3(tag.getDouble("PosX"), tag.getDouble("PosY"), tag.getDouble("PosZ"));
         double radius = tag.getDouble("Radius");
         AABB bounds = new AABB(originPos, originPos).inflate(radius);
-        if(ticks % 10 == 0) {
+        if (ticks % 10 == 0) {
             BlockPos.betweenClosedStream(bounds).forEach(pos -> {
                 Vec3 particlePos = new Vec3(pos.getX(), pos.getY(), pos.getZ());
                 SpawnParticlesMessage msg = new SpawnParticlesMessage(ParticleTypes.CAMPFIRE_COSY_SMOKE, 2, 1, particlePos, Vec3.ZERO, 0.04, 0.07);

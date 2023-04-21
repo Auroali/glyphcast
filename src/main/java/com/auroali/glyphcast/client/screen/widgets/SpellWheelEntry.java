@@ -21,12 +21,9 @@ public class SpellWheelEntry extends GuiComponent implements Widget, GuiEventLis
     public final int index;
     public final Spell spell;
     public final int slotIndex;
-    private final Glyph glyph;
-
     public final int posX;
     public final int posY;
-
-
+    private final Glyph glyph;
     private final SpellWheelScreen screen;
 
     public SpellWheelEntry(SpellWheelScreen screen, int centerX, int centerY, int index, int slotIndex, Spell spell) {
@@ -37,12 +34,12 @@ public class SpellWheelEntry extends GuiComponent implements Widget, GuiEventLis
         this.slotIndex = slotIndex;
         this.spell = spell;
 
-        double angle = 2*Math.PI * ((double)this.index / 9);
+        double angle = 2 * Math.PI * ((double) this.index / 9);
 
         this.posX = (int) (60 * Math.cos(angle));
         this.posY = (int) (60 * Math.sin(angle));
 
-        if(spell == null || spell.getSequence().equals(GlyphSequence.EMPTY))
+        if (spell == null || spell.getSequence().equals(GlyphSequence.EMPTY))
             this.glyph = null;
         else
             this.glyph = spell.getSequence().asList().stream().findFirst().orElse(null);
@@ -50,29 +47,29 @@ public class SpellWheelEntry extends GuiComponent implements Widget, GuiEventLis
 
     @Override
     public void updateNarration(NarrationElementOutput pNarrationElementOutput) {
-        if(spell != null)
+        if (spell != null)
             pNarrationElementOutput.add(NarratedElementType.HINT, spell.getName());
     }
 
     @Override
     public void render(PoseStack pPoseStack, int pMouseX, int pMouseY, float pPartialTick) {
         RenderSystem.setShaderTexture(0, GlyphRenderer.GLYPHS);
-        if(isMouseOver(pMouseX, pMouseY))
+        if (isMouseOver(pMouseX, pMouseY))
             screen.selectedEntry = this;
 
-        if(spell == null || glyph == null)
+        if (spell == null || glyph == null)
             return;
 
-        GlyphRenderer.drawSpell(pPoseStack, centerX + posX, centerY + posY, spell);
+        GlyphRenderer.drawSpell(pPoseStack, centerX + posX - 16, centerY + posY - 16, spell);
     }
 
 
     @Override
     public boolean isMouseOver(double pMouseX, double pMouseY) {
         double mouseAngle = Math.atan2(pMouseY - centerY, pMouseX - centerX);
-        mouseAngle = mouseAngle < 0 ? mouseAngle + 2*Math.PI : mouseAngle;
+        mouseAngle = mouseAngle < 0 ? mouseAngle + 2 * Math.PI : mouseAngle;
         // TODO: Fix it not working when the angle wraps back around to 0
-        double angle = 2*Math.PI * ((double)this.index / 9);
+        double angle = 2 * Math.PI * ((double) this.index / 9);
         double upper_bound = angle + 0.34906585039;
         double lower_bound = angle - 0.34906585039;
 
@@ -81,8 +78,9 @@ public class SpellWheelEntry extends GuiComponent implements Widget, GuiEventLis
 
     boolean betweenAngle(double angle, double lower, double upper) {
 
-        return (lower < angle && angle < upper) || (lower + 2*Math.PI < angle && angle < upper + 2*Math.PI);
+        return (lower < angle && angle < upper) || (lower + 2 * Math.PI < angle && angle < upper + 2 * Math.PI);
     }
+
     @Override
     public NarrationPriority narrationPriority() {
         return spell != null ? NarrationPriority.HOVERED : NarrationPriority.NONE;

@@ -64,7 +64,7 @@ public class ClientEvents {
     @SuppressWarnings("deprecation")
     @SubscribeEvent
     public static void onPreStitch(TextureStitchEvent.Pre event) {
-        if(!event.getAtlas().location().equals(TextureAtlas.LOCATION_BLOCKS))
+        if (!event.getAtlas().location().equals(TextureAtlas.LOCATION_BLOCKS))
             return;
         Minecraft.getInstance().getResourceManager().listResources("textures/item/wand", p -> p.getPath().endsWith(".png")).forEach((l, r) -> {
             ResourceLocation sprite = new ResourceLocation(l.getNamespace(), l.getPath().substring(9, l.getPath().length() - 4));

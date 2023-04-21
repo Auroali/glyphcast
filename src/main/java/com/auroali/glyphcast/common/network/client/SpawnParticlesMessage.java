@@ -22,6 +22,38 @@ public class SpawnParticlesMessage extends NetworkMessage {
     final double maxSpeed;
     final double minSpeed;
 
+    public SpawnParticlesMessage(ParticleOptions options, double spread, int count, Vec3 pos, Vec3 direction, double speed) {
+        particle = options;
+        this.count = count;
+        this.spread = spread;
+        this.direction = direction;
+        this.maxSpeed = speed;
+        this.minSpeed = 0;
+        this.pos = pos;
+    }
+
+    public SpawnParticlesMessage(ParticleOptions options, double spread, int count, Vec3 pos, Vec3 direction, double minSpeed, double maxSpeed) {
+        particle = options;
+        this.count = count;
+        this.spread = spread;
+        this.direction = direction;
+        this.maxSpeed = maxSpeed;
+        this.minSpeed = minSpeed;
+        this.pos = pos;
+    }
+
+    @SuppressWarnings("deprecation")
+    public SpawnParticlesMessage(FriendlyByteBuf buf) {
+        ParticleType<?> type = buf.readById(Registry.PARTICLE_TYPE);
+        count = buf.readInt();
+        spread = buf.readDouble();
+        maxSpeed = buf.readDouble();
+        minSpeed = buf.readDouble();
+        direction = new Vec3(buf.readDouble(), buf.readDouble(), buf.readDouble());
+        pos = new Vec3(buf.readDouble(), buf.readDouble(), buf.readDouble());
+        particle = readParticle(buf, type);
+    }
+
     @SuppressWarnings("deprecation")
     public void encode(FriendlyByteBuf buf) {
         buf.writeId(Registry.PARTICLE_TYPE, this.particle.getType());
@@ -38,39 +70,10 @@ public class SpawnParticlesMessage extends NetworkMessage {
         particle.writeToNetwork(buf);
     }
 
-    public SpawnParticlesMessage(ParticleOptions options, double spread, int count, Vec3 pos, Vec3 direction, double speed) {
-        particle = options;
-        this.count = count;
-        this.spread = spread;
-        this.direction = direction;
-        this.maxSpeed = speed;
-        this.minSpeed = 0;
-        this.pos = pos;
-    }
-    public SpawnParticlesMessage(ParticleOptions options, double spread, int count, Vec3 pos, Vec3 direction, double minSpeed, double maxSpeed) {
-        particle = options;
-        this.count = count;
-        this.spread = spread;
-        this.direction = direction;
-        this.maxSpeed = maxSpeed;
-        this.minSpeed = minSpeed;
-        this.pos = pos;
-    }
-    @SuppressWarnings("deprecation")
-    public SpawnParticlesMessage(FriendlyByteBuf buf) {
-        ParticleType<?> type = buf.readById(Registry.PARTICLE_TYPE);
-        count = buf.readInt();
-        spread = buf.readDouble();
-        maxSpeed = buf.readDouble();
-        minSpeed = buf.readDouble();
-        direction = new Vec3(buf.readDouble(), buf.readDouble(), buf.readDouble());
-        pos = new Vec3(buf.readDouble(), buf.readDouble(), buf.readDouble());
-        particle = readParticle(buf, type);
-    }
-
     private <T extends ParticleOptions> T readParticle(FriendlyByteBuf pBuffer, ParticleType<T> pParticleType) {
         return pParticleType.getDeserializer().fromNetwork(pParticleType, pBuffer);
     }
+
     public void handle(Supplier<NetworkEvent.Context> ctx) {
         ctx.get().enqueueWork(() -> DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> ClientPacketHandler.spawnParticles(this)));
         ctx.get().setPacketHandled(true);

@@ -19,7 +19,7 @@ public class LightSpell extends Spell {
     @Override
     public void activate(IContext ctx) {
         var entities = FloatingLight.getAllFollowing(ctx.player());
-        if(entities.size() > 0) {
+        if (entities.size() > 0) {
             entities.forEach(e -> e.remove(Entity.RemovalReason.KILLED));
             return;
         }

@@ -14,10 +14,10 @@ import net.minecraft.world.phys.Vec3;
 public class ClientPacketHandler {
     public static void spawnParticles(SpawnParticlesMessage msg) {
         ClientLevel level = Minecraft.getInstance().level;
-        if(level == null)
+        if (level == null)
             return;
         RandomSource rand = level.getRandom();
-        for(int i = 0; i < msg.count; i++) {
+        for (int i = 0; i < msg.count; i++) {
             double spreadX = rand.nextGaussian() * msg.spread;
             double spreadY = rand.nextGaussian() * msg.spread;
             double spreadZ = rand.nextGaussian() * msg.spread;
@@ -33,24 +33,25 @@ public class ClientPacketHandler {
 
     public static void handleChunkEnergy(SyncChunkEnergyMessage msg) {
         ClientLevel level = Minecraft.getInstance().level;
-        if(level == null || !level.hasChunk(msg.pos.x, msg.pos.z))
+        if (level == null || !level.hasChunk(msg.pos.x, msg.pos.z))
             return;
 
         level.getChunk(msg.pos.x, msg.pos.z).getCapability(GCCapabilities.CHUNK_ENERGY).ifPresent(e -> {
-            if(e instanceof ChunkEnergy energy) {
+            if (e instanceof ChunkEnergy energy) {
                 energy.values = msg.values;
                 energy.maxValues = msg.maxValues;
+                energy.fractures = msg.fractures;
             }
         });
     }
 
     public static void triggerSpellEvent(Byte id, Spell spell, Spell.IContext ctx) {
-        if(ctx instanceof Spell.PositionedContext posCtx)
+        if (ctx instanceof Spell.PositionedContext posCtx)
             spell.handleEvent(id, posCtx);
     }
 
     public static Entity fromId(int id) {
-        if(Minecraft.getInstance().level == null)
+        if (Minecraft.getInstance().level == null)
             return null;
         return Minecraft.getInstance().level.getEntity(id);
     }

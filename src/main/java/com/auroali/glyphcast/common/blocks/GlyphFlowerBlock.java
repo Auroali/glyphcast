@@ -31,18 +31,19 @@ public class GlyphFlowerBlock extends FlowerBlock {
     @SuppressWarnings("deprecation")
     public void spawnShearedItems(Level level, ItemStack heldStack, BlockPos pos, RandomSource rand) {
         int numDrops = rand.nextInt(1, 2 + EnchantmentHelper.getItemEnchantmentLevel(Enchantments.BLOCK_FORTUNE, heldStack));
-        for(int i = 0; i < numDrops; i++) {
+        for (int i = 0; i < numDrops; i++) {
             ItemStack stack = new ItemStack(GCItems.BLUE_GLYPH_PETAL.get());
             ItemEntity ent = new ItemEntity(level, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, stack);
-            ent.setDeltaMovement(ent.getDeltaMovement().add(((rand.nextFloat() - rand.nextFloat()) * 0.1F),(rand.nextFloat() * 0.05F), ((rand.nextFloat() - rand.nextFloat()) * 0.1F)));
+            ent.setDeltaMovement(ent.getDeltaMovement().add(((rand.nextFloat() - rand.nextFloat()) * 0.1F), (rand.nextFloat() * 0.05F), ((rand.nextFloat() - rand.nextFloat()) * 0.1F)));
             level.addFreshEntity(ent);
         }
     }
+
     @Override
     @SuppressWarnings("deprecation")
     public InteractionResult use(BlockState pState, Level pLevel, BlockPos pPos, Player pPlayer, InteractionHand pHand, BlockHitResult pHit) {
         ItemStack stack = pPlayer.getItemInHand(pHand);
-        if(stack.is(Items.SHEARS)) {
+        if (stack.is(Items.SHEARS)) {
             pLevel.playSound(pPlayer, pPos, SoundEvents.GROWING_PLANT_CROP, SoundSource.BLOCKS, 1.0F, 1.0F);
             spawnShearedItems(pLevel, stack, pPos, pLevel.random);
             pLevel.setBlockAndUpdate(pPos, GCBlocks.TRIMMED_GLYPH_FLOWER.get().defaultBlockState());

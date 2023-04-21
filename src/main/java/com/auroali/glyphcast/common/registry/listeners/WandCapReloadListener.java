@@ -28,11 +28,23 @@ public class WandCapReloadListener extends SimpleJsonResourceReloadListener {
         super(p_10768_, p_10769_);
     }
 
+    @SubscribeEvent
+    public static void serverStartedEvent(ServerStartedEvent event) {
+        GCWandCaps.syncToClients();
+    }
+
+    @SubscribeEvent
+    public static void playerJoined(PlayerEvent.PlayerLoggedInEvent event) {
+        if (event.getEntity() instanceof ServerPlayer player) {
+            GCNetwork.sendToClient(player, new SyncWandCapsMessage());
+        }
+    }
+
     @Override
     protected void apply(Map<ResourceLocation, JsonElement> pObject, ResourceManager pResourceManager, ProfilerFiller pProfiler) {
         pProfiler.push("wand caps");
         Map<ResourceLocation, WandCap> map = new HashMap<>();
-        for(var entry : pObject.entrySet()) {
+        for (var entry : pObject.entrySet()) {
             WandCap.CODEC.decode(JsonOps.INSTANCE, entry.getValue()).get()
                     .ifLeft(result -> map.put(entry.getKey(), result.getFirst()))
                     .ifRight(result -> GlyphCast.LOGGER.error("Failed to parse wand cap {}: {}", entry.getKey(), result.message()));
@@ -41,24 +53,12 @@ public class WandCapReloadListener extends SimpleJsonResourceReloadListener {
         GCWandCaps.KEY_MAP.clear();
         GCWandCaps.VALUE_MAP.clear();
 
-        for(Map.Entry<ResourceLocation, WandCap> entry : map.entrySet()) {
+        for (Map.Entry<ResourceLocation, WandCap> entry : map.entrySet()) {
             GCWandCaps.KEY_MAP.put(entry.getKey(), entry.getValue());
             GCWandCaps.VALUE_MAP.put(entry.getValue(), entry.getKey());
         }
-        if(ServerLifecycleHooks.getCurrentServer() != null)
+        if (ServerLifecycleHooks.getCurrentServer() != null)
             GCWandCaps.syncToClients();
         pProfiler.pop();
-    }
-
-    @SubscribeEvent
-    public static void serverStartedEvent(ServerStartedEvent event) {
-        GCWandCaps.syncToClients();
-    }
-
-    @SubscribeEvent
-    public static void playerJoined(PlayerEvent.PlayerLoggedInEvent event) {
-        if(event.getEntity() instanceof ServerPlayer player) {
-            GCNetwork.sendToClient(player, new SyncWandCapsMessage());
-        }
     }
 }

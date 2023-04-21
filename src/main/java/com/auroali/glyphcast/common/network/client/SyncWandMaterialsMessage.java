@@ -13,20 +13,23 @@ import java.util.function.Supplier;
 
 public class SyncWandMaterialsMessage extends NetworkMessage {
     final Map<ResourceLocation, WandMaterial> map;
+
     public SyncWandMaterialsMessage() {
         map = GCWandMaterials.KEY_MAP;
     }
+
     @SuppressWarnings("deprecation")
     public SyncWandMaterialsMessage(FriendlyByteBuf buf) {
         map = new HashMap<>();
-        while(buf.isReadable()) {
+        while (buf.isReadable()) {
             map.put(buf.readResourceLocation(), buf.readWithCodec(WandMaterial.CODEC));
         }
     }
+
     @Override
     @SuppressWarnings("deprecation")
     public void encode(FriendlyByteBuf buf) {
-        for(Map.Entry<ResourceLocation, WandMaterial> entry : map.entrySet()) {
+        for (Map.Entry<ResourceLocation, WandMaterial> entry : map.entrySet()) {
             buf.writeResourceLocation(entry.getKey());
             buf.writeWithCodec(WandMaterial.CODEC, entry.getValue());
         }
@@ -37,7 +40,7 @@ public class SyncWandMaterialsMessage extends NetworkMessage {
         ctx.get().enqueueWork(() -> {
             GCWandMaterials.KEY_MAP.clear();
             GCWandMaterials.VALUE_MAP.clear();
-            for(Map.Entry<ResourceLocation, WandMaterial> entry : map.entrySet()) {
+            for (Map.Entry<ResourceLocation, WandMaterial> entry : map.entrySet()) {
                 GCWandMaterials.KEY_MAP.put(entry.getKey(), entry.getValue());
                 GCWandMaterials.VALUE_MAP.put(entry.getValue(), entry.getKey());
             }

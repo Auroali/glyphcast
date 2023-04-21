@@ -15,9 +15,10 @@ import java.util.Optional;
 
 /**
  * A sequence of glyphs split into rings that represents a spell
+ *
+ * @author Auroali
  * @see com.auroali.glyphcast.common.spells.glyph.Ring
  * @see com.auroali.glyphcast.common.spells.glyph.Glyph
- * @author Auroali
  */
 public class GlyphSequence {
 
@@ -39,11 +40,49 @@ public class GlyphSequence {
     }
 
     /**
+     * Creates a new GlyphSequence from the provided buffer
+     *
+     * @param buf the buffer to create the sequence from
+     * @return the resulting sequence
+     */
+    public static GlyphSequence fromNetwork(FriendlyByteBuf buf) {
+        int numRings = buf.readInt();
+        List<Ring> rings = new ArrayList<>();
+        for (int i = 0; i < numRings; i++) {
+            rings.add(Ring.decode(buf));
+        }
+        return new GlyphSequence(rings);
+    }
+
+    /**
+     * Creates a new GlyphSequence from a CompoundTag
+     *
+     * @param tag the tag to create the sequence from
+     * @return the resulting sequence
+     */
+    public static GlyphSequence fromTag(CompoundTag tag) {
+        ListTag rings = tag.getList("Rings", Tag.TAG_LIST);
+        List<Ring> ringsList = new ArrayList<>();
+        // Read each ring
+        for (int i = 0; i < rings.size(); i++) {
+            ListTag glyphs = rings.getList(i);
+            List<Glyph> ringSequence = new ArrayList<>();
+            // Read all the glyphs in this ring
+            for (int j = 0; j < glyphs.size(); j++) {
+                ringSequence.add(Glyph.values()[glyphs.getInt(j)]);
+            }
+            ringsList.add(Ring.of(ringSequence));
+        }
+        return new GlyphSequence(ringsList);
+    }
+
+    /**
      * Finds a spell in the registry matching this sequence
+     *
      * @return an optional containing the spell, if it exists
      */
     public Optional<Spell> findSpell() {
-        if(cachedSpell != null)
+        if (cachedSpell != null)
             return Optional.of(cachedSpell);
 
         Optional<Spell> spellOpt = GlyphCast.SPELL_REGISTRY.get().getValues().stream()
@@ -56,8 +95,10 @@ public class GlyphSequence {
     public List<Ring> getRings() {
         return glyphList;
     }
+
     /**
      * Returns a list containing all the glyphs in the sequence
+     *
      * @return an immutable list holding the glyphs
      */
     public List<Glyph> asList() {
@@ -81,44 +122,9 @@ public class GlyphSequence {
         return tag;
     }
 
-    /**
-     * Creates a new GlyphSequence from the provided buffer
-     * @param buf the buffer to create the sequence from
-     * @return the resulting sequence
-     */
-    public static GlyphSequence fromNetwork(FriendlyByteBuf buf) {
-        int numRings = buf.readInt();
-        List<Ring> rings = new ArrayList<>();
-        for(int i = 0; i < numRings; i++) {
-            rings.add(Ring.decode(buf));
-        }
-        return new GlyphSequence(rings);
-    }
-
-    /**
-     * Creates a new GlyphSequence from a CompoundTag
-     * @param tag the tag to create the sequence from
-     * @return the resulting sequence
-     */
-    public static GlyphSequence fromTag(CompoundTag tag) {
-        ListTag rings = tag.getList("Rings", Tag.TAG_LIST);
-        List<Ring> ringsList = new ArrayList<>();
-        // Read each ring
-        for(int i = 0; i < rings.size(); i++) {
-            ListTag glyphs = rings.getList(i);
-            List<Glyph> ringSequence = new ArrayList<>();
-            // Read all the glyphs in this ring
-            for(int j = 0; j < glyphs.size(); j++) {
-                ringSequence.add(Glyph.values()[glyphs.getInt(j)]);
-            }
-            ringsList.add(Ring.of(ringSequence));
-        }
-        return new GlyphSequence(ringsList);
-    }
-
     @Override
     public boolean equals(Object obj) {
-        if(obj instanceof GlyphSequence sequence)
+        if (obj instanceof GlyphSequence sequence)
             return sequence.glyphList.equals(glyphList);
         return super.equals(obj);
     }

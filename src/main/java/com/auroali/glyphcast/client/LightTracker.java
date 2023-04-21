@@ -18,6 +18,7 @@ import java.util.List;
 /**
  * Tracks the dynamic lighting for an entity
  * Currently the brightness is fixed
+ *
  * @author Auroali
  */
 @Mod.EventBusSubscriber(value = Dist.CLIENT, modid = GlyphCast.MODID)
@@ -27,7 +28,7 @@ public class LightTracker {
 
     @SubscribeEvent
     public static void tick(TickEvent.ClientTickEvent event) {
-        if(event.phase != TickEvent.Phase.START || Minecraft.getInstance().level == null)
+        if (event.phase != TickEvent.Phase.START || Minecraft.getInstance().level == null)
             return;
 
         List<BlockPos> updatePos = new ArrayList<>();
@@ -45,6 +46,7 @@ public class LightTracker {
 
     /**
      * Returns whether any dynamic light is present at the given location
+     *
      * @param pos the position to check
      * @return whether a light is present
      */
@@ -55,6 +57,7 @@ public class LightTracker {
     /**
      * Get the brightness of the dynamic light at the given position.
      * <br> If there are multiple lights, this will return the brightest.
+     *
      * @param pos the position of the light
      * @return the brightness of the light
      */
@@ -77,22 +80,24 @@ public class LightTracker {
     /**
      * Updates the dynamic lighting on an entity
      * if the entity isn't present in the LIGHTS map, this skips the update frequency check
+     *
      * @param entity the entity to update
      */
     public static void update(Entity entity, int brightness) {
-        if(Minecraft.getInstance().level == null || (!LIGHTS.containsKey(entity) && Minecraft.getInstance().level.getGameTime() % GCClientConfig.CLIENT.updateFrequency.get() != 0))
+        if (Minecraft.getInstance().level == null || (!LIGHTS.containsKey(entity) && Minecraft.getInstance().level.getGameTime() % GCClientConfig.CLIENT.updateFrequency.get() != 0))
             return;
         DynamicLightSource source = LIGHTS.get(entity);
         BlockPos pos = source != null ? source.position() : null;
-        
+
         LIGHTS.put(entity, new DynamicLightSource(entity.blockPosition(), brightness));
         Minecraft.getInstance().level.getLightEngine().checkBlock(entity.blockPosition());
-        if(pos != null)
+        if (pos != null)
             Minecraft.getInstance().level.getLightEngine().checkBlock(pos);
     }
 
     /**
      * Removes the light source for an entity
+     *
      * @param entity the entity to remove
      */
     public static void removeEntity(Entity entity) {

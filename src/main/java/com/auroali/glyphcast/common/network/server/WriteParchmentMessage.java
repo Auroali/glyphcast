@@ -19,10 +19,12 @@ public class WriteParchmentMessage extends NetworkMessage {
         this.slot = slot;
         this.sequence = sequence;
     }
+
     public WriteParchmentMessage(FriendlyByteBuf buf) {
         slot = buf.readInt();
         sequence = GlyphSequence.fromNetwork(buf);
     }
+
     @Override
     public void encode(FriendlyByteBuf buf) {
         buf.writeInt(slot);
@@ -33,12 +35,12 @@ public class WriteParchmentMessage extends NetworkMessage {
     public void handle(Supplier<NetworkEvent.Context> ctx) {
         ctx.get().enqueueWork(() -> {
             ServerPlayer player = ctx.get().getSender();
-            if(player == null)
+            if (player == null)
                 return;
 
             // Write the glyph sequence to the target item
             ItemStack stack = player.getInventory().getItem(slot);
-            if(stack.getItem() instanceof IGlyphWriteable glyphWriteable)
+            if (stack.getItem() instanceof IGlyphWriteable glyphWriteable)
                 player.getInventory().setItem(slot, glyphWriteable.writeGlyphs(stack, sequence));
         });
         ctx.get().setPacketHandled(true);

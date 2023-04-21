@@ -9,17 +9,9 @@ import java.util.List;
 
 public class Ring {
     final List<Glyph> glyphs;
+
     private Ring(List<Glyph> glyphs) {
         this.glyphs = glyphs;
-    }
-
-    public void encode(FriendlyByteBuf buf) {
-        buf.writeInt(glyphs.size());
-        glyphs.forEach(glyph -> buf.writeInt(glyph.ordinal()));
-    }
-
-    public List<Glyph> asList() {
-        return glyphs;
     }
 
     public static Ring of(Glyph... glyphs) {
@@ -33,7 +25,7 @@ public class Ring {
     public static Ring decode(FriendlyByteBuf buf) {
         List<Glyph> glyphs = new ArrayList<>();
         int len = buf.readInt();
-        for(int i = 0; i < len; i++) {
+        for (int i = 0; i < len; i++) {
             glyphs.add(Glyph.values()[buf.readInt()]);
         }
         return Ring.of(glyphs);
@@ -49,6 +41,15 @@ public class Ring {
         ArrayList<Glyph> list = new ArrayList<>();
         rings.forEach(ring -> list.addAll(ring.glyphs));
         return Collections.unmodifiableList(list);
+    }
+
+    public void encode(FriendlyByteBuf buf) {
+        buf.writeInt(glyphs.size());
+        glyphs.forEach(glyph -> buf.writeInt(glyph.ordinal()));
+    }
+
+    public List<Glyph> asList() {
+        return glyphs;
     }
 
     @Override

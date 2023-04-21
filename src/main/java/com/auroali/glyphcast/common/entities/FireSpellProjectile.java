@@ -47,12 +47,12 @@ public class FireSpellProjectile extends Projectile {
     @Override
     public void tick() {
         super.tick();
-        if(getDeltaMovement().length() <= 0.1d) {
+        if (getDeltaMovement().length() <= 0.1d) {
             this.discard();
             return;
         }
 
-        if(!level.isClientSide)
+        if (!level.isClientSide)
             igniteBlock();
 
         handleExtinguish();
@@ -71,7 +71,7 @@ public class FireSpellProjectile extends Projectile {
             if (!voxelshape.isEmpty()) {
                 Vec3 vec31 = this.position();
 
-                for(AABB aabb : voxelshape.toAabbs()) {
+                for (AABB aabb : voxelshape.toAabbs()) {
                     if (aabb.move(blockpos).contains(vec31)) {
                         this.discard();
                         break;
@@ -96,38 +96,39 @@ public class FireSpellProjectile extends Projectile {
 
     private void handleEntityHit() {
         EntityHitResult result = findHitEntity(position(), position().add(getDeltaMovement()));
-        if(result != null && result.getType() == HitResult.Type.ENTITY) {
+        if (result != null && result.getType() == HitResult.Type.ENTITY) {
             this.onHitEntity(result);
         }
     }
 
     private void spawnParticles() {
-        if(level.isClientSide) {
-            if(GCClientConfig.CLIENT.fireEmitsLight.get())
+        if (level.isClientSide) {
+            if (GCClientConfig.CLIENT.fireEmitsLight.get())
                 LightTracker.update(this, 7);
             double speed = getDeltaMovement().length() / 5;
-            ClientPacketHandler.spawnParticles(new SpawnParticlesMessage(ParticleTypes.FLAME, 0.12, 15, position().add(0, 0.25, 0),getDeltaMovement(), speed ));
-            ClientPacketHandler.spawnParticles(new SpawnParticlesMessage(ParticleTypes.SOUL_FIRE_FLAME,0.02, 15, position().add(0, 0.25, 0),getDeltaMovement(), speed));
-            ClientPacketHandler.spawnParticles(new SpawnParticlesMessage(ParticleTypes.SMOKE, 0.02, 20, position().add(0, 0.25, 0),getDeltaMovement(), speed));
+            ClientPacketHandler.spawnParticles(new SpawnParticlesMessage(ParticleTypes.FLAME, 0.12, 2, position().add(0, 0.25, 0), getDeltaMovement(), speed));
+            ClientPacketHandler.spawnParticles(new SpawnParticlesMessage(ParticleTypes.SOUL_FIRE_FLAME, 0.02, 2, position().add(0, 0.25, 0), getDeltaMovement(), speed));
+            ClientPacketHandler.spawnParticles(new SpawnParticlesMessage(ParticleTypes.SMOKE, 0.02, 3, position().add(0, 0.25, 0), getDeltaMovement(), speed));
         }
     }
 
     void igniteBlock() {
         var result = level.clip(new ClipContext(this.position(), this.position().add(this.getDeltaMovement()), ClipContext.Block.COLLIDER, ClipContext.Fluid.ANY, null));
-        if(result.getType() != HitResult.Type.MISS) {
+        if (result.getType() != HitResult.Type.MISS) {
             BlockPos pos = result.getBlockPos().relative(result.getDirection());
             BlockState state = level.getBlockState(result.getBlockPos());
             // If the block can be lit, we light it
-            if(state.hasProperty(BlockStateProperties.LIT) && !state.getValue(BlockStateProperties.LIT)) {
+            if (state.hasProperty(BlockStateProperties.LIT) && !state.getValue(BlockStateProperties.LIT)) {
                 level.setBlockAndUpdate(result.getBlockPos(), state.setValue(BlockStateProperties.LIT, true));
                 this.discard();
                 return;
             }
             // Otherwise we try to burn it
-            if(BaseFireBlock.canBePlacedAt(level, pos, result.getDirection()))
+            if (BaseFireBlock.canBePlacedAt(level, pos, result.getDirection()))
                 level.setBlockAndUpdate(result.getBlockPos().relative(result.getDirection()), BaseFireBlock.getState(level, pos));
         }
     }
+
     @Nullable
     protected EntityHitResult findHitEntity(Vec3 pStartVec, Vec3 pEndVec) {
         return ProjectileUtil.getEntityHitResult(this.level, this, pStartVec, pEndVec, this.getBoundingBox().expandTowards(this.getDeltaMovement()).inflate(1.0D), this::canHitEntity);
@@ -138,14 +139,14 @@ public class FireSpellProjectile extends Projectile {
         if (ownedBy(pResult.getEntity()))
             return;
         pResult.getEntity().setSecondsOnFire(2);
-        if(getOwner() != null)
+        if (getOwner() != null)
             pResult.getEntity().hurt(GCDamageSources.burnIndirect(this, getOwner()), 4);
         else
             pResult.getEntity().hurt(GCDamageSources.BURN, 4);
         this.discard();
         if (!level.isClientSide) {
             GCNetwork.sendToNear(level, position(), 32, new SpawnParticlesMessage(ParticleTypes.FLAME, 0.15, 15, position().add(0, 0.25, 0), getDeltaMovement().normalize().scale(-1), 0.05, 0.07));
-            GCNetwork.sendToNear(level, position(), 32, new SpawnParticlesMessage(ParticleTypes.SOUL_FIRE_FLAME, 0.15, 15, position().add(0, 0.25, 0), getDeltaMovement().normalize().scale(-1), 0.05,0.07));
+            GCNetwork.sendToNear(level, position(), 32, new SpawnParticlesMessage(ParticleTypes.SOUL_FIRE_FLAME, 0.15, 15, position().add(0, 0.25, 0), getDeltaMovement().normalize().scale(-1), 0.05, 0.07));
         }
     }
 

@@ -29,18 +29,18 @@ public class GlyphEditorScreen extends Screen {
     public static final ResourceLocation PARCHMENT = new ResourceLocation(GlyphCast.MODID, "textures/gui/parchment.png");
     public static final Component SAVE_LABEL = Component.translatable("gui.glyphcast.save_glyphs");
     public static final Component CLOSE_LABEL = Component.translatable("gui.cancel");
-
-    public static void openScreen(Player player, ItemStack stack) {
-        GlyphEditorScreen editor = new GlyphEditorScreen(player.getInventory().findSlotMatchingItem(stack));
-        Minecraft.getInstance().setScreen(editor);
-    }
-
     final int slot;
     final List<List<Glyph>> glyphs = new ArrayList<>();
+
     public GlyphEditorScreen(int slot) {
         super(GameNarrator.NO_TITLE);
         this.slot = slot;
         this.glyphs.add(new ArrayList<>());
+    }
+
+    public static void openScreen(Player player, ItemStack stack) {
+        GlyphEditorScreen editor = new GlyphEditorScreen(player.getInventory().findSlotMatchingItem(stack));
+        Minecraft.getInstance().setScreen(editor);
     }
 
     @Override
@@ -72,14 +72,14 @@ public class GlyphEditorScreen extends Screen {
     }
 
     void addGlyph(Glyph glyph) {
-        if(glyphs.size() == 0 || glyphs.get(glyphs.size() - 1).size() >= getMaxPerRing())
+        if (glyphs.size() == 0 || glyphs.get(glyphs.size() - 1).size() >= getMaxPerRing())
             return;
 
         glyphs.get(glyphs.size() - 1).add(glyph);
     }
 
     void addRing() {
-        if(glyphs.size() >= 3)
+        if (glyphs.size() >= 3)
             return;
 
         glyphs.add(new ArrayList<>());
@@ -93,6 +93,7 @@ public class GlyphEditorScreen extends Screen {
             default -> 0;
         };
     }
+
     @Override
     public void render(PoseStack pPoseStack, int pMouseX, int pMouseY, float pPartialTick) {
         this.renderBackground(pPoseStack);
@@ -113,7 +114,7 @@ public class GlyphEditorScreen extends Screen {
     }
 
     void saveGlyphSequence() {
-        if(glyphs.size() == 0)
+        if (glyphs.size() == 0)
             return;
         List<Ring> rings = new ArrayList<>();
         glyphs.forEach(r -> rings.add(Ring.of(r)));

@@ -5,6 +5,7 @@ import com.auroali.glyphcast.common.network.NetworkMessage;
 import com.auroali.glyphcast.common.spells.Spell;
 import com.auroali.glyphcast.common.spells.SpellStats;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.network.NetworkEvent;
@@ -15,6 +16,7 @@ public class SpellEventMessage extends NetworkMessage {
     final byte id;
     final Spell spell;
     final Spell.IContext ctx;
+
     public SpellEventMessage(Byte id, Spell spell, Spell.IContext ctx) {
         this.id = id;
         this.spell = spell;
@@ -29,8 +31,9 @@ public class SpellEventMessage extends NetworkMessage {
 
     public Spell.IContext readCtx(FriendlyByteBuf buf) {
         buf.readInt();
+        InteractionHand hand = InteractionHand.values()[buf.readInt()];
         Player player = (Player) ClientPacketHandler.fromId(buf.readInt());
-        if(player == null)
+        if (player == null)
             return null;
         double efficiency = buf.readDouble();
         int cooldown = buf.readInt();
@@ -41,9 +44,10 @@ public class SpellEventMessage extends NetworkMessage {
         final SpellStats stats = new SpellStats(efficiency, cooldown, fireAffinity, lightAffinity, iceAffinity, earthAffinity);
 
         // A spell event is only ever triggered with a positioned context
-        return new Spell.PositionedContext(player.level, player, stats, new Vec3(buf.readDouble(), buf.readDouble(), buf.readDouble()), new Vec3(buf.readDouble(), buf.readDouble(), buf.readDouble()));
+        return new Spell.PositionedContext(player.level, player, hand, stats, new Vec3(buf.readDouble(), buf.readDouble(), buf.readDouble()), new Vec3(buf.readDouble(), buf.readDouble(), buf.readDouble()));
 
     }
+
     @Override
     public void encode(FriendlyByteBuf buf) {
         buf.writeByte(this.id);

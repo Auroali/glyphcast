@@ -17,9 +17,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class GlyphClientTooltipComponent implements ClientTooltipComponent {
+    public static final ResourceLocation BACKGROUND = new ResourceLocation(GlyphCast.MODID, "textures/gui/tooltip/glyph_tooltip_bg.png");
     final List<List<Glyph>> glyphs;
 
-    public static final ResourceLocation BACKGROUND = new ResourceLocation(GlyphCast.MODID, "textures/gui/tooltip/glyph_tooltip_bg.png");
     public GlyphClientTooltipComponent(GlyphSequence sequence) {
         this.glyphs = new ArrayList<>();
         sequence.getRings().forEach(ring -> glyphs.add(ring.asList()));
@@ -44,7 +44,7 @@ public class GlyphClientTooltipComponent implements ClientTooltipComponent {
     public void renderImage(Font pFont, int pMouseX, int pMouseY, PoseStack pPoseStack, ItemRenderer pItemRenderer, int pBlitOffset) {
         RenderSystem.setShaderTexture(0, BACKGROUND);
         pPoseStack.pushPose();
-        pPoseStack.scale(0.5f,0.5f,0.5f);
+        pPoseStack.scale(0.5f, 0.5f, 0.5f);
         pMouseX *= 2;
         pMouseY *= 2;
         GuiComponent.blit(pPoseStack, pMouseX, pMouseY, pBlitOffset, 0, 0, 200, 200, 256, 256);

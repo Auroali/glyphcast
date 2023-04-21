@@ -10,6 +10,7 @@ import net.minecraft.client.renderer.GameRenderer;
 
 public class AddGlyphButton extends Button {
     final Glyph glyph;
+
     public AddGlyphButton(Glyph glyph, ISpellUser user, int pX, int pY, OnPress pOnPress) {
         super(pX, pY, 16, 16, glyph.component(), pOnPress);
         this.glyph = glyph;
@@ -18,7 +19,7 @@ public class AddGlyphButton extends Button {
 
     @Override
     public void renderButton(PoseStack pPoseStack, int pMouseX, int pMouseY, float pPartialTick) {
-        if(!this.visible)
+        if (!this.visible)
             return;
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
         RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f);

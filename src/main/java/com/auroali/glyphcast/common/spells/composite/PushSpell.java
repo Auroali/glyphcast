@@ -29,7 +29,7 @@ public class PushSpell extends Spell {
     public void activate(IContext ctx) {
         SpawnParticlesMessage msg = new SpawnParticlesMessage(ParticleTypes.CAMPFIRE_COSY_SMOKE, 0.05, 15, ctx.player().getEyePosition().add(ctx.player().getLookAngle().scale(0.5)), ctx.player().getLookAngle(), 0.15);
         GCNetwork.sendToNear(ctx.level(), ctx.player().getEyePosition(), 16, msg);
-        if(ctx.player().isCrouching())
+        if (ctx.player().isCrouching())
             useOnSelf(ctx.player());
         else
             useOnTargetEntity(ctx.player());
@@ -38,20 +38,20 @@ public class PushSpell extends Spell {
     private void useOnSelf(Player player) {
         Vec3 pushVec = player.getLookAngle().scale(-1);
         player.push(pushVec.x, pushVec.y, pushVec.z);
-        if(player instanceof ServerPlayer sPlayer) {
+        if (player instanceof ServerPlayer sPlayer) {
             sPlayer.connection.send(new ClientboundSetEntityMotionPacket(sPlayer));
         }
     }
 
     private void useOnTargetEntity(Player player) {
         EntityHitResult result = clipEntityFromPlayer(player, player.getReachDistance(), entity -> entity instanceof LivingEntity && !entity.isRemoved());
-        if(result == null)
+        if (result == null)
             return;
 
         Entity entity = result.getEntity();
         Vec3 pushVec = player.getLookAngle().add(0, 0.15, 0).normalize().scale(1.2);
         entity.push(pushVec.x, pushVec.y, pushVec.z);
-        if(entity instanceof ServerPlayer sPlayer) {
+        if (entity instanceof ServerPlayer sPlayer) {
             sPlayer.connection.send(new ClientboundSetEntityMotionPacket(sPlayer));
         }
     }

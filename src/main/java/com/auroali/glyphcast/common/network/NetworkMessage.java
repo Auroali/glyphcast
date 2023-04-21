@@ -7,5 +7,6 @@ import java.util.function.Supplier;
 
 public abstract class NetworkMessage {
     public abstract void encode(FriendlyByteBuf buf);
+
     public abstract void handle(Supplier<NetworkEvent.Context> ctx);
 }

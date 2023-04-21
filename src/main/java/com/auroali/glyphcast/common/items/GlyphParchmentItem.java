@@ -25,6 +25,10 @@ import java.util.Optional;
 
 public class GlyphParchmentItem extends Item implements ISpellHolder {
 
+    public GlyphParchmentItem() {
+        super(new Properties().stacksTo(16).tab(GlyphCast.GLYPHCAST_TAB));
+    }
+
     @Override
     public Component getName(ItemStack pStack) {
         var spell = getSpell(pStack);
@@ -45,7 +49,7 @@ public class GlyphParchmentItem extends Item implements ISpellHolder {
     @Override
     public Optional<TooltipComponent> getTooltipImage(ItemStack pStack) {
         GlyphSequence sequence = getSequence(pStack);
-        if(sequence == null)
+        if (sequence == null)
             return Optional.empty();
         return Optional.of(new GlyphTooltipComponent(getSequence(pStack)));
     }
@@ -56,25 +60,21 @@ public class GlyphParchmentItem extends Item implements ISpellHolder {
         return stack;
     }
 
-    public GlyphParchmentItem() {
-        super(new Properties().stacksTo(16).tab(GlyphCast.GLYPHCAST_TAB));
-    }
-
     @Override
     public InteractionResultHolder<ItemStack> use(Level pLevel, Player pPlayer, InteractionHand pUsedHand) {
         ItemStack stack = pPlayer.getItemInHand(pUsedHand);
 
-        if(!pLevel.isClientSide) {
+        if (!pLevel.isClientSide) {
             Optional<Spell> spell = getSpell(stack);
             spell.ifPresent(_spell -> {
-                _spell.tryActivate(pLevel, pPlayer, SpellStats.PARCHMENT);
+                _spell.tryActivate(pLevel, pPlayer, pUsedHand, SpellStats.PARCHMENT);
                 pPlayer.getCooldowns().addCooldown(this, SpellStats.PARCHMENT.cooldown());
                 if (pPlayer instanceof ServerPlayer) {
-                    CriteriaTriggers.USING_ITEM.trigger((ServerPlayer)pPlayer, stack);
+                    CriteriaTriggers.USING_ITEM.trigger((ServerPlayer) pPlayer, stack);
                 }
             });
 
-            if(spell.isPresent() && !pPlayer.isCreative())
+            if (spell.isPresent() && !pPlayer.isCreative())
                 stack.shrink(1);
 
             // Mark the spell as discovered

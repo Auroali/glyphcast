@@ -12,16 +12,16 @@ public enum Glyph {
     final Component component;
     final int color;
 
+    Glyph(Component component, int color) {
+        this.component = component;
+        this.color = color;
+    }
+
     public Component component() {
         return component;
     }
 
     public int color() {
         return color;
-    }
-
-    Glyph(Component component, int color) {
-        this.component = component;
-        this.color = color;
     }
 }

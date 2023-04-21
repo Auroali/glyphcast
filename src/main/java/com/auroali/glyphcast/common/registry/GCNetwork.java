@@ -3,6 +3,7 @@ package com.auroali.glyphcast.common.registry;
 import com.auroali.glyphcast.GlyphCast;
 import com.auroali.glyphcast.common.network.NetworkMessage;
 import com.auroali.glyphcast.common.network.client.*;
+import com.auroali.glyphcast.common.network.server.RequestChunkEnergyMessage;
 import com.auroali.glyphcast.common.network.server.SelectSpellSlotMessage;
 import com.auroali.glyphcast.common.network.server.SetSlotSpellMessage;
 import com.auroali.glyphcast.common.network.server.WriteParchmentMessage;
@@ -25,6 +26,7 @@ public class GCNetwork {
     public static final SimpleChannel CHANNEL = NetworkRegistry.newSimpleChannel(new ResourceLocation(GlyphCast.MODID, "main"), () -> PROTOCOL_VERSION, PROTOCOL_VERSION::equals, PROTOCOL_VERSION::equals);
 
     private static int id = 0;
+
     public static void registerPackets() {
         registerPlayToClient(SpawnParticlesMessage.class, SpawnParticlesMessage::new);
         registerPlayToClient(SyncSpellUserDataMessage.class, SyncSpellUserDataMessage::new);
@@ -36,6 +38,7 @@ public class GCNetwork {
         registerPlayToServer(WriteParchmentMessage.class, WriteParchmentMessage::new);
         registerPlayToServer(SetSlotSpellMessage.class, SetSlotSpellMessage::new);
         registerPlayToServer(SelectSpellSlotMessage.class, SelectSpellSlotMessage::new);
+        registerPlayToServer(RequestChunkEnergyMessage.class, RequestChunkEnergyMessage::new);
         //registerPlayToServer(ClearSpellSlotMessage.class, ClearSpellSlotMessage::new);
     }
 
@@ -46,9 +49,11 @@ public class GCNetwork {
     private static <T extends NetworkMessage> void registerPlayToServer(Class<T> packet, Function<FriendlyByteBuf, T> decoder) {
         registerWithDirection(id++, packet, decoder, Optional.of(NetworkDirection.PLAY_TO_SERVER));
     }
+
     private static <T extends NetworkMessage> void registerPlayToClient(Class<T> packet, Function<FriendlyByteBuf, T> decoder) {
         registerWithDirection(id++, packet, decoder, Optional.of(NetworkDirection.PLAY_TO_CLIENT));
     }
+
     private static <T extends NetworkMessage> void register(Class<T> packet, Function<FriendlyByteBuf, T> decoder) {
         registerWithDirection(id++, packet, decoder, Optional.empty());
     }

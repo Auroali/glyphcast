@@ -11,6 +11,7 @@ import net.minecraft.world.entity.player.Inventory;
 
 public class CarvingTableScreen extends AbstractContainerScreen<CarvingMenu> {
     private static final ResourceLocation BACKGROUND = new ResourceLocation(GlyphCast.MODID, "textures/gui/container/carving_menu.png");
+
     public CarvingTableScreen(CarvingMenu pMenu, Inventory pPlayerInventory, Component pTitle) {
         super(pMenu, pPlayerInventory, pTitle);
         titleLabelY = titleLabelY - 1;
