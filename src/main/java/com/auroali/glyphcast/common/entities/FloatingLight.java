@@ -68,12 +68,6 @@ public class FloatingLight extends Entity implements IEntityAdditionalSpawnData 
         return entities;
     }
 
-    @Override
-    public void lerpTo(double pX, double pY, double pZ, float pYaw, float pPitch, int pPosRotationIncrements, boolean pTeleport) {
-        this.setPos(pX, pY, pZ);
-        this.setRot(pYaw, pPitch);
-    }
-
     /**
      * Updates the entity motion clientside, called by packets from the server
      */

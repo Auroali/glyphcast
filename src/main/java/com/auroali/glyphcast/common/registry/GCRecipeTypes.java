@@ -10,7 +10,7 @@ import net.minecraftforge.registries.RegistryObject;
 @SuppressWarnings("unused")
 public class GCRecipeTypes {
     public static final DeferredRegister<RecipeType<?>> RECIPE_TYPES = DeferredRegister.create(ForgeRegistries.RECIPE_TYPES, GlyphCast.MODID);
-    public static final RegistryObject<RecipeType<InfuseRecipe>> INFUSE_RECIPE = RECIPE_TYPES.register("infuse", () -> new RecipeType<InfuseRecipe>() {
+    public static final RegistryObject<RecipeType<InfuseRecipe>> INFUSE_RECIPE = RECIPE_TYPES.register("infuse", () -> new RecipeType<>() {
         @Override
         public String toString() {
             return GlyphCast.MODID + ":infuse";

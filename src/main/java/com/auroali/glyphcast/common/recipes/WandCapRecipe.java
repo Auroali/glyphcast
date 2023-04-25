@@ -40,16 +40,6 @@ public class WandCapRecipe extends UpgradeRecipe {
     }
 
     @Override
-    public RecipeType<?> getType() {
-        return RecipeType.SMITHING;
-    }
-
-    @Override
-    public boolean canCraftInDimensions(int pWidth, int pHeight) {
-        return pWidth * pHeight >= 2;
-    }
-
-    @Override
     public RecipeSerializer<?> getSerializer() {
         return GCRecipesSerializers.WAND_CAP.get();
     }
