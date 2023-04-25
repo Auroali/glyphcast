@@ -2,10 +2,7 @@ package com.auroali.glyphcast.common.spells.glyph;
 
 import com.auroali.glyphcast.GlyphCast;
 import com.auroali.glyphcast.common.spells.Spell;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.IntTag;
-import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.Tag;
+import net.minecraft.nbt.*;
 import net.minecraft.network.FriendlyByteBuf;
 
 import java.util.ArrayList;
@@ -61,15 +58,15 @@ public class GlyphSequence {
      * @return the resulting sequence
      */
     public static GlyphSequence fromTag(CompoundTag tag) {
-        ListTag rings = tag.getList("Rings", Tag.TAG_LIST);
+        ListTag rings = tag.getList("Rings", Tag.TAG_BYTE_ARRAY);
         List<Ring> ringsList = new ArrayList<>();
         // Read each ring
-        for (int i = 0; i < rings.size(); i++) {
-            ListTag glyphs = rings.getList(i);
+        for (Tag ring : rings) {
+            ByteArrayTag glyphs = (ByteArrayTag) ring;
             List<Glyph> ringSequence = new ArrayList<>();
             // Read all the glyphs in this ring
-            for (int j = 0; j < glyphs.size(); j++) {
-                ringSequence.add(Glyph.values()[glyphs.getInt(j)]);
+            for (ByteTag glyph : glyphs) {
+                ringSequence.add(Glyph.values()[glyph.getAsInt()]);
             }
             ringsList.add(Ring.of(ringSequence));
         }
@@ -114,9 +111,8 @@ public class GlyphSequence {
         CompoundTag tag = new CompoundTag();
         ListTag rings = new ListTag();
         glyphList.forEach(ring -> {
-            ListTag glyphs = new ListTag();
-            ring.glyphs.forEach(glyph -> glyphs.add(IntTag.valueOf(glyph.ordinal())));
-            rings.add(glyphs);
+            ByteArrayTag bytes = new ByteArrayTag(ring.glyphs.stream().map(g -> (byte) g.ordinal()).toList());
+            rings.add(bytes);
         });
         tag.put("Rings", rings);
         return tag;

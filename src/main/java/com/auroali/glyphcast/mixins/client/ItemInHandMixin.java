@@ -1,8 +1,7 @@
 package com.auroali.glyphcast.mixins.client;
 
-import com.auroali.glyphcast.common.items.WandItem;
+import com.auroali.glyphcast.common.items.IPointItem;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Quaternion;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.entity.layers.ItemInHandLayer;
@@ -22,10 +21,9 @@ public class ItemInHandMixin {
             shift = At.Shift.BEFORE
     ))
     public void glyphcast$renderArmWithItemPre(LivingEntity pLivingEntity, ItemStack pItemStack, ItemTransforms.TransformType pTransformType, HumanoidArm pArm, PoseStack pPoseStack, MultiBufferSource pBuffer, int pPackedLight, CallbackInfo ci) {
-        if (pLivingEntity.getUseItem().getItem() instanceof WandItem && pLivingEntity.getUseItemRemainingTicks() > 0) {
+        if (pLivingEntity.getUseItem() == pItemStack && pLivingEntity.getUseItem().getItem() instanceof IPointItem && pLivingEntity.getUseItemRemainingTicks() > 0) {
             pPoseStack.pushPose();
-            pPoseStack.mulPose(Quaternion.fromXYZ((float) (-Math.PI / 2.3), 0, 0));
-            pPoseStack.translate(0, 0.15, -0.2);
+            ((IPointItem) pItemStack.getItem()).transform(pPoseStack);
         }
     }
 
@@ -35,7 +33,7 @@ public class ItemInHandMixin {
             shift = At.Shift.AFTER
     ))
     public void glyphcast$renderArmWithItemPost(LivingEntity pLivingEntity, ItemStack pItemStack, ItemTransforms.TransformType pTransformType, HumanoidArm pArm, PoseStack pPoseStack, MultiBufferSource pBuffer, int pPackedLight, CallbackInfo ci) {
-        if (pLivingEntity.getUseItem().getItem() instanceof WandItem && pLivingEntity.getUseItemRemainingTicks() > 0)
+        if (pLivingEntity.getUseItem() == pItemStack && pLivingEntity.getUseItem().getItem() instanceof IPointItem && pLivingEntity.getUseItemRemainingTicks() > 0)
             pPoseStack.popPose();
     }
 }

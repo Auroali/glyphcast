@@ -3,8 +3,6 @@ package com.auroali.glyphcast.client.screen.widgets;
 import com.auroali.glyphcast.client.render.GlyphRenderer;
 import com.auroali.glyphcast.client.screen.SpellWheelScreen;
 import com.auroali.glyphcast.common.spells.Spell;
-import com.auroali.glyphcast.common.spells.glyph.Glyph;
-import com.auroali.glyphcast.common.spells.glyph.GlyphSequence;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.gui.GuiComponent;
@@ -13,6 +11,7 @@ import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.narration.NarratableEntry;
 import net.minecraft.client.gui.narration.NarratedElementType;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
+import net.minecraft.world.item.ItemStack;
 
 public class SpellWheelEntry extends GuiComponent implements Widget, GuiEventListener, NarratableEntry {
 
@@ -23,10 +22,10 @@ public class SpellWheelEntry extends GuiComponent implements Widget, GuiEventLis
     public final int slotIndex;
     public final int posX;
     public final int posY;
-    private final Glyph glyph;
+    public final boolean visible;
     private final SpellWheelScreen screen;
 
-    public SpellWheelEntry(SpellWheelScreen screen, int centerX, int centerY, int index, int slotIndex, Spell spell) {
+    public SpellWheelEntry(SpellWheelScreen screen, ItemStack castingItem, int centerX, int centerY, int index, int slotIndex, Spell spell) {
         this.screen = screen;
         this.centerX = centerX;
         this.centerY = centerY;
@@ -34,15 +33,13 @@ public class SpellWheelEntry extends GuiComponent implements Widget, GuiEventLis
         this.slotIndex = slotIndex;
         this.spell = spell;
 
+
         double angle = 2 * Math.PI * ((double) this.index / 9);
 
         this.posX = (int) (60 * Math.cos(angle));
         this.posY = (int) (60 * Math.sin(angle));
 
-        if (spell == null || spell.getSequence().equals(GlyphSequence.EMPTY))
-            this.glyph = null;
-        else
-            this.glyph = spell.getSequence().asList().stream().findFirst().orElse(null);
+        this.visible = spell != null && spell.canCastSpell(castingItem);
     }
 
     @Override
@@ -57,7 +54,7 @@ public class SpellWheelEntry extends GuiComponent implements Widget, GuiEventLis
         if (isMouseOver(pMouseX, pMouseY))
             screen.selectedEntry = this;
 
-        if (spell == null || glyph == null)
+        if (!visible)
             return;
 
         GlyphRenderer.drawSpell(pPoseStack, centerX + posX - 16, centerY + posY - 16, spell);

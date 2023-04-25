@@ -4,6 +4,7 @@ import com.auroali.glyphcast.GlyphCast;
 import com.auroali.glyphcast.client.GCKeybinds;
 import com.auroali.glyphcast.client.screen.widgets.SpellWheelEntry;
 import com.auroali.glyphcast.common.capabilities.SpellUser;
+import com.auroali.glyphcast.common.items.IWandLike;
 import com.auroali.glyphcast.common.network.server.SelectSpellSlotMessage;
 import com.auroali.glyphcast.common.registry.GCNetwork;
 import com.auroali.glyphcast.common.spells.SpellSlot;
@@ -14,6 +15,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
 
 import java.util.List;
 import java.util.Optional;
@@ -38,7 +40,9 @@ public class SpellWheelScreen extends Screen {
     }
 
     public static void openCombined() {
-        openWithModifiable(e -> GCNetwork.sendToServer(new SelectSpellSlotMessage(e.slotIndex)), true, false);
+        openWithModifiable(e -> {
+            if (e.visible) GCNetwork.sendToServer(new SelectSpellSlotMessage(e.slotIndex));
+        }, true, false);
     }
 
     /**
@@ -87,8 +91,11 @@ public class SpellWheelScreen extends Screen {
     @Override
     protected void init() {
         selectedEntry = null;
+        ItemStack castingItem = minecraft.player.getMainHandItem().getItem() instanceof IWandLike ? minecraft.player.getMainHandItem()
+                : minecraft.player.getOffhandItem().getItem() instanceof IWandLike ? minecraft.player.getOffhandItem()
+                : ItemStack.EMPTY;
         for (int i = 0; i < slots.size(); i++) {
-            SpellWheelEntry entry = new SpellWheelEntry(this, width / 2, height / 2, i, slots.get(i).getIndex(), slots.get(i).getSpell());
+            SpellWheelEntry entry = new SpellWheelEntry(this, castingItem, width / 2, height / 2, i, slots.get(i).getIndex(), slots.get(i).getSpell());
             addRenderableWidget(entry);
         }
     }
@@ -132,7 +139,7 @@ public class SpellWheelScreen extends Screen {
 
         blit(pPoseStack, selectedEntry.centerX + selectedEntry.posX - 17, selectedEntry.centerY + selectedEntry.posY - 17, 0, 64, 34, 34);
 
-        if (selectedEntry.spell != null)
+        if (selectedEntry.visible && selectedEntry.spell != null)
             renderTooltip(pPoseStack, List.of(selectedEntry.spell.getName(), selectedEntry.spell.getSpellDescription()), Optional.empty(), selectedEntry.centerX + selectedEntry.posX, selectedEntry.centerY + selectedEntry.posY);
     }
 

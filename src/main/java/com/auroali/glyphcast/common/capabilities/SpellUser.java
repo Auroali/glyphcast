@@ -1,7 +1,7 @@
 package com.auroali.glyphcast.common.capabilities;
 
 import com.auroali.glyphcast.GlyphCast;
-import com.auroali.glyphcast.common.items.WandItem;
+import com.auroali.glyphcast.common.items.IWandLike;
 import com.auroali.glyphcast.common.network.client.SyncSpellUserDataMessage;
 import com.auroali.glyphcast.common.registry.GCCapabilities;
 import com.auroali.glyphcast.common.registry.GCNetwork;
@@ -48,6 +48,7 @@ public class SpellUser implements ISpellUser {
         slots.set(9, new SpellSlot(9, GCSpells.WAND_ATTACK.get()));
         slots.set(10, new SpellSlot(10, GCSpells.INFUSE.get()));
         slots.set(11, new SpellSlot(11, GCSpells.EXTRACT.get()));
+        slots.set(17, new SpellSlot(17, GCSpells.SEPERATE_STAFF.get()));
     }
 
 
@@ -110,7 +111,7 @@ public class SpellUser implements ISpellUser {
 
     @Override
     public boolean canOpenSpellWheel() {
-        return player.getMainHandItem().getItem() instanceof WandItem || player.getOffhandItem().getItem() instanceof WandItem;
+        return player.getMainHandItem().getItem() instanceof IWandLike || player.getOffhandItem().getItem() instanceof IWandLike;
     }
 
     @Override

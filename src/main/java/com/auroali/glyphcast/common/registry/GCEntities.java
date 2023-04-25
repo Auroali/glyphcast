@@ -4,6 +4,7 @@ import com.auroali.glyphcast.GlyphCast;
 import com.auroali.glyphcast.common.entities.FireSpellProjectile;
 import com.auroali.glyphcast.common.entities.Flare;
 import com.auroali.glyphcast.common.entities.FloatingLight;
+import com.auroali.glyphcast.common.entities.StaffEntity;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
@@ -40,4 +41,12 @@ public class GCEntities {
                     .updateInterval(3)
                     .sized(0.25f, 0.25f)
                     .build(new ResourceLocation(GlyphCast.MODID, "flare").toString()));
+
+    public static final RegistryObject<EntityType<StaffEntity>> STAFF_ENTITY = ENTITIES.register("staff", () ->
+            EntityType.Builder.<StaffEntity>of(StaffEntity::new, MobCategory.CREATURE)
+                    .clientTrackingRange(64)
+                    .fireImmune()
+                    .setShouldReceiveVelocityUpdates(true)
+                    .updateInterval(3)
+                    .build(new ResourceLocation(GlyphCast.MODID, "staff").toString()));
 }

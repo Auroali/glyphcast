@@ -1,6 +1,6 @@
 package com.auroali.glyphcast;
 
-import com.auroali.glyphcast.client.screen.CarvingTableScreen;
+import com.auroali.glyphcast.client.ClientEvents;
 import com.auroali.glyphcast.common.config.GCClientConfig;
 import com.auroali.glyphcast.common.config.GCCommonConfig;
 import com.auroali.glyphcast.common.registry.*;
@@ -10,12 +10,14 @@ import com.auroali.glyphcast.common.registry.listeners.WandMaterialReloadListene
 import com.auroali.glyphcast.common.spells.Spell;
 import com.google.gson.Gson;
 import com.mojang.logging.LogUtils;
-import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.AddReloadListenerEvent;
+import net.minecraftforge.event.entity.EntityAttributeCreationEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.ModLoadingContext;
@@ -60,6 +62,7 @@ public class GlyphCast {
         GCMenus.MENUS.register(modEventBus);
         GCRecipesSerializers.RECIPES.register(modEventBus);
         GCRecipeTypes.RECIPE_TYPES.register(modEventBus);
+        modEventBus.addListener(GCEntityDataSerializers::register);
 
         GCNetwork.registerPackets();
 
@@ -69,6 +72,7 @@ public class GlyphCast {
         // Register the commonSetup method for modloading
         modEventBus.addListener(this::commonSetup);
         modEventBus.addListener(this::clientSetup);
+        modEventBus.addListener(this::attributesEvent);
         // Register ourselves for server and other game events we are interested in
         MinecraftForge.EVENT_BUS.register(this);
 
@@ -79,7 +83,15 @@ public class GlyphCast {
     }
 
     private void clientSetup(final FMLClientSetupEvent event) {
-        event.enqueueWork(() -> MenuScreens.register(GCMenus.CARVING_TABLE.get(), CarvingTableScreen::new));
+        ClientEvents.clientSetup(event);
+    }
+
+    private void attributesEvent(final EntityAttributeCreationEvent event) {
+        event.put(GCEntities.STAFF_ENTITY.get(), LivingEntity.createLivingAttributes()
+                .add(Attributes.MAX_HEALTH, Float.MAX_VALUE)
+                .add(Attributes.MOVEMENT_SPEED, 0.4)
+                .add(Attributes.FOLLOW_RANGE, 16.0)
+                .build());
     }
 
     @SubscribeEvent

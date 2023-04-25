@@ -4,12 +4,11 @@ import com.auroali.glyphcast.GlyphCast;
 import com.auroali.glyphcast.client.screen.SpellWheelScreen;
 import com.auroali.glyphcast.common.capabilities.SpellUser;
 import com.auroali.glyphcast.common.network.server.SetSlotSpellMessage;
-import com.auroali.glyphcast.common.registry.*;
+import com.auroali.glyphcast.common.registry.GCItems;
+import com.auroali.glyphcast.common.registry.GCNetwork;
 import com.auroali.glyphcast.common.spells.HoldSpell;
 import com.auroali.glyphcast.common.spells.SpellStats;
-import com.auroali.glyphcast.common.wands.WandCap;
-import com.auroali.glyphcast.common.wands.WandCore;
-import com.auroali.glyphcast.common.wands.WandMaterial;
+import com.auroali.glyphcast.common.spells.glyph.Glyph;
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Quaternion;
@@ -18,31 +17,35 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.CreativeModeTab;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.*;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.client.extensions.common.IClientItemExtensions;
 import org.jetbrains.annotations.Nullable;
 
 import java.text.DecimalFormat;
 import java.util.List;
-import java.util.Optional;
+import java.util.UUID;
 import java.util.function.Consumer;
 
-public class WandItem extends Item implements IPointItem, IWandLike {
+public class StaffItem extends Item implements IPointItem, IWandLike {
+
+    public static final Variant[] VARIANTS = {
+            new Variant("cat", StaffClass.QUICK, Glyph.LIGHT, EntityDimensions.fixed(0.6f, 0.6f))
+    };
+
     private static final DecimalFormat STATS_FORMAT = new DecimalFormat("###");
     private static final DecimalFormat STATS_COOLDOWN_FORMAT = new DecimalFormat("##.#");
 
-    public WandItem() {
-        super(new Properties().stacksTo(1).tab(GlyphCast.GLYPHCAST_TAB).durability(250));
+    public StaffItem() {
+        super(new Properties().tab(GlyphCast.GLYPHCAST_TAB).stacksTo(1).rarity(Rarity.EPIC).fireResistant());
     }
 
     private static void openSpellWheelEditor(Level pLevel, Player pPlayer, ItemStack other) {
@@ -61,10 +64,7 @@ public class WandItem extends Item implements IPointItem, IWandLike {
     public void appendHoverText(ItemStack pStack, @Nullable Level pLevel, List<Component> pTooltipComponents, TooltipFlag pIsAdvanced) {
         super.appendHoverText(pStack, pLevel, pTooltipComponents, pIsAdvanced);
 
-        String coreKey = getCore(pStack).map(core -> {
-            ResourceLocation location = GCWandCores.getKey(core);
-            return "wand_core.%s.%s".formatted(location.getNamespace(), location.getPath());
-        }).orElse("wand_core.none");
+        String coreKey = pStack.getOrCreateTag().getBoolean("Alive") ? "item.glyphcast.staff.tooltip.living" : "item.glyphcast.staff.tooltip.dormant";
 
         pTooltipComponents.add(Component.translatable("item.glyphcast.wand.tooltip", Component.translatable(coreKey).withStyle(ChatFormatting.BLUE).withStyle(ChatFormatting.BOLD)).withStyle(ChatFormatting.GRAY).withStyle(ChatFormatting.ITALIC));
 
@@ -82,19 +82,6 @@ public class WandItem extends Item implements IPointItem, IWandLike {
     }
 
     @Override
-    public Component getName(ItemStack pStack) {
-        WandMaterial mat = getMaterial(pStack).orElse(null);
-        WandCap cap = getCap(pStack).orElse(null);
-        ResourceLocation matLoc = mat != null ? GCWandMaterials.getKey(mat) : null;
-        ResourceLocation capLoc = cap != null ? GCWandCaps.getKey(cap) : null;
-        if (matLoc == null)
-            return super.getName(pStack);
-        if (capLoc != null)
-            return Component.translatable("item.glyphcast.wand_capped", Component.translatable("wand_cap.%s.%s".formatted(capLoc.getNamespace(), capLoc.getPath())), Component.translatable("wand_material.%s.%s".formatted(matLoc.getNamespace(), matLoc.getPath())));
-        return Component.translatable("item.glyphcast.wand", Component.translatable("wand_material.%s.%s".formatted(matLoc.getNamespace(), matLoc.getPath())));
-    }
-
-    @Override
     public void releaseUsing(ItemStack pStack, Level pLevel, LivingEntity pLivingEntity, int pTimeCharged) {
         if (pLivingEntity instanceof Player player) {
             player.getCooldowns().addCooldown(this, buildStats(pStack).cooldown());
@@ -109,41 +96,55 @@ public class WandItem extends Item implements IPointItem, IWandLike {
     @Override
     public void fillItemCategory(CreativeModeTab pCategory, NonNullList<ItemStack> pItems) {
         if (this.allowedIn(pCategory)) {
-            for (ResourceLocation key : GCWandMaterials.KEY_MAP.keySet()) {
+            for (Variant variant : VARIANTS) {
                 ItemStack stack = new ItemStack(this);
-                setCore(stack, new ResourceLocation(GlyphCast.MODID, "petal"));
-                setCap(stack, new ResourceLocation(GlyphCast.MODID, "iron"));
-                setMaterial(stack, key);
+                setVariant(stack, variant.name);
                 pItems.add(stack);
+                ItemStack stack1 = new ItemStack(this);
+                setVariant(stack1, variant.name);
+                setAlive(stack1, true);
+                pItems.add(stack1);
             }
         }
     }
 
-    public void setCore(ItemStack stack, ResourceLocation core) {
-        stack.getOrCreateTag().putString("WandCore", core.toString());
+    public void setEntityUUID(ItemStack stack, UUID uuid) {
+        stack.getOrCreateTag().putUUID("UUID", uuid);
     }
 
-    public void setMaterial(ItemStack stack, ResourceLocation material) {
-        stack.getOrCreateTag().putString("WandMaterial", material.toString());
+    public void setPresent(ItemStack stack, boolean present) {
+        stack.getOrCreateTag().putBoolean("Present", present);
     }
 
-    public void setCap(ItemStack stack, ResourceLocation cap) {
-        stack.getOrCreateTag().putString("WandCap", cap.toString());
+    void setVariant(ItemStack stack, String variant) {
+        stack.getOrCreateTag().putString("Variant", variant);
     }
 
-    public Optional<WandCore> getCore(ItemStack stack) {
-        ResourceLocation location = new ResourceLocation(stack.getOrCreateTag().getString("WandCore"));
-        return Optional.ofNullable(GCWandCores.getValue(location));
+    void setAlive(ItemStack stack, boolean alive) {
+        stack.getOrCreateTag().putBoolean("Alive", alive);
+        if (alive)
+            stack.getOrCreateTag().putBoolean("Present", true);
     }
 
-    public Optional<WandMaterial> getMaterial(ItemStack stack) {
-        ResourceLocation location = new ResourceLocation(stack.getOrCreateTag().getString("WandMaterial"));
-        return Optional.ofNullable(GCWandMaterials.getValue(location));
+    public Variant getVariant(ItemStack stack) {
+        String variant = stack.getOrCreateTag().getString("Variant");
+        for (Variant v : VARIANTS) {
+            if (v.name.equals(variant))
+                return v;
+        }
+        return null;
     }
 
-    public Optional<WandCap> getCap(ItemStack stack) {
-        ResourceLocation location = new ResourceLocation(stack.getOrCreateTag().getString("WandCap"));
-        return Optional.ofNullable(GCWandCaps.getValue(location));
+    @Override
+    public InteractionResult interactLivingEntity(ItemStack pStack, Player pPlayer, LivingEntity pInteractionTarget, InteractionHand pUsedHand) {
+        if (!pStack.getOrCreateTag().getBoolean("Alive") || pStack.getOrCreateTag().getBoolean("Present") || !pStack.getOrCreateTag().getUUID("UUID").equals(pInteractionTarget.getUUID()))
+            return InteractionResult.PASS;
+
+
+        setPresent(pPlayer.getItemInHand(pUsedHand), true);
+        pInteractionTarget.remove(Entity.RemovalReason.DISCARDED);
+
+        return InteractionResult.sidedSuccess(pPlayer.level.isClientSide);
     }
 
     @Override
@@ -163,31 +164,27 @@ public class WandItem extends Item implements IPointItem, IWandLike {
     private void activateSpell(Level pLevel, Player pPlayer, InteractionHand hand, ItemStack stack) {
         SpellUser.get(pPlayer).ifPresent(user -> {
             if (user.getSelectedSpell() != null) {
-                Optional<WandMaterial> mat = getMaterial(stack);
-                if (mat.isEmpty()) {
-                    pPlayer.displayClientMessage(Component.translatable("msg.glyphcast.wand_material_error", stack.getOrCreateTag().getString("WandMaterial")).withStyle(ChatFormatting.RED), false);
-                    return;
-                }
                 SpellStats stats = buildStats(stack);
                 user.getSelectedSpell().tryActivate(pLevel, pPlayer, hand, stats);
                 if (user.getSelectedSpell() instanceof HoldSpell)
                     pPlayer.startUsingItem(hand);
                 else
                     pPlayer.getCooldowns().addCooldown(this, stats.cooldown());
-
-                stack.hurtAndBreak(1, pPlayer, (p_35997_) -> {
-                    p_35997_.broadcastBreakEvent(hand);
-                    net.minecraftforge.event.ForgeEventFactory.onPlayerDestroyItem(pPlayer, stack, hand);
-                });
             }
         });
+    }
+
+    public SpellStats buildStats(ItemStack stack) {
+        Variant variant = getVariant(stack);
+        if (variant == null)
+            return SpellStats.PARCHMENT;
+        return variant.stats();
     }
 
     @Override
     public int getUseDuration(ItemStack pStack) {
         return 7200;
     }
-
 
     @Override
     public void initializeClient(Consumer<IClientItemExtensions> consumer) {
@@ -211,22 +208,39 @@ public class WandItem extends Item implements IPointItem, IWandLike {
         });
     }
 
-
-    public SpellStats buildStats(ItemStack stack) {
-        SpellStats.Builder stats = new SpellStats.Builder();
-        Optional<WandCore> core = getCore(stack);
-        core.ifPresent(core1 -> core1.applyStats(stats));
-        getMaterial(stack).ifPresent(mat -> mat.applyStats(stats));
-        Optional<WandCap> cap = getCap(stack);
-        cap.ifPresent(cap1 -> cap1.applyStats(stats));
-        if (cap.isEmpty() && core.isPresent())
-            stats.addEfficiency(-core.get().efficiency() / 2);
-        return stats.build();
-    }
-
     @Override
     public void transform(PoseStack stack) {
-        stack.mulPose(Quaternion.fromXYZ((float) (-Math.PI / 2.3), 0, 0));
+        stack.mulPose(Quaternion.fromXYZ((float) (-Math.PI / 2.6), 0, 0));
         stack.translate(0, 0.15, -0.2);
+    }
+
+    public enum StaffClass {
+        QUICK,
+        AVERAGE,
+        SLOW
+    }
+
+    public record Variant(String name, StaffClass staffClass, Glyph affinity, EntityDimensions dimensions) {
+        SpellStats stats() {
+            SpellStats.Builder builder = new SpellStats.Builder();
+            switch (affinity) {
+                case FIRE -> builder.addFireAffinity(0.15);
+                case LIGHT -> builder.addLightAffinity(0.15);
+                case ICE -> builder.addEarthAffinity(0.15);
+                case EARTH -> builder.addIceAffinity(0.15);
+            }
+            switch (staffClass) {
+                case QUICK -> builder.addCooldown(10);
+                case AVERAGE -> builder.addCooldown(12);
+                case SLOW -> builder.addCooldown(14);
+            }
+            return builder
+                    .addEfficiency(1.0)
+                    .addFireAffinity(0.9)
+                    .addLightAffinity(0.9)
+                    .addIceAffinity(0.9)
+                    .addEarthAffinity(0.9)
+                    .build();
+        }
     }
 }

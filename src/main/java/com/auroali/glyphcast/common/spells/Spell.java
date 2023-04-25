@@ -3,7 +3,7 @@ package com.auroali.glyphcast.common.spells;
 import com.auroali.glyphcast.GlyphCast;
 import com.auroali.glyphcast.common.capabilities.chunk.IChunkEnergy;
 import com.auroali.glyphcast.common.items.GlyphParchmentItem;
-import com.auroali.glyphcast.common.items.WandItem;
+import com.auroali.glyphcast.common.items.IWandLike;
 import com.auroali.glyphcast.common.network.client.SpellEventMessage;
 import com.auroali.glyphcast.common.registry.GCNetwork;
 import com.auroali.glyphcast.common.spells.glyph.GlyphSequence;
@@ -39,6 +39,10 @@ public abstract class Spell {
 
     public Spell(GlyphSequence sequence) {
         this.sequence = sequence;
+    }
+
+    public boolean canCastSpell(ItemStack castingItem) {
+        return true;
     }
 
     protected String getOrCreateDescriptionId() {
@@ -128,7 +132,7 @@ public abstract class Spell {
         InteractionHand hand();
 
         default boolean isWand() {
-            return player() != null && player().getItemInHand(hand()).getItem() instanceof WandItem;
+            return player() != null && player().getItemInHand(hand()).getItem() instanceof IWandLike;
         }
 
         default boolean isParchment() {

@@ -2,12 +2,11 @@ package com.auroali.glyphcast.common.registry;
 
 import com.auroali.glyphcast.GlyphCast;
 import com.auroali.glyphcast.common.spells.*;
-import com.auroali.glyphcast.common.spells.composite.FlareSpell;
-import com.auroali.glyphcast.common.spells.composite.MistSpell;
-import com.auroali.glyphcast.common.spells.composite.PushSpell;
+import com.auroali.glyphcast.common.spells.composite.*;
 import com.auroali.glyphcast.common.spells.wand.MagicDamageSpell;
 import com.auroali.glyphcast.common.spells.wand.MagicExtractSpell;
 import com.auroali.glyphcast.common.spells.wand.MagicInfuseSpell;
+import com.auroali.glyphcast.common.spells.wand.staff.SeperateStaffSpell;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -28,4 +27,7 @@ public class GCSpells {
     public static final RegistryObject<Spell> FLARE = SPELLS.register("flare", FlareSpell::new);
     public static final RegistryObject<Spell> INFUSE = SPELLS.register("infuse", MagicInfuseSpell::new);
     public static final RegistryObject<Spell> EXTRACT = SPELLS.register("extract", MagicExtractSpell::new);
+    public static final RegistryObject<Spell> SHIELD = SPELLS.register("shield", ShieldSpell::new);
+    public static final RegistryObject<Spell> SEPERATE_STAFF = SPELLS.register("seperate_staff", SeperateStaffSpell::new);
+    public static final RegistryObject<Spell> MEND_ITEM = SPELLS.register("mend_item", MendItemSpell::new);
 }

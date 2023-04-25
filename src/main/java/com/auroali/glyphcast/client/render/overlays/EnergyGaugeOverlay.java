@@ -5,7 +5,7 @@ import com.auroali.glyphcast.client.render.GlyphRenderer;
 import com.auroali.glyphcast.common.capabilities.SpellUser;
 import com.auroali.glyphcast.common.capabilities.chunk.IChunkEnergy;
 import com.auroali.glyphcast.common.items.EnergyGaugeItem;
-import com.auroali.glyphcast.common.items.WandItem;
+import com.auroali.glyphcast.common.items.IWandLike;
 import com.auroali.glyphcast.common.network.server.RequestChunkEnergyMessage;
 import com.auroali.glyphcast.common.registry.GCNetwork;
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -14,7 +14,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraftforge.client.gui.overlay.ForgeGui;
 import net.minecraftforge.client.gui.overlay.IGuiOverlay;
@@ -32,7 +31,7 @@ public class EnergyGaugeOverlay implements IGuiOverlay {
         if (player == null)
             return;
 
-        if (!hasItemInHand(player, EnergyGaugeItem.class) && !hasItemInHand(player, WandItem.class))
+        if (!hasItemInHand(player, EnergyGaugeItem.class) && !hasItemInHand(player, IWandLike.class))
             return;
         if (IChunkEnergy.getMaxEnergyAt(player.level, player.blockPosition()) == 0) {
             if (!requestedEnergy || !requestedEnergyPosition.equals(player.chunkPosition()) || player.level.getGameTime() % 40 == 0) {
@@ -45,7 +44,7 @@ public class EnergyGaugeOverlay implements IGuiOverlay {
         if (hasItemInHand(player, EnergyGaugeItem.class))
             renderEnergyGaugeOverlay(gui, poseStack, player);
 
-        if (hasItemInHand(player, WandItem.class))
+        if (hasItemInHand(player, IWandLike.class))
             renderWandOverlay(gui, poseStack, player);
     }
 
@@ -83,7 +82,7 @@ public class EnergyGaugeOverlay implements IGuiOverlay {
     }
 
     @SuppressWarnings("unused")
-    <T extends Item> boolean hasItemInHand(Player player, Class<T> tClass) {
+    <T> boolean hasItemInHand(Player player, Class<T> tClass) {
         return tClass.isInstance(player.getMainHandItem().getItem()) || tClass.isInstance(player.getOffhandItem().getItem());
     }
 }
