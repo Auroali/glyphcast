@@ -38,7 +38,7 @@ import java.util.function.Consumer;
 public class StaffItem extends Item implements IPointItem, IWandLike {
 
     public static final Variant[] VARIANTS = {
-            new Variant("cat", StaffClass.QUICK, Glyph.LIGHT, EntityDimensions.fixed(0.6f, 0.6f))
+            new Variant("cat", StaffClass.QUICK, Glyph.LIGHT, EntityDimensions.fixed(0.6f, 0.6f), false)
     };
 
     private static final DecimalFormat STATS_FORMAT = new DecimalFormat("###");
@@ -220,7 +220,7 @@ public class StaffItem extends Item implements IPointItem, IWandLike {
         SLOW
     }
 
-    public record Variant(String name, StaffClass staffClass, Glyph affinity, EntityDimensions dimensions) {
+    public record Variant(String name, StaffClass staffClass, Glyph affinity, EntityDimensions dimensions, boolean flying) {
         SpellStats stats() {
             SpellStats.Builder builder = new SpellStats.Builder();
             switch (affinity) {

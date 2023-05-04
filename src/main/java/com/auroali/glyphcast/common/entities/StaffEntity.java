@@ -9,13 +9,18 @@ import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.Mth;
 import net.minecraft.world.entity.*;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ai.control.FlyingMoveControl;
+import net.minecraft.world.entity.ai.control.MoveControl;
 import net.minecraft.world.entity.ai.goal.FloatGoal;
 import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
 import net.minecraft.world.entity.ai.navigation.FlyingPathNavigation;
 import net.minecraft.world.entity.ai.navigation.GroundPathNavigation;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
+import net.minecraft.world.entity.animal.FlyingAnimal;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -31,13 +36,14 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-public class StaffEntity extends Mob {
+public class StaffEntity extends Mob implements FlyingAnimal {
     public static final EntityDataAccessor<Optional<UUID>> OWNER = SynchedEntityData.defineId(StaffEntity.class, EntityDataSerializers.OPTIONAL_UUID);
     public static final EntityDataAccessor<StaffItem.Variant> VARIANT = SynchedEntityData.defineId(StaffEntity.class, GCEntityDataSerializers.STAFF_VARIANT);
     private Player cachedOwner;
 
     public StaffEntity(EntityType<? extends Mob> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
+        this.moveControl = new StaffEntityMoveControl(this, 10, false);
     }
 
     public StaffEntity(Level pLevel, StaffItem.Variant variant, Player owner) {
@@ -67,10 +73,21 @@ public class StaffEntity extends Mob {
     }
 
     @Override
-    protected void registerGoals() {
+    protected PathNavigation createNavigation(Level pLevel) {
+        if(entityData.get(VARIANT).flying()) {
+            FlyingPathNavigation flyingpathnavigation = new FlyingPathNavigation(this, pLevel);
+            flyingpathnavigation.setCanOpenDoors(false);
+            flyingpathnavigation.setCanFloat(true);
+            flyingpathnavigation.setCanPassDoors(true);
+            return flyingpathnavigation;
+        }
+        return super.createNavigation(pLevel);
+    }
 
+    @Override
+    protected void registerGoals() {
         this.goalSelector.addGoal(0, new FloatGoal(this));
-        this.goalSelector.addGoal(1, new FollowOwnerGoal(this, 1.0f, 2.0f, 10.0f, true));
+        this.goalSelector.addGoal(1, new FollowOwnerGoal(this, 1.0f, 2.0f, 10.0f));
         this.goalSelector.addGoal(1, new LookAtPlayerGoal(this, Player.class, 8.0f));
     }
 
@@ -131,6 +148,11 @@ public class StaffEntity extends Mob {
         entityData.get(OWNER).ifPresent(uuid -> tag.putUUID("Owner", uuid));
     }
 
+    @Override
+    public boolean isFlying() {
+        return entityData.get(VARIANT).flying() && !onGround;
+    }
+
 
     public static class FollowOwnerGoal extends Goal {
         public static final int TELEPORT_WHEN_DISTANCE_IS = 12;
@@ -143,19 +165,17 @@ public class StaffEntity extends Mob {
         private final PathNavigation navigation;
         private final float stopDistance;
         private final float startDistance;
-        private final boolean canFly;
         private LivingEntity owner;
         private int timeToRecalcPath;
         private float oldWaterCost;
 
-        public FollowOwnerGoal(StaffEntity pTamable, double pSpeedModifier, float pStartDistance, float pStopDistance, boolean pCanFly) {
+        public FollowOwnerGoal(StaffEntity pTamable, double pSpeedModifier, float pStartDistance, float pStopDistance) {
             this.tamable = pTamable;
             this.level = pTamable.level;
             this.speedModifier = pSpeedModifier;
             this.navigation = pTamable.getNavigation();
             this.startDistance = pStartDistance;
             this.stopDistance = pStopDistance;
-            this.canFly = pCanFly;
             this.setFlags(EnumSet.of(Goal.Flag.MOVE, Goal.Flag.LOOK));
             if (!(pTamable.getNavigation() instanceof GroundPathNavigation) && !(pTamable.getNavigation() instanceof FlyingPathNavigation)) {
                 throw new IllegalArgumentException("Unsupported mob type for FollowOwnerGoal");
@@ -260,7 +280,7 @@ public class StaffEntity extends Mob {
                 return false;
             } else {
                 BlockState blockstate = this.level.getBlockState(pPos.below());
-                if (!this.canFly && blockstate.getBlock() instanceof LeavesBlock) {
+                if (!tamable.entityData.get(VARIANT).flying() && blockstate.getBlock() instanceof LeavesBlock) {
                     return false;
                 } else {
                     BlockPos blockpos = pPos.subtract(this.tamable.blockPosition());
@@ -271,6 +291,62 @@ public class StaffEntity extends Mob {
 
         private int randomIntInclusive(int pMin, int pMax) {
             return this.tamable.getRandom().nextInt(pMax - pMin + 1) + pMin;
+        }
+    }
+
+    static class StaffEntityMoveControl extends MoveControl {
+        private final int maxTurn;
+        private final boolean hoversInPlace;
+        public StaffEntityMoveControl(StaffEntity staffEntity, int maxTurn, boolean hoversInPlace) {
+            super(staffEntity);
+            this.maxTurn = maxTurn;
+            this.hoversInPlace = hoversInPlace;
+        }
+
+        @Override
+        public void tick() {
+            if (!mob.getEntityData().get(VARIANT).flying()) {
+                super.tick();
+                return;
+            }
+            if (this.operation == MoveControl.Operation.MOVE_TO) {
+                this.operation = MoveControl.Operation.WAIT;
+                this.mob.setNoGravity(true);
+                double d0 = this.wantedX - this.mob.getX();
+                double d1 = this.wantedY - this.mob.getY();
+                double d2 = this.wantedZ - this.mob.getZ();
+                double d3 = d0 * d0 + d1 * d1 + d2 * d2;
+                if (d3 < (double)2.5000003E-7F) {
+                    this.mob.setYya(0.0F);
+                    this.mob.setZza(0.0F);
+                    return;
+                }
+
+                float f = (float)(Mth.atan2(d2, d0) * (double)(180F / (float)Math.PI)) - 90.0F;
+                this.mob.setYRot(this.rotlerp(this.mob.getYRot(), f, 90.0F));
+                float f1;
+                if (this.mob.isOnGround()) {
+                    f1 = (float)(this.speedModifier * this.mob.getAttributeValue(Attributes.MOVEMENT_SPEED));
+                } else {
+                    f1 = (float)(this.speedModifier * this.mob.getAttributeValue(Attributes.FLYING_SPEED));
+                }
+
+                this.mob.setSpeed(f1);
+                double d4 = Math.sqrt(d0 * d0 + d2 * d2);
+                if (Math.abs(d1) > (double)1.0E-5F || Math.abs(d4) > (double)1.0E-5F) {
+                    float f2 = (float)(-(Mth.atan2(d1, d4) * (double)(180F / (float)Math.PI)));
+                    this.mob.setXRot(this.rotlerp(this.mob.getXRot(), f2, (float)this.maxTurn));
+                    this.mob.setYya(d1 > 0.0D ? f1 : -f1);
+                }
+            } else {
+                if (!this.hoversInPlace) {
+                    this.mob.setNoGravity(false);
+                }
+
+                this.mob.setYya(0.0F);
+                this.mob.setZza(0.0F);
+            }
+
         }
     }
 }
