@@ -1,6 +1,7 @@
 package com.auroali.glyphcast.common.capabilities;
 
 import com.auroali.glyphcast.GlyphCast;
+import com.auroali.glyphcast.common.PlayerHelper;
 import com.auroali.glyphcast.common.items.IWandLike;
 import com.auroali.glyphcast.common.network.client.SyncSpellUserEnergyMessage;
 import com.auroali.glyphcast.common.network.client.SyncSpellUserDataMessage;
@@ -113,7 +114,7 @@ public class SpellUser implements ISpellUser {
 
     @Override
     public boolean canOpenSpellWheel() {
-        return player.getMainHandItem().getItem() instanceof IWandLike || player.getOffhandItem().getItem() instanceof IWandLike;
+        return PlayerHelper.hasItemInHand(player, IWandLike.class);
     }
 
     @Override

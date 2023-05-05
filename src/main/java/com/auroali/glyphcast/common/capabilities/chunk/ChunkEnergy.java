@@ -32,6 +32,7 @@ public class ChunkEnergy implements IChunkEnergy {
     final ChunkPos pos;
     public List<Fracture> fractures;
     public boolean needsSync;
+    public long lastTickTime;
 
     public ChunkEnergy(LevelChunk chunk) {
         this.level = chunk.getLevel();
@@ -141,6 +142,10 @@ public class ChunkEnergy implements IChunkEnergy {
 
     @Override
     public void tick() {
+        if(lastTickTime == level.getGameTime())
+            return;
+
+        lastTickTime = level.getGameTime();
         if (failedValidation()) {
             calculateMaxEnergy();
             return;
@@ -153,7 +158,7 @@ public class ChunkEnergy implements IChunkEnergy {
 
         fractures.forEach(f -> {
             if(f.energy() < f.maxEnergy()) {
-                f.setEnergy(f.energy() + f.maxEnergy() * 0.000413);
+                f.setEnergy(f.energy() + 0.02);
                 needsSync = true;
             }
         });
@@ -174,6 +179,8 @@ public class ChunkEnergy implements IChunkEnergy {
 
     @Override
     public List<Fracture> getFractures() {
+        if(fractures == null)
+            return Collections.emptyList();
         return Collections.unmodifiableList(fractures);
     }
 
