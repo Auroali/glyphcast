@@ -1,6 +1,7 @@
 package com.auroali.glyphcast.common.spells;
 
 import com.auroali.glyphcast.GlyphCast;
+import com.auroali.glyphcast.common.capabilities.SpellUser;
 import com.auroali.glyphcast.common.capabilities.chunk.IChunkEnergy;
 import com.auroali.glyphcast.common.items.GlyphParchmentItem;
 import com.auroali.glyphcast.common.items.IWandLike;
@@ -119,11 +120,16 @@ public abstract class Spell {
     }
 
     protected void drainEnergy(SpellStats stats, Player player, double amount) {
-        IChunkEnergy.drainAt(player.level, player.blockPosition(), amount / stats.efficiency(), false);
+        SpellUser.get(player).ifPresent(user ->
+                user.drainEnergy(amount / stats.efficiency(), false)
+        );
     }
 
     protected boolean canDrainEnergy(SpellStats stats, Player player, double amount) {
-        return IChunkEnergy.drainAt(player.level, player.blockPosition(), amount / stats.efficiency(), true) == (amount / stats.efficiency());
+        return SpellUser.get(player)
+                .map(user -> user.drainEnergy(amount / stats.efficiency(), true))
+                .orElse(Double.NaN)
+                == (amount / stats.efficiency());
     }
 
     public interface IContext {

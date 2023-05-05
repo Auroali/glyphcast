@@ -30,6 +30,7 @@ public class GCNetwork {
     public static void registerPackets() {
         registerPlayToClient(SpawnParticlesMessage.class, SpawnParticlesMessage::new);
         registerPlayToClient(SyncSpellUserDataMessage.class, SyncSpellUserDataMessage::new);
+        registerPlayToClient(SyncSpellUserEnergyMessage.class, SyncSpellUserEnergyMessage::new);
         registerPlayToClient(SyncWandCoresMessage.class, SyncWandCoresMessage::new);
         registerPlayToClient(SyncWandMaterialsMessage.class, SyncWandMaterialsMessage::new);
         registerPlayToClient(SyncWandCapsMessage.class, SyncWandCapsMessage::new);

@@ -2,33 +2,30 @@ package com.auroali.glyphcast.common.network.client;
 
 import com.auroali.glyphcast.common.capabilities.ISpellUser;
 import com.auroali.glyphcast.common.network.NetworkMessage;
-import com.auroali.glyphcast.common.spells.SpellSlot;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.network.NetworkEvent;
 
-import java.util.List;
 import java.util.function.Supplier;
 
-public class SyncSpellUserDataMessage extends NetworkMessage {
-    final CompoundTag tag;
+public class SyncSpellUserEnergyMessage extends NetworkMessage {
+    final double energy;
 
-    public SyncSpellUserDataMessage(ISpellUser user) {
-        this.tag = user.serializeNBT();
+    public SyncSpellUserEnergyMessage(ISpellUser user) {
+        this.energy = user.getEnergy();
     }
 
-    public SyncSpellUserDataMessage(FriendlyByteBuf buf) {
-        this.tag = buf.readNbt();
+    public SyncSpellUserEnergyMessage(FriendlyByteBuf buf) {
+        this.energy = buf.readDouble();
     }
 
     @Override
     public void encode(FriendlyByteBuf buf) {
-        buf.writeNbt(tag);
+        buf.writeDouble(energy);
     }
 
     @Override
     public void handle(Supplier<NetworkEvent.Context> ctx) {
-        ctx.get().enqueueWork(() -> ClientPacketHandler.syncSpellUserData(tag));
+        ctx.get().enqueueWork(() -> ClientPacketHandler.syncSpellUserEnergy(energy));
         ctx.get().setPacketHandled(true);
     }
 }

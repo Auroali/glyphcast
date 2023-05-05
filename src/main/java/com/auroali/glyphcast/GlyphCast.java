@@ -91,6 +91,7 @@ public class GlyphCast {
                 .add(Attributes.MAX_HEALTH, Float.MAX_VALUE)
                 .add(Attributes.MOVEMENT_SPEED, 0.4)
                 .add(Attributes.FOLLOW_RANGE, 16.0)
+                .add(Attributes.FLYING_SPEED, 0.32)
                 .build());
     }
 

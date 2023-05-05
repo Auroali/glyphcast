@@ -35,7 +35,7 @@ public class RequestChunkEnergyMessage extends NetworkMessage {
 
             ctx.get().getSender().level.getChunk(pos.x, pos.z).getCapability(GCCapabilities.CHUNK_ENERGY).ifPresent(cap -> {
                 if (cap instanceof ChunkEnergy energy)
-                    GCNetwork.sendToClient(ctx.get().getSender(), new SyncChunkEnergyMessage(pos, energy.values, energy.maxValues, energy.fractures));
+                    GCNetwork.sendToClient(ctx.get().getSender(), new SyncChunkEnergyMessage(pos, energy.fractures));
             });
         });
         ctx.get().setPacketHandled(true);
