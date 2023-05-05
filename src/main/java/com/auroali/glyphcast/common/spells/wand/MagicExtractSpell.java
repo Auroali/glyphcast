@@ -1,5 +1,6 @@
 package com.auroali.glyphcast.common.spells.wand;
 
+import com.auroali.glyphcast.common.capabilities.SpellUser;
 import com.auroali.glyphcast.common.capabilities.chunk.IChunkEnergy;
 import com.auroali.glyphcast.common.energy.Fracture;
 import com.auroali.glyphcast.common.registry.GCItems;
@@ -28,15 +29,27 @@ public class MagicExtractSpell extends HoldSpell {
         if (fracture == null)
             return;
 
-        double amountToDrain = IChunkEnergy.drainAt(ctx.level(), fracture.position(), 2 * ctx.stats().efficiency(), true);
-        if (!ctx.getOtherHandItem().is(GCItems.VIAL.get()))
-            return;
-
-        amountToDrain = GCItems.VIAL.get().fill(ctx.getOtherHandItem(), amountToDrain);
-        IChunkEnergy.drainAt(ctx.level(), fracture.position(), amountToDrain, false);
+        double drainedAmount = fracture.drain((8 * ctx.stats().efficiency()) * 0.05, false);
 
         Vec3 fracturePos = new Vec3(fracture.position().getX() + 0.5, fracture.position().getY() + 0.5, fracture.position().getZ() + 0.5);
         triggerEvent((byte) 0, PositionedContext.with(ctx, fracturePos));
+
+        if (!ctx.getOtherHandItem().is(GCItems.VIAL.get())) {
+            handleRechargePlayer(ctx, drainedAmount);
+            return;
+        }
+
+        fillVial(ctx, drainedAmount);
+    }
+
+    private void fillVial(IContext ctx, double amountToDrain) {
+        GCItems.VIAL.get().fill(ctx.getOtherHandItem(), amountToDrain);
+    }
+
+    public void handleRechargePlayer(IContext ctx, double amount) {
+        SpellUser.get(ctx.player()).ifPresent(user -> {
+            user.setEnergy(user.getEnergy() + amount);
+        });
     }
 
     @Override

@@ -21,12 +21,11 @@ public class VialItem extends Item {
     }
 
     public double fill(ItemStack stack, double energy) {
-        double millibuckets = (float) (energy / 25.0);
         double current = stack.getOrCreateTag().getDouble("Amount");
-        double newAmount = current + millibuckets;
+        double newAmount = current + energy;
         if (newAmount > 250) {
             newAmount = 250;
-            energy = (energy - (current + millibuckets - 250)) * 100.0;
+            energy = (energy - (current + energy - 250)) * 100.0;
         }
 
         stack.getOrCreateTag().putDouble("Amount", newAmount);

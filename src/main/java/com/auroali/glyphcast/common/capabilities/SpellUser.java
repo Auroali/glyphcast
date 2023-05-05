@@ -2,6 +2,7 @@ package com.auroali.glyphcast.common.capabilities;
 
 import com.auroali.glyphcast.GlyphCast;
 import com.auroali.glyphcast.common.items.IWandLike;
+import com.auroali.glyphcast.common.network.client.SyncSpellUserEnergyMessage;
 import com.auroali.glyphcast.common.network.client.SyncSpellUserDataMessage;
 import com.auroali.glyphcast.common.registry.GCCapabilities;
 import com.auroali.glyphcast.common.registry.GCNetwork;
@@ -30,6 +31,7 @@ public class SpellUser implements ISpellUser {
     final Player player;
     int glyphMask;
     int selectedSlot;
+    double energy;
 
     public SpellUser(Player player) {
         this.slots = SpellSlot.makeSlots(18);
@@ -115,6 +117,34 @@ public class SpellUser implements ISpellUser {
     }
 
     @Override
+    public double getEnergy() {
+        return energy;
+    }
+
+    @Override
+    public double getMaxEnergy() {
+        return 250;
+    }
+
+    @Override
+    public double drainEnergy(double amount, boolean simulate) {
+        if(energy - amount < 0)
+            amount = energy;
+
+        if(!simulate) {
+            energy -= amount;
+            syncEnergy();
+        }
+        return amount;
+    }
+
+    @Override
+    public void setEnergy(double amount) {
+        energy = Math.max(0, Math.min(amount, getMaxEnergy()));
+        syncEnergy();
+    }
+
+    @Override
     public CompoundTag serializeNBT() {
         CompoundTag tag = new CompoundTag();
 
@@ -137,6 +167,7 @@ public class SpellUser implements ISpellUser {
         tag.putInt("SelectedSlot", selectedSlot);
         tag.put("SpellSlots", spellSlotsTag);
         tag.putInt("DiscoveredGlyphs", glyphMask);
+        tag.putDouble("Energy", energy);
         return tag;
     }
 
@@ -162,6 +193,7 @@ public class SpellUser implements ISpellUser {
 
         selectedSlot = nbt.getInt("SelectedSlot");
         glyphMask = nbt.getInt("DiscoveredGlyphs");
+        energy = nbt.getDouble("Energy");
     }
 
     // Syncs current spell user data to the client
@@ -169,5 +201,11 @@ public class SpellUser implements ISpellUser {
         // If we aren't on the client, don't do anything
         if (player instanceof ServerPlayer serverPlayer)
             GCNetwork.sendToClient(serverPlayer, new SyncSpellUserDataMessage(this));
+    }
+
+    void syncEnergy() {
+        // If we aren't on the client, don't do anything
+        if (player instanceof ServerPlayer serverPlayer)
+            GCNetwork.sendToClient(serverPlayer, new SyncSpellUserEnergyMessage(this));
     }
 }

@@ -69,8 +69,5 @@ public class CommonEventHandler {
             data.setTicks(data.getTicks() + 1);
             return flag;
         }));
-
-        DecimalFormat FORMAT = new DecimalFormat("###");
-        event.player.displayClientMessage(Component.literal(FORMAT.format(IChunkEnergy.getEnergyAt(event.player.level, event.player.blockPosition()))), true);
     }
 }

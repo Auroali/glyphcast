@@ -31,6 +31,10 @@ public class ClientPacketHandler {
         SpellUser.get(Minecraft.getInstance().player).ifPresent(user -> user.deserializeNBT(tag));
     }
 
+    public static void syncSpellUserEnergy(double energy) {
+        SpellUser.get(Minecraft.getInstance().player).ifPresent(user -> user.setEnergy(energy));
+    }
+
     public static void handleChunkEnergy(SyncChunkEnergyMessage msg) {
         ClientLevel level = Minecraft.getInstance().level;
         if (level == null || !level.hasChunk(msg.pos.x, msg.pos.z))
@@ -38,8 +42,6 @@ public class ClientPacketHandler {
 
         level.getChunk(msg.pos.x, msg.pos.z).getCapability(GCCapabilities.CHUNK_ENERGY).ifPresent(e -> {
             if (e instanceof ChunkEnergy energy) {
-                energy.values = msg.values;
-                energy.maxValues = msg.maxValues;
                 energy.fractures = msg.fractures;
             }
         });

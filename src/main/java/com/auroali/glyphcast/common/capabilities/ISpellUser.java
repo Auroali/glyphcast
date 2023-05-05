@@ -80,6 +80,12 @@ public interface ISpellUser extends INBTSerializable<CompoundTag> {
 
     boolean canOpenSpellWheel();
 
+    double getEnergy();
+
+    double getMaxEnergy();
+    double drainEnergy(double amount, boolean simulate);
+    void setEnergy(double amount);
+
     /**
      * Clones this capability to another
      *
@@ -89,3 +95,4 @@ public interface ISpellUser extends INBTSerializable<CompoundTag> {
         other.ifPresent(otherCap -> otherCap.deserializeNBT(this.serializeNBT()));
     }
 }
+
