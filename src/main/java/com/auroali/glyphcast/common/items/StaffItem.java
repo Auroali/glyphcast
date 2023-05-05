@@ -38,7 +38,8 @@ import java.util.function.Consumer;
 public class StaffItem extends Item implements IPointItem, IWandLike {
 
     public static final Variant[] VARIANTS = {
-            new Variant("cat", StaffClass.QUICK, Glyph.LIGHT, EntityDimensions.fixed(0.6f, 0.6f))
+            new Variant("cat", StaffClass.QUICK, Glyph.LIGHT, EntityDimensions.fixed(0.6f, 0.6f)),
+            new Variant("dragon", StaffClass.AVERAGE, Glyph.FIRE, EntityDimensions.fixed(0.6f, 0.6f))
     };
 
     private static final DecimalFormat STATS_FORMAT = new DecimalFormat("###");
@@ -230,16 +231,16 @@ public class StaffItem extends Item implements IPointItem, IWandLike {
                 case EARTH -> builder.addIceAffinity(0.15);
             }
             switch (staffClass) {
-                case QUICK -> builder.addCooldown(10);
+                case QUICK -> builder.addCooldown(10).addEarthAffinity(-0.1).addFireAffinity(-0.1).addIceAffinity(-0.1).addLightAffinity(-0.1);
                 case AVERAGE -> builder.addCooldown(12);
-                case SLOW -> builder.addCooldown(14);
+                case SLOW -> builder.addCooldown(14).addEarthAffinity(0.1).addFireAffinity(0.1).addIceAffinity(0.1).addLightAffinity(0.1);
             }
             return builder
                     .addEfficiency(1.0)
-                    .addFireAffinity(0.9)
-                    .addLightAffinity(0.9)
-                    .addIceAffinity(0.9)
-                    .addEarthAffinity(0.9)
+                    .addFireAffinity(1.0)
+                    .addLightAffinity(1.0)
+                    .addIceAffinity(1.0)
+                    .addEarthAffinity(1.0)
                     .build();
         }
     }
