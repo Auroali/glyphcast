@@ -6,25 +6,14 @@ import com.auroali.glyphcast.common.PlayerHelper;
 import com.auroali.glyphcast.common.capabilities.ISpellUser;
 import com.auroali.glyphcast.common.capabilities.SpellUser;
 import com.auroali.glyphcast.common.capabilities.chunk.IChunkEnergy;
-import com.auroali.glyphcast.common.items.EnergyGaugeItem;
-import com.auroali.glyphcast.common.items.IWandLike;
-import com.auroali.glyphcast.common.items.WandItem;
-import com.auroali.glyphcast.common.network.server.RequestChunkEnergyMessage;
 import com.auroali.glyphcast.common.registry.GCItems;
-import com.auroali.glyphcast.common.registry.GCNetwork;
 import com.auroali.glyphcast.common.registry.tags.GCItemTags;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
-import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.TagKey;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
-import net.minecraft.world.level.ChunkPos;
 import net.minecraftforge.client.gui.overlay.ForgeGui;
 import net.minecraftforge.client.gui.overlay.IGuiOverlay;
 
@@ -62,7 +51,7 @@ public class EnergyGaugeOverlay implements IGuiOverlay {
         double energy = SpellUser.get(player).map(ISpellUser::getEnergy).orElse(Double.NaN);
         double maxEnergy = SpellUser.get(player).map(ISpellUser::getMaxEnergy).orElse(Double.NaN);
         double energyPercent = energy / maxEnergy;
-        double fracturePercent = IChunkEnergy.getAverageFractureEnergy(player.level, player.blockPosition()) / 415.0;
+        double fracturePercent = IChunkEnergy.getAverageFractureEnergy(player.level, player.blockPosition()) / 350.0;
         int currentEnergyNeedleY = 58 - (int) (energyPercent * 22);
         int fractureNeedleY = 58 - (int) (fracturePercent * 22);
 
@@ -70,11 +59,11 @@ public class EnergyGaugeOverlay implements IGuiOverlay {
         gui.blit(poseStack, 20, fractureNeedleY, 62, 2, 3, 2);
 
         ItemStack overlayItem = PlayerHelper.getHeldItem(player, GCItemTags.WAND_ENERGY_GAUGE_OVERLAY);
-        if(overlayItem.is(GCItems.WAND.get())) {
+        if (overlayItem.is(GCItems.WAND.get())) {
             GCItems.WAND.get().getCore(overlayItem)
-                            .ifPresent(c ->
-                                Minecraft.getInstance().getItemRenderer().renderAndDecorateFakeItem(new ItemStack(c.item()), 9, 64)
-                            );
+                    .ifPresent(c ->
+                            Minecraft.getInstance().getItemRenderer().renderAndDecorateFakeItem(new ItemStack(c.item()), 9, 64)
+                    );
         }
         SpellUser.get(player).ifPresent(user -> {
             if (user.getSelectedSpell() != null)

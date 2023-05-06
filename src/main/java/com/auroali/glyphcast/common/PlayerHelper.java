@@ -1,6 +1,5 @@
 package com.auroali.glyphcast.common;
 
-import com.auroali.glyphcast.common.items.IWandLike;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;

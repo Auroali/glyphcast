@@ -16,27 +16,22 @@
   "item.glyphcast.staff.tooltip.dormant": "Dormant",
   "item.glyphcast.energy_gauge": "Energy Gauge",
   "item.glyphcast.staff": "Staff",
-
   "__comment2": "Blocks",
   "block.glyphcast.blue_glyph_flower": "Blue Glyph Flower",
   "block.glyphcast.crystal_ore": "Crystal Ore",
   "block.glyphcast.deepslate_crystal_ore": "Deepslate Crystal Ore",
   "block.glyphcast.carving_table": "Carving Table",
-
   "__comment3": "Item Groups",
   "itemGroup.glyphcast.glyphcast": "Glyphcast",
-
   "__comment4": "Glyphs",
   "glyph.glyphcast.fire": "Fire Glyph",
   "glyph.glyphcast.light": "Light Glyph",
   "glyph.glyphcast.ice": "Ice Glyph",
   "glyph.glyphcast.earth": "Earth Glyph",
-
   "__comment5": "GUI",
   "gui.glyphcast.save_glyphs": "Write Glyphs",
   "gui.glyphcast.select_spell": "Select Spell",
   "menu.title.glyphcast.carving": "Carving",
-
   "__comment6": "Spells",
   "spell.glyphcast.fire": "Fire",
   "spell.glyphcast.light": "Light",
@@ -51,7 +46,6 @@
   "spell.glyphcast.seperate_staff": "Awaken Staff",
   "spell.glyphcast.shield": "Shield",
   "spell.glyphcast.mend_item": "Mend Item",
-
   "__comment7": "Spell Descriptions",
   "spell.glyphcast.fire.desc": "Shoots a stream of fire in the direction the caster is looking",
   "spell.glyphcast.light.desc": "Conjures a floating light that orbits the caster",
@@ -66,11 +60,9 @@
   "spell.glyphcast.seperate_staff.desc": "Causes the creature at the end of the staff to detach itself",
   "spell.glyphcast.shield.desc": "Generates a protective barrier around the caster",
   "spell.glyphcast.mend_item.desc": "Mends the appropriately enchanted item in the caster's other hand",
-
   "__comment8": "Key Mappings",
   "key.categories.glyphcast": "Glyphcast",
   "key.glyphcast.spells": "Spell Wheel",
-
   "__comment9": "Death Messages",
   "death.attack.glyphcast.magic": "%1$s's body was consumed by magic",
   "death.attack.glyphcast.magic.entity": "%1$s's body was consumed by %2$s's magic",
@@ -79,11 +71,9 @@
   "death.attack.glyphcast.burn": "%1$s was burnt to death",
   "death.attack.glyphcast.burn.player": "%1$s was burnt to death whilst fighting %2$s",
   "death.attack.glyphcast.burn.entity.item": "%1$s was burnt by %2$s",
-
   "__comment10": "Wand Cores",
   "wand_core.none": "None",
   "wand_core.glyphcast.petal": "Petal",
-
   "__comment11": "Wand Materials",
   "wand_material.glyphcast.wandering": "Wandering",
   "wand_material.glyphcast.spruce": "Spruce",
@@ -93,11 +83,9 @@
   "wand_material.glyphcast.dark_oak": "Dark Oak",
   "wand_material.glyphcast.acacia": "Acacia",
   "wand_material.glyphcast.mangrove": "Mangrove",
-
   "__comment12": "Wand Caps",
   "wand_cap.glyphcast.iron": "Iron",
   "wand_cap.glyphcast.gold": "Gold",
-
   "__comment13": "Wand Stats",
   "wand_stat.glyphcast.efficiency": "Efficiency: %d%%",
   "wand_stat.glyphcast.cooldown": "Cooldown: %ds",
@@ -105,13 +93,10 @@
   "wand_stat.glyphcast.lightAffinity": "Light Affinity: %d%%",
   "wand_stat.glyphcast.iceAffinity": "Ice Affinity: %d%%",
   "wand_stat.glyphcast.earthAffinity": "Earth Affinity: %d%%",
-
   "__comment14": "Tooltips",
   "tooltip.glyphcast.more_info": "Hold [%s] for more info",
-
   "__comment15": "System Messages",
   "msg.glyphcast.wand_material_error": "Could not load invalid material '%s'",
-
   "__comment16": "Patchouli Book",
   "guide.glyphcast.landing": "Test Landing Text"
 }

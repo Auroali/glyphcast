@@ -12,7 +12,6 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.entity.ai.control.FlyingMoveControl;
 import net.minecraft.world.entity.ai.control.MoveControl;
 import net.minecraft.world.entity.ai.goal.FloatGoal;
 import net.minecraft.world.entity.ai.goal.Goal;
@@ -74,7 +73,7 @@ public class StaffEntity extends Mob implements FlyingAnimal {
 
     @Override
     protected PathNavigation createNavigation(Level pLevel) {
-        if(entityData.get(VARIANT).flying()) {
+        if (entityData.get(VARIANT).flying()) {
             FlyingPathNavigation flyingpathnavigation = new FlyingPathNavigation(this, pLevel);
             flyingpathnavigation.setCanOpenDoors(false);
             flyingpathnavigation.setCanFloat(true);
@@ -297,6 +296,7 @@ public class StaffEntity extends Mob implements FlyingAnimal {
     static class StaffEntityMoveControl extends MoveControl {
         private final int maxTurn;
         private final boolean hoversInPlace;
+
         public StaffEntityMoveControl(StaffEntity staffEntity, int maxTurn, boolean hoversInPlace) {
             super(staffEntity);
             this.maxTurn = maxTurn;
@@ -316,26 +316,26 @@ public class StaffEntity extends Mob implements FlyingAnimal {
                 double d1 = this.wantedY - this.mob.getY();
                 double d2 = this.wantedZ - this.mob.getZ();
                 double d3 = d0 * d0 + d1 * d1 + d2 * d2;
-                if (d3 < (double)2.5000003E-7F) {
+                if (d3 < (double) 2.5000003E-7F) {
                     this.mob.setYya(0.0F);
                     this.mob.setZza(0.0F);
                     return;
                 }
 
-                float f = (float)(Mth.atan2(d2, d0) * (double)(180F / (float)Math.PI)) - 90.0F;
+                float f = (float) (Mth.atan2(d2, d0) * (double) (180F / (float) Math.PI)) - 90.0F;
                 this.mob.setYRot(this.rotlerp(this.mob.getYRot(), f, 90.0F));
                 float f1;
                 if (this.mob.isOnGround()) {
-                    f1 = (float)(this.speedModifier * this.mob.getAttributeValue(Attributes.MOVEMENT_SPEED));
+                    f1 = (float) (this.speedModifier * this.mob.getAttributeValue(Attributes.MOVEMENT_SPEED));
                 } else {
-                    f1 = (float)(this.speedModifier * this.mob.getAttributeValue(Attributes.FLYING_SPEED));
+                    f1 = (float) (this.speedModifier * this.mob.getAttributeValue(Attributes.FLYING_SPEED));
                 }
 
                 this.mob.setSpeed(f1);
                 double d4 = Math.sqrt(d0 * d0 + d2 * d2);
-                if (Math.abs(d1) > (double)1.0E-5F || Math.abs(d4) > (double)1.0E-5F) {
-                    float f2 = (float)(-(Mth.atan2(d1, d4) * (double)(180F / (float)Math.PI)));
-                    this.mob.setXRot(this.rotlerp(this.mob.getXRot(), f2, (float)this.maxTurn));
+                if (Math.abs(d1) > (double) 1.0E-5F || Math.abs(d4) > (double) 1.0E-5F) {
+                    float f2 = (float) (-(Mth.atan2(d1, d4) * (double) (180F / (float) Math.PI)));
+                    this.mob.setXRot(this.rotlerp(this.mob.getXRot(), f2, (float) this.maxTurn));
                     this.mob.setYya(d1 > 0.0D ? f1 : -f1);
                 }
             } else {

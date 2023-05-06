@@ -2,12 +2,10 @@ package com.auroali.glyphcast.common.network.client;
 
 import com.auroali.glyphcast.common.capabilities.ISpellUser;
 import com.auroali.glyphcast.common.network.NetworkMessage;
-import com.auroali.glyphcast.common.spells.SpellSlot;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.network.NetworkEvent;
 
-import java.util.List;
 import java.util.function.Supplier;
 
 public class SyncSpellUserDataMessage extends NetworkMessage {
