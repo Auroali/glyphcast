@@ -22,7 +22,7 @@ public class PushSpell extends Spell {
 
     @Override
     public double getCost() {
-        return 20;
+        return 10;
     }
 
     @Override

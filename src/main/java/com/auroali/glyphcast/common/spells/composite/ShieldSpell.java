@@ -9,6 +9,7 @@ import com.auroali.glyphcast.common.spells.glyph.GlyphSequence;
 import com.auroali.glyphcast.common.spells.glyph.Ring;
 import net.minecraft.network.protocol.game.ClientboundSetEntityMotionPacket;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 
@@ -32,6 +33,8 @@ public class ShieldSpell extends HoldSpell {
                 });
         if (usedTicks % 2 == 0)
             triggerEvent((byte) 0, PositionedContext.with(ctx, ctx.player().position()));
+
+        ctx.playSound(SoundEvents.BEACON_AMBIENT, 0.5f);
     }
 
     @Override
@@ -51,6 +54,6 @@ public class ShieldSpell extends HoldSpell {
 
     @Override
     public double getCost() {
-        return 0;
+        return 2;
     }
 }

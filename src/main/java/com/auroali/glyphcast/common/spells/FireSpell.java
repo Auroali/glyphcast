@@ -14,7 +14,7 @@ public class FireSpell extends HoldSpell {
 
     @Override
     public double getCost() {
-        return 2;
+        return 1;
     }
 
     @Override
@@ -24,8 +24,8 @@ public class FireSpell extends HoldSpell {
         FireSpellProjectile fire = new FireSpellProjectile(ctx.level(), ctx.player().getX() + ctx.player().getLookAngle().x, ctx.player().getEyeY() - 0.25 + ctx.player().getLookAngle().y, ctx.player().getZ() + ctx.player().getLookAngle().z);
         fire.setOwner(ctx.player());
         fire.setDeltaMovement(ctx.player().getLookAngle().scale(1.25));
-        fire.getEntityData().set(FireSpellProjectile.DAMAGE, (float) (8 * ctx.stats().fireAffinity()));
+        fire.getEntityData().set(FireSpellProjectile.DAMAGE, (float) (6 * ctx.stats().fireAffinity()));
         ctx.level().addFreshEntity(fire);
-        ctx.level().playSound(null, ctx.player(), SoundEvents.FIRECHARGE_USE, SoundSource.PLAYERS, 1.0f, 1.0f);
+        ctx.playSound(SoundEvents.FIRECHARGE_USE, 0.3f);
     }
 }

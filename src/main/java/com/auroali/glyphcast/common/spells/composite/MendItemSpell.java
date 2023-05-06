@@ -31,6 +31,6 @@ public class MendItemSpell extends HoldSpell {
 
     @Override
     public double getCost() {
-        return 0;
+        return 1;
     }
 }

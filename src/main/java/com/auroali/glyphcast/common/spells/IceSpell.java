@@ -27,13 +27,15 @@ public class IceSpell extends HoldSpell {
 
     @Override
     public double getCost() {
-        return 2;
+        return 1;
     }
 
     @Override
     protected void run(IContext ctx, int usedTicks) {
         if (usedTicks % 2 != 0)
             return;
+
+        ctx.playSound(SoundEvents.SNOW_HIT, 0.4f);
         if (ctx.level() instanceof ServerLevel serverLevel) {
             Vec3 eyePos = ctx.player().getEyePosition();
             GCNetwork.sendToClient((ServerPlayer) ctx.player(), new SpawnParticlesMessage(ParticleTypes.SNOWFLAKE, 0.16d, 40, eyePos.add(ctx.player().getLookAngle().scale(0.25f)), ctx.player().getLookAngle(), 0.5f));

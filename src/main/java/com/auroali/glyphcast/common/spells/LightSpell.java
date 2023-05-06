@@ -13,7 +13,7 @@ public class LightSpell extends Spell {
 
     @Override
     public double getCost() {
-        return 5;
+        return 3;
     }
 
     @Override

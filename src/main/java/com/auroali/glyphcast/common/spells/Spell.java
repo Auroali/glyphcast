@@ -11,6 +11,8 @@ import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
@@ -152,6 +154,14 @@ public abstract class Spell {
             return player() != null ? player().getItemInHand(InteractionHand.values()[(hand().ordinal() + 1) % 2]) : ItemStack.EMPTY;
         }
 
+        /**
+         * Plays a sound at the player's position
+         * @param sound the sound to play
+         * @param volume the volume to play the sound at
+         */
+        default void playSound(SoundEvent sound, float volume) {
+            level().playSound(null, player(), sound, SoundSource.PLAYERS, volume, 1.0f);
+        }
         Player player();
 
         SpellStats stats();

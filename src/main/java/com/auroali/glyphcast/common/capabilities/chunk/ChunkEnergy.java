@@ -129,16 +129,11 @@ public class ChunkEnergy implements IChunkEnergy {
             ));
         }
 
-        if (failedValidation()) {
-            calculateMaxEnergy();
-        }
-
         needsSync = true;
     }
 
     public boolean failedValidation() {
         return fractures == null;
-
     }
 
     @Override

@@ -22,7 +22,7 @@ public class MagicDamageSpell extends Spell {
 
     @Override
     public double getCost() {
-        return 35;
+        return 12;
     }
 
     @Override

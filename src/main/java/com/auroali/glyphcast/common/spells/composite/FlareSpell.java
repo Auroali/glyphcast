@@ -23,6 +23,6 @@ public class FlareSpell extends Spell {
         Flare flare = new Flare(ctx.level(), ctx.player().getX() + ctx.player().getLookAngle().x, ctx.player().getEyeY() - 0.25 + ctx.player().getLookAngle().y, ctx.player().getZ() + ctx.player().getLookAngle().z);
         flare.setDeltaMovement(ctx.player().getLookAngle().scale(1.25));
         ctx.level().addFreshEntity(flare);
-        ctx.level().playSound(null, ctx.player(), SoundEvents.FIRECHARGE_USE, SoundSource.PLAYERS, 1.0f, 1.0f);
+        ctx.playSound(SoundEvents.FIREWORK_ROCKET_SHOOT, 1.0f);
     }
 }
