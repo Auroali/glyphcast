@@ -22,7 +22,7 @@ public class InfuseRecipeCategory implements IRecipeCategory<InfuseRecipe> {
     IDrawable background;
     IDrawable icon;
     public InfuseRecipeCategory(IGuiHelper helper) {
-        name = Component.translatable("gui.glyphcast.category.craftingTable");
+        name = Component.translatable("gui.glyphcast.category.infuse");
         ResourceLocation location = new ResourceLocation(GlyphCast.MODID, "textures/gui/jei.png");
         background = helper.createDrawable(location, 0, 0, width, height);
         ItemStack stack = new ItemStack(GCItems.WAND.get());

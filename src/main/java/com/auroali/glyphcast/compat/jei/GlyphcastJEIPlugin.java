@@ -3,6 +3,7 @@ package com.auroali.glyphcast.compat.jei;
 import com.auroali.glyphcast.GlyphCast;
 import com.auroali.glyphcast.common.recipes.InfuseRecipe;
 import com.auroali.glyphcast.common.registry.GCItems;
+import com.auroali.glyphcast.common.registry.GCWandMaterials;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
 import mezz.jei.api.constants.VanillaTypes;
@@ -46,10 +47,12 @@ public class GlyphcastJEIPlugin implements IModPlugin {
 
     @Override
     public void registerRecipeCatalysts(IRecipeCatalystRegistration registration) {
-        ItemStack wand = new ItemStack(GCItems.WAND.get());
-        GCItems.WAND.get().setCap(wand, new ResourceLocation(GlyphCast.MODID, "iron"));
-        GCItems.WAND.get().setMaterial(wand, new ResourceLocation(GlyphCast.MODID, "wandering"));
-        GCItems.WAND.get().setCore(wand, new ResourceLocation(GlyphCast.MODID, "petal"));
-        registration.addRecipeCatalyst(VanillaTypes.ITEM_STACK, wand, GCRecipeTypes.INFUSE);
+        GCWandMaterials.KEY_MAP.keySet().forEach(mat -> {
+            ItemStack wand = new ItemStack(GCItems.WAND.get());
+            GCItems.WAND.get().setCap(wand, new ResourceLocation(GlyphCast.MODID, "iron"));
+            GCItems.WAND.get().setMaterial(wand, mat);
+            GCItems.WAND.get().setCore(wand, new ResourceLocation(GlyphCast.MODID, "petal"));
+            registration.addRecipeCatalyst(VanillaTypes.ITEM_STACK, wand, GCRecipeTypes.INFUSE);
+        });
     }
 }
