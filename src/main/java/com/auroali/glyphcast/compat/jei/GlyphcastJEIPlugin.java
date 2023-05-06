@@ -1,31 +1,21 @@
 package com.auroali.glyphcast.compat.jei;
 
 import com.auroali.glyphcast.GlyphCast;
-import com.auroali.glyphcast.common.recipes.InfuseRecipe;
+import com.auroali.glyphcast.common.registry.GCBlocks;
 import com.auroali.glyphcast.common.registry.GCItems;
 import com.auroali.glyphcast.common.registry.GCWandMaterials;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
-import mezz.jei.api.constants.VanillaTypes;
-import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
-import mezz.jei.api.gui.drawable.IDrawable;
-import mezz.jei.api.recipe.IFocusGroup;
-import mezz.jei.api.recipe.RecipeType;
-import mezz.jei.api.recipe.category.IRecipeCategory;
-import mezz.jei.api.registration.IAdvancedRegistration;
 import mezz.jei.api.registration.IRecipeCatalystRegistration;
 import mezz.jei.api.registration.IRecipeCategoryRegistration;
 import mezz.jei.api.registration.IRecipeRegistration;
-import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.Ingredient;
-
-import java.util.List;
 
 @JeiPlugin
 public class GlyphcastJEIPlugin implements IModPlugin {
     InfuseRecipeCategory infuseCategory;
+    CarvingRecipeCategory carvingCategory;
 
     @Override
     public ResourceLocation getPluginUid() {
@@ -35,7 +25,8 @@ public class GlyphcastJEIPlugin implements IModPlugin {
     @Override
     public void registerCategories(IRecipeCategoryRegistration registration) {
         registration.addRecipeCategories(
-                infuseCategory = new InfuseRecipeCategory(registration.getJeiHelpers().getGuiHelper())
+                infuseCategory = new InfuseRecipeCategory(registration.getJeiHelpers().getGuiHelper()),
+                carvingCategory = new CarvingRecipeCategory(registration.getJeiHelpers().getGuiHelper())
         );
     }
 
@@ -43,6 +34,7 @@ public class GlyphcastJEIPlugin implements IModPlugin {
     public void registerRecipes(IRecipeRegistration registration) {
         GlyphCastRecipes recipes = new GlyphCastRecipes(registration.getIngredientManager());
         registration.addRecipes(GCRecipeTypes.INFUSE, recipes.getInfuseRecipes(infuseCategory));
+        registration.addRecipes(GCRecipeTypes.CARVING, recipes.getCarvingRecipes(carvingCategory));
     }
 
     @Override
@@ -52,7 +44,8 @@ public class GlyphcastJEIPlugin implements IModPlugin {
             GCItems.WAND.get().setCap(wand, new ResourceLocation(GlyphCast.MODID, "iron"));
             GCItems.WAND.get().setMaterial(wand, mat);
             GCItems.WAND.get().setCore(wand, new ResourceLocation(GlyphCast.MODID, "petal"));
-            registration.addRecipeCatalyst(VanillaTypes.ITEM_STACK, wand, GCRecipeTypes.INFUSE);
+            registration.addRecipeCatalyst(wand, GCRecipeTypes.INFUSE);
         });
+        registration.addRecipeCatalyst(new ItemStack(GCBlocks.CARVING_TABLE.get()), GCRecipeTypes.CARVING);
     }
 }

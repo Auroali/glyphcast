@@ -1,7 +1,4 @@
 {
-  "items": [
-    "#minecraft:oak_logs"
-  ],
   "cooldown": 13,
   "affinityMod": 0.0
 }

@@ -17,21 +17,8 @@ import net.minecraft.world.level.Level;
 import net.minecraftforge.common.crafting.CraftingHelper;
 import org.jetbrains.annotations.Nullable;
 
-public class InfuseRecipe implements Recipe<Container> {
-
-    public final double cost;
-    public final Ingredient input;
-    public final Ingredient other;
-    public final ItemStack result;
-    final ResourceLocation id;
-
-    public InfuseRecipe(ResourceLocation id, double cost, Ingredient input, Ingredient other, ItemStack result) {
-        this.id = id;
-        this.cost = cost;
-        this.input = input;
-        this.other = other;
-        this.result = result;
-    }
+public record InfuseRecipe(ResourceLocation id, double cost, Ingredient input, Ingredient other,
+                           ItemStack result) implements Recipe<Container> {
 
     @Override
     public boolean matches(Container pContainer, Level pLevel) {

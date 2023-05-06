@@ -232,9 +232,11 @@ public class StaffItem extends Item implements IPointItem, IWandLike {
                 case EARTH -> builder.addIceAffinity(0.15);
             }
             switch (staffClass) {
-                case QUICK -> builder.addCooldown(10).addEarthAffinity(-0.1).addFireAffinity(-0.1).addIceAffinity(-0.1).addLightAffinity(-0.1);
+                case QUICK ->
+                        builder.addCooldown(10).addEarthAffinity(-0.1).addFireAffinity(-0.1).addIceAffinity(-0.1).addLightAffinity(-0.1);
                 case AVERAGE -> builder.addCooldown(12);
-                case SLOW -> builder.addCooldown(14).addEarthAffinity(0.1).addFireAffinity(0.1).addIceAffinity(0.1).addLightAffinity(0.1);
+                case SLOW ->
+                        builder.addCooldown(14).addEarthAffinity(0.1).addFireAffinity(0.1).addIceAffinity(0.1).addLightAffinity(0.1);
             }
             return builder
                     .addEfficiency(1.0)

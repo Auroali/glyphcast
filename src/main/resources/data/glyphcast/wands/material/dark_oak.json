@@ -1,7 +1,4 @@
 {
-  "items": [
-    "#minecraft:dark_oak_logs"
-  ],
   "cooldown": 15,
   "affinityMod": 0.15
 }

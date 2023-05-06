@@ -21,6 +21,7 @@ public class InfuseRecipeCategory implements IRecipeCategory<InfuseRecipe> {
     Component name;
     IDrawable background;
     IDrawable icon;
+
     public InfuseRecipeCategory(IGuiHelper helper) {
         name = Component.translatable("gui.glyphcast.category.infuse");
         ResourceLocation location = new ResourceLocation(GlyphCast.MODID, "textures/gui/jei.png");

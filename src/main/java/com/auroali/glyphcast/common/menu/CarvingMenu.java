@@ -4,10 +4,8 @@ import com.auroali.glyphcast.common.menu.container.CarvingResultsContainer;
 import com.auroali.glyphcast.common.menu.container.CarvingTableContainer;
 import com.auroali.glyphcast.common.menu.slots.CarvingResultSlot;
 import com.auroali.glyphcast.common.registry.GCBlocks;
-import com.auroali.glyphcast.common.registry.GCItems;
 import com.auroali.glyphcast.common.registry.GCMenus;
-import com.auroali.glyphcast.common.registry.GCWandMaterials;
-import com.auroali.glyphcast.common.wands.WandMaterial;
+import com.auroali.glyphcast.common.registry.GCRecipeTypes;
 import net.minecraft.network.protocol.game.ClientboundContainerSetSlotPacket;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Container;
@@ -18,8 +16,6 @@ import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-
-import java.util.Optional;
 
 
 public class CarvingMenu extends AbstractContainerMenu {
@@ -124,14 +120,10 @@ public class CarvingMenu extends AbstractContainerMenu {
         if (level.isClientSide)
             return;
         ServerPlayer splayer = (ServerPlayer) player;
-        ItemStack stack = craftSlots.getItem(0);
-        ItemStack out = ItemStack.EMPTY;
-        Optional<WandMaterial> opt = GCWandMaterials.fromItem(stack);
-        if (opt.isPresent()) {
-            ItemStack wand = new ItemStack(GCItems.WAND.get());
-            GCItems.WAND.get().setMaterial(wand, GCWandMaterials.getKey(opt.get()));
-            out = wand;
-        }
+        ItemStack out = splayer.getServer().getRecipeManager()
+                .getRecipeFor(GCRecipeTypes.CARVING_RECIPE.get(), craftSlots, splayer.level)
+                .map(r -> r.assemble(craftSlots))
+                .orElse(ItemStack.EMPTY);
 
         results.setItem(0, out);
         this.setRemoteSlot(0, out);

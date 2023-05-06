@@ -1,0 +1,9 @@
+{
+  "type": "glyphcast:carving",
+  "input": {
+    "item": "glyphcast:raw_crystal"
+  },
+  "result": {
+    "item": "glyphcast:cut_crystal"
+  }
+}

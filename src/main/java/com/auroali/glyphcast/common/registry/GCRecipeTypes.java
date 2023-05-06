@@ -1,6 +1,7 @@
 package com.auroali.glyphcast.common.registry;
 
 import com.auroali.glyphcast.GlyphCast;
+import com.auroali.glyphcast.common.recipes.CarvingRecipe;
 import com.auroali.glyphcast.common.recipes.InfuseRecipe;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraftforge.registries.DeferredRegister;
@@ -14,6 +15,12 @@ public class GCRecipeTypes {
         @Override
         public String toString() {
             return GlyphCast.MODID + ":infuse";
+        }
+    });
+    public static final RegistryObject<RecipeType<CarvingRecipe>> CARVING_RECIPE = RECIPE_TYPES.register("carving", () -> new RecipeType<>() {
+        @Override
+        public String toString() {
+            return GlyphCast.MODID + ":carving";
         }
     });
 }

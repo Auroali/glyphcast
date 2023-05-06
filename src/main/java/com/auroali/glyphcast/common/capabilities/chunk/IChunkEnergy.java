@@ -15,8 +15,9 @@ public interface IChunkEnergy extends INBTSerializable<CompoundTag> {
 
     /**
      * Gets all fractures within a range of n chunks
+     *
      * @param level the level of the fractures
-     * @param pos the position to search around
+     * @param pos   the position to search around
      * @param range radius of chunks to check
      * @return an immutable list containing all nearby fractures
      */
@@ -39,8 +40,9 @@ public interface IChunkEnergy extends INBTSerializable<CompoundTag> {
 
     /**
      * Gets the average energy of all fractures within a 15 block radius
+     *
      * @param level the level of the fractures
-     * @param pos the position to search around
+     * @param pos   the position to search around
      * @return the average energy of all nearby fractures
      */
     static double getAverageFractureEnergy(Level level, BlockPos pos) {

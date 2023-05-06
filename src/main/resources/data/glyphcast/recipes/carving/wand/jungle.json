@@ -1,0 +1,7 @@
+{
+  "type": "glyphcast:wand_carving",
+  "input": {
+    "tag": "minecraft:jungle_logs"
+  },
+  "wand_material": "glyphcast:jungle"
+}

@@ -79,7 +79,7 @@ public class GlyphSequence {
      * @return an optional containing the spell, if it exists
      */
     public Optional<Spell> findSpell() {
-        if(isEmpty())
+        if (isEmpty())
             return Optional.empty();
 
         if (cachedSpell != null)

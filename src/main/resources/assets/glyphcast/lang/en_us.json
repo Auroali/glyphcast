@@ -37,6 +37,7 @@
   "gui.glyphcast.select_spell": "Select Spell",
   "menu.title.glyphcast.carving": "Carving",
   "gui.glyphcast.category.infuse": "Wand Infusing",
+  "gui.glyphcast.category.carving": "Carving",
 
   "__comment6": "Spells",
   "spell.glyphcast.fire": "Fire",
