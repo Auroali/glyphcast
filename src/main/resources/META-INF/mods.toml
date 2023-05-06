@@ -62,3 +62,9 @@ Magic mod about casting spells with glyphs
     versionRange="[1.19.2,1.19.3)"
     ordering="NONE"
     side="BOTH"
+[[dependencies.glyphcast]]
+    modId="patchouli"
+    mandatory=false
+    versionRange="[1.19.2-77,)"
+    ordering="NONE"
+    side="BOTH"

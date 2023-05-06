@@ -4,6 +4,7 @@ import com.auroali.glyphcast.common.registry.GCRecipeTypes;
 import com.auroali.glyphcast.common.registry.GCRecipesSerializers;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
+import net.minecraft.core.NonNullList;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.Container;
@@ -35,6 +36,11 @@ public class InfuseRecipe implements Recipe<Container> {
     @Override
     public boolean matches(Container pContainer, Level pLevel) {
         return input.test(pContainer.getItem(0));
+    }
+
+    @Override
+    public NonNullList<Ingredient> getIngredients() {
+        return NonNullList.of(Ingredient.EMPTY, input, other);
     }
 
     @Override
