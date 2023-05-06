@@ -54,6 +54,6 @@ public class ShieldSpell extends HoldSpell {
 
     @Override
     public double getCost() {
-        return 2;
+        return 1;
     }
 }

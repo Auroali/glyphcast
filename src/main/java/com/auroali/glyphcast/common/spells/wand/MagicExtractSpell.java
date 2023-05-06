@@ -29,7 +29,7 @@ public class MagicExtractSpell extends HoldSpell {
         if (fracture == null)
             return;
 
-        double drainedAmount = fracture.drain((8 * ctx.stats().efficiency()) * 0.05, false);
+        double drainedAmount = fracture.drain((16 * ctx.stats().averageAffinity()) * 0.05, false);
 
         Vec3 fracturePos = new Vec3(fracture.position().getX() + 0.5, fracture.position().getY() + 0.5, fracture.position().getZ() + 0.5);
         triggerEvent((byte) 0, PositionedContext.with(ctx, fracturePos));
@@ -39,7 +39,7 @@ public class MagicExtractSpell extends HoldSpell {
             return;
         }
 
-        fillVial(ctx, drainedAmount);
+        fillVial(ctx, drainedAmount * ctx.stats().efficiency());
     }
 
     private void fillVial(IContext ctx, double amountToDrain) {
