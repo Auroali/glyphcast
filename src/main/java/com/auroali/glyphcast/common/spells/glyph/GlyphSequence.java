@@ -79,6 +79,9 @@ public class GlyphSequence {
      * @return an optional containing the spell, if it exists
      */
     public Optional<Spell> findSpell() {
+        if(isEmpty())
+            return Optional.empty();
+
         if (cachedSpell != null)
             return Optional.of(cachedSpell);
 
@@ -116,6 +119,10 @@ public class GlyphSequence {
         });
         tag.put("Rings", rings);
         return tag;
+    }
+
+    public boolean isEmpty() {
+        return this == EMPTY || glyphList.isEmpty() || glyphList.stream().allMatch(r -> r.glyphs.isEmpty());
     }
 
     @Override

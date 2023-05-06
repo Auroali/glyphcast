@@ -7,10 +7,12 @@ import com.auroali.glyphcast.common.network.client.SpawnParticlesMessage;
 import com.auroali.glyphcast.common.network.client.SyncChunkEnergyMessage;
 import com.auroali.glyphcast.common.registry.GCNetwork;
 import com.auroali.glyphcast.common.registry.GCParticles;
-import com.mojang.serialization.Codec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.SectionPos;
-import net.minecraft.nbt.*;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.NbtUtils;
+import net.minecraft.nbt.Tag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
 import net.minecraft.util.profiling.ProfilerFiller;
@@ -23,7 +25,6 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.network.PacketDistributor;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -32,6 +33,7 @@ public class ChunkEnergy implements IChunkEnergy {
     final ChunkPos pos;
     public List<Fracture> fractures;
     public boolean needsSync;
+    public long lastTickTime;
 
     public ChunkEnergy(LevelChunk chunk) {
         this.level = chunk.getLevel();
@@ -69,7 +71,7 @@ public class ChunkEnergy implements IChunkEnergy {
         if (source.nextInt(128) != 0)
             return;
 
-        double fractureEnergy = Math.max(350, 415 * source.nextDouble());
+        double fractureEnergy = Math.max(250, 350 * source.nextDouble());
 
         GlyphCast.LOGGER.debug("Generated fracture at X: {} Z: {}", SectionPos.sectionToBlockCoord(pos.x) + x, SectionPos.sectionToBlockCoord(pos.z) + z);
         fractures.add(new Fracture(
@@ -112,7 +114,7 @@ public class ChunkEnergy implements IChunkEnergy {
         fractures = new ArrayList<>();
 
         ListTag tag = nbt.getList("Fractures", Tag.TAG_COMPOUND);
-        for(int i = 0; i < tag.size(); i++) {
+        for (int i = 0; i < tag.size(); i++) {
             CompoundTag fractureNbt = tag.getCompound(i);
             BlockPos pos = NbtUtils.readBlockPos(fractureNbt.getCompound("Pos"));
             double energy = fractureNbt.getDouble("Energy");
@@ -141,6 +143,10 @@ public class ChunkEnergy implements IChunkEnergy {
 
     @Override
     public void tick() {
+        if (lastTickTime == level.getGameTime())
+            return;
+
+        lastTickTime = level.getGameTime();
         if (failedValidation()) {
             calculateMaxEnergy();
             return;
@@ -152,8 +158,8 @@ public class ChunkEnergy implements IChunkEnergy {
         }
 
         fractures.forEach(f -> {
-            if(f.energy() < f.maxEnergy()) {
-                f.setEnergy(f.energy() + f.maxEnergy() * 0.000413);
+            if (f.energy() < f.maxEnergy()) {
+                f.setEnergy(f.energy() + 0.02);
                 needsSync = true;
             }
         });
@@ -174,6 +180,8 @@ public class ChunkEnergy implements IChunkEnergy {
 
     @Override
     public List<Fracture> getFractures() {
+        if (fractures == null)
+            return Collections.emptyList();
         return Collections.unmodifiableList(fractures);
     }
 

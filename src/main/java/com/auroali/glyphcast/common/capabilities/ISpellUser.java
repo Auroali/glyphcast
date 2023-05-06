@@ -82,9 +82,11 @@ public interface ISpellUser extends INBTSerializable<CompoundTag> {
 
     double getEnergy();
 
-    double getMaxEnergy();
-    double drainEnergy(double amount, boolean simulate);
     void setEnergy(double amount);
+
+    double getMaxEnergy();
+
+    double drainEnergy(double amount, boolean simulate);
 
     /**
      * Clones this capability to another

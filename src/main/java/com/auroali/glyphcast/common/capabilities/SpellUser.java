@@ -1,9 +1,10 @@
 package com.auroali.glyphcast.common.capabilities;
 
 import com.auroali.glyphcast.GlyphCast;
+import com.auroali.glyphcast.common.PlayerHelper;
 import com.auroali.glyphcast.common.items.IWandLike;
-import com.auroali.glyphcast.common.network.client.SyncSpellUserEnergyMessage;
 import com.auroali.glyphcast.common.network.client.SyncSpellUserDataMessage;
+import com.auroali.glyphcast.common.network.client.SyncSpellUserEnergyMessage;
 import com.auroali.glyphcast.common.registry.GCCapabilities;
 import com.auroali.glyphcast.common.registry.GCNetwork;
 import com.auroali.glyphcast.common.registry.GCSpells;
@@ -113,12 +114,18 @@ public class SpellUser implements ISpellUser {
 
     @Override
     public boolean canOpenSpellWheel() {
-        return player.getMainHandItem().getItem() instanceof IWandLike || player.getOffhandItem().getItem() instanceof IWandLike;
+        return PlayerHelper.hasItemInHand(player, IWandLike.class);
     }
 
     @Override
     public double getEnergy() {
         return energy;
+    }
+
+    @Override
+    public void setEnergy(double amount) {
+        energy = Math.max(0, Math.min(amount, getMaxEnergy()));
+        syncEnergy();
     }
 
     @Override
@@ -128,20 +135,14 @@ public class SpellUser implements ISpellUser {
 
     @Override
     public double drainEnergy(double amount, boolean simulate) {
-        if(energy - amount < 0)
+        if (energy - amount < 0)
             amount = energy;
 
-        if(!simulate) {
+        if (!simulate) {
             energy -= amount;
             syncEnergy();
         }
         return amount;
-    }
-
-    @Override
-    public void setEnergy(double amount) {
-        energy = Math.max(0, Math.min(amount, getMaxEnergy()));
-        syncEnergy();
     }
 
     @Override

@@ -221,7 +221,8 @@ public class StaffItem extends Item implements IPointItem, IWandLike {
         SLOW
     }
 
-    public record Variant(String name, StaffClass staffClass, Glyph affinity, EntityDimensions dimensions, boolean flying) {
+    public record Variant(String name, StaffClass staffClass, Glyph affinity, EntityDimensions dimensions,
+                          boolean flying) {
         SpellStats stats() {
             SpellStats.Builder builder = new SpellStats.Builder();
             switch (affinity) {

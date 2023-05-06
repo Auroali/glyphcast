@@ -26,6 +26,6 @@ public class GCWandCores {
     }
 
     public static Optional<WandCore> fromItem(ItemStack stack) {
-        return KEY_MAP.values().stream().filter(m -> m.stack().is(stack.getItem())).findFirst();
+        return KEY_MAP.values().stream().filter(m -> m.item().equals(stack.getItem())).findFirst();
     }
 }

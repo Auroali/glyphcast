@@ -6,9 +6,9 @@ import net.minecraft.world.level.ChunkPos;
 public class Fracture {
     protected final ChunkPos chunkPos;
     protected final BlockPos blockPos;
-
-    protected double energy;
     protected final double maxEnergy;
+    protected double energy;
+
     public Fracture(int x, int y, int z, double energy, double maxEnergy) {
         this.blockPos = new BlockPos(x, y, z);
         this.chunkPos = new ChunkPos(blockPos);
@@ -33,10 +33,10 @@ public class Fracture {
     }
 
     public double drain(double amount, boolean simulate) {
-        if(energy - amount < 0)
+        if (energy - amount < 0)
             amount = energy;
 
-        if(!simulate)
+        if (!simulate)
             this.energy -= amount;
         return amount;
     }

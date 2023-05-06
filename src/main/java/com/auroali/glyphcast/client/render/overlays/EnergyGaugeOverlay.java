@@ -2,20 +2,18 @@ package com.auroali.glyphcast.client.render.overlays;
 
 import com.auroali.glyphcast.GlyphCast;
 import com.auroali.glyphcast.client.render.GlyphRenderer;
+import com.auroali.glyphcast.common.PlayerHelper;
 import com.auroali.glyphcast.common.capabilities.ISpellUser;
 import com.auroali.glyphcast.common.capabilities.SpellUser;
 import com.auroali.glyphcast.common.capabilities.chunk.IChunkEnergy;
-import com.auroali.glyphcast.common.items.EnergyGaugeItem;
-import com.auroali.glyphcast.common.items.IWandLike;
-import com.auroali.glyphcast.common.network.server.RequestChunkEnergyMessage;
-import com.auroali.glyphcast.common.registry.GCNetwork;
+import com.auroali.glyphcast.common.registry.GCItems;
+import com.auroali.glyphcast.common.registry.tags.GCItemTags;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.level.ChunkPos;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.client.gui.overlay.ForgeGui;
 import net.minecraftforge.client.gui.overlay.IGuiOverlay;
 
@@ -29,49 +27,47 @@ public class EnergyGaugeOverlay implements IGuiOverlay {
         if (player == null)
             return;
 
-        if (!hasItemInHand(player, EnergyGaugeItem.class) && !hasItemInHand(player, IWandLike.class))
-            return;
-
-        if (hasItemInHand(player, EnergyGaugeItem.class))
+        if (PlayerHelper.hasItemInHand(player, GCItemTags.ENERGY_GAUGE_OVERLAY))
             renderEnergyGaugeOverlay(gui, poseStack, player);
 
-        if (hasItemInHand(player, IWandLike.class))
+        if (PlayerHelper.hasItemInHand(player, GCItemTags.WAND_ENERGY_GAUGE_OVERLAY))
             renderWandOverlay(gui, poseStack, player);
     }
 
     void renderEnergyGaugeOverlay(ForgeGui gui, PoseStack poseStack, LocalPlayer player) {
         RenderSystem.setShaderTexture(0, OVERLAY_LOCATION);
         gui.blit(poseStack, 0, 0, 0, 0, 62, 39);
-//        double energy = IChunkEnergy.getEnergyAt(player.level, player.blockPosition());
-//        double maxEnergy = IChunkEnergy.getMaxEnergyAt(player.level, player.blockPosition());
-//        double energyPercent = Math.min(energy / 320.0, 1.0);
-//        double maxEnergyPercent = Math.min(maxEnergy / 320.0, 1.0);
-//        int currentEnergyNeedleY = 28 - (int) (energyPercent * 21);
-//        int maxEnergyNeedleY = 28 - (int) (maxEnergyPercent * 21);
-//
-//        gui.blit(poseStack, 44, maxEnergyNeedleY, 62, 0, 3, 1);
-//        gui.blit(poseStack, 44, currentEnergyNeedleY, 62, 1, 4, 1);
+        double energy = SpellUser.get(player).map(ISpellUser::getEnergy).orElse(Double.NaN);
+        double maxEnergy = SpellUser.get(player).map(ISpellUser::getMaxEnergy).orElse(Double.NaN);
+        double energyPercent = energy / maxEnergy;
+        int currentEnergyNeedleY = 28 - (int) (energyPercent * 21);
+
+        gui.blit(poseStack, 44, currentEnergyNeedleY, 62, 1, 4, 1);
     }
 
     void renderWandOverlay(ForgeGui gui, PoseStack poseStack, LocalPlayer player) {
         RenderSystem.setShaderTexture(0, OVERLAY_LOCATION);
-        gui.blit(poseStack, 0, 0, 0, 39, 69, 39);
+        gui.blit(poseStack, 0, 0, 0, 39, 34, 82);
         double energy = SpellUser.get(player).map(ISpellUser::getEnergy).orElse(Double.NaN);
-        double energyPercent = energy / 250.0;
-        double fracturePercent = IChunkEnergy.getAverageFractureEnergy(player.level, player.blockPosition()) / 415.0;
-        int currentEnergyNeedleY = 28 - (int) (energyPercent * 20);
-        int fractureNeedleY = 28 - (int) (fracturePercent * 20);
+        double maxEnergy = SpellUser.get(player).map(ISpellUser::getMaxEnergy).orElse(Double.NaN);
+        double energyPercent = energy / maxEnergy;
+        double fracturePercent = IChunkEnergy.getAverageFractureEnergy(player.level, player.blockPosition()) / 350.0;
+        int currentEnergyNeedleY = 58 - (int) (energyPercent * 22);
+        int fractureNeedleY = 58 - (int) (fracturePercent * 22);
 
-        gui.blit(poseStack, 44, currentEnergyNeedleY, 62, 1, 4, 1);
-        gui.blit(poseStack, 60, fractureNeedleY, 62, 2, 3, 2);
+        gui.blit(poseStack, 11, currentEnergyNeedleY, 62, 4, 3, 2);
+        gui.blit(poseStack, 20, fractureNeedleY, 62, 2, 3, 2);
 
+        ItemStack overlayItem = PlayerHelper.getHeldItem(player, GCItemTags.WAND_ENERGY_GAUGE_OVERLAY);
+        if (overlayItem.is(GCItems.WAND.get())) {
+            GCItems.WAND.get().getCore(overlayItem)
+                    .ifPresent(c ->
+                            Minecraft.getInstance().getItemRenderer().renderAndDecorateFakeItem(new ItemStack(c.item()), 9, 64)
+                    );
+        }
         SpellUser.get(player).ifPresent(user -> {
             if (user.getSelectedSpell() != null)
                 GlyphRenderer.drawSpell(poseStack, 1, 2, user.getSelectedSpell());
         });
-    }
-
-    <T> boolean hasItemInHand(Player player, Class<T> tClass) {
-        return tClass.isInstance(player.getMainHandItem().getItem()) || tClass.isInstance(player.getOffhandItem().getItem());
     }
 }

@@ -2,7 +2,6 @@ package com.auroali.glyphcast.common.spells;
 
 import com.auroali.glyphcast.GlyphCast;
 import com.auroali.glyphcast.common.capabilities.SpellUser;
-import com.auroali.glyphcast.common.capabilities.chunk.IChunkEnergy;
 import com.auroali.glyphcast.common.items.GlyphParchmentItem;
 import com.auroali.glyphcast.common.items.IWandLike;
 import com.auroali.glyphcast.common.network.client.SpellEventMessage;
