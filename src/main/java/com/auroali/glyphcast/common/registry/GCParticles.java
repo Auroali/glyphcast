@@ -12,4 +12,5 @@ public class GCParticles {
     public static final DeferredRegister<ParticleType<?>> PARTICLES = DeferredRegister.create(ForgeRegistries.PARTICLE_TYPES, GlyphCast.MODID);
     public static final RegistryObject<SimpleParticleType> MAGIC_AMBIENCE = PARTICLES.register("magic_ambience", () -> new SimpleParticleType(false));
     public static final RegistryObject<SimpleParticleType> MAGIC_PULSE = PARTICLES.register("magic_pulse", () -> new SimpleParticleType(false));
+    public static final RegistryObject<SimpleParticleType> FRACTURE = PARTICLES.register("fracture", () -> new SimpleParticleType(false));
 }

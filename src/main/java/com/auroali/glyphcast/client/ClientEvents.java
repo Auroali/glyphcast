@@ -5,6 +5,7 @@ import com.auroali.glyphcast.client.model.DynamicStaffModel;
 import com.auroali.glyphcast.client.model.DynamicWandModel;
 import com.auroali.glyphcast.client.model.FloatingLightModel;
 import com.auroali.glyphcast.client.model.entity.StaffCatModel;
+import com.auroali.glyphcast.client.particles.FractureProvider;
 import com.auroali.glyphcast.client.particles.MagicAmbienceProvider;
 import com.auroali.glyphcast.client.particles.MagicPulseProvider;
 import com.auroali.glyphcast.client.render.GlyphClientTooltipComponent;
@@ -74,6 +75,7 @@ public class ClientEvents {
     public static void registerParticleProviders(RegisterParticleProvidersEvent event) {
         event.register(GCParticles.MAGIC_AMBIENCE.get(), MagicAmbienceProvider::new);
         event.register(GCParticles.MAGIC_PULSE.get(), MagicPulseProvider::new);
+        event.register(GCParticles.FRACTURE.get(), FractureProvider::new);
     }
 
     @SubscribeEvent
