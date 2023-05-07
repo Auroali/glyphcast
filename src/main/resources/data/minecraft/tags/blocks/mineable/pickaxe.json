@@ -2,6 +2,8 @@
   "replace": false,
   "values": [
     "glyphcast:deepslate_crystal_ore",
-    "glyphcast:crystal_ore"
+    "glyphcast:crystal_ore",
+    "glyphcast:condensed_energy_cauldron",
+    "glyphcast:fracture_siphon"
   ]
 }

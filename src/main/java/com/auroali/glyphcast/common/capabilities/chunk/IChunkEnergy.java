@@ -10,6 +10,7 @@ import net.minecraft.world.level.Level;
 import net.minecraftforge.common.util.INBTSerializable;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface IChunkEnergy extends INBTSerializable<CompoundTag> {
 
@@ -59,6 +60,23 @@ public interface IChunkEnergy extends INBTSerializable<CompoundTag> {
         amount /= num;
 
         return amount;
+    }
+
+    /**
+     * Returns the fracture at a given position, if present
+     *
+     * @param level the level of the fracture
+     * @param pos   the position of the fracture
+     * @return an optional containing the fracture, if it exists
+     */
+    static Optional<Fracture> getFractureAt(Level level, BlockPos pos) {
+        return level.getChunk(SectionPos.blockToSectionCoord(pos.getX()), SectionPos.blockToSectionCoord(pos.getZ()))
+                .getCapability(GCCapabilities.CHUNK_ENERGY)
+                .map(e -> e.getFractures()
+                        .stream()
+                        .filter(f -> f.position().equals(pos))
+                        .findAny())
+                .orElse(Optional.empty());
     }
 
     void tick();

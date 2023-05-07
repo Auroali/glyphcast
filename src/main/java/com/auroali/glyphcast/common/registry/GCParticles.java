@@ -13,4 +13,5 @@ public class GCParticles {
     public static final RegistryObject<SimpleParticleType> MAGIC_AMBIENCE = PARTICLES.register("magic_ambience", () -> new SimpleParticleType(false));
     public static final RegistryObject<SimpleParticleType> MAGIC_PULSE = PARTICLES.register("magic_pulse", () -> new SimpleParticleType(false));
     public static final RegistryObject<SimpleParticleType> FRACTURE = PARTICLES.register("fracture", () -> new SimpleParticleType(false));
+    public static final RegistryObject<SimpleParticleType> MAGIC_DRIP = PARTICLES.register("magic_drip", () -> new SimpleParticleType(false));
 }

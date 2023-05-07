@@ -6,7 +6,6 @@ import com.auroali.glyphcast.common.spells.glyph.Glyph;
 import com.auroali.glyphcast.common.spells.glyph.GlyphSequence;
 import com.auroali.glyphcast.common.spells.glyph.Ring;
 import net.minecraft.sounds.SoundEvents;
-import net.minecraft.sounds.SoundSource;
 
 public class FlareSpell extends Spell {
     public FlareSpell() {

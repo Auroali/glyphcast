@@ -3,9 +3,8 @@ package com.auroali.glyphcast.common.capabilities.chunk;
 import com.auroali.glyphcast.GlyphCast;
 import com.auroali.glyphcast.common.PlayerHelper;
 import com.auroali.glyphcast.common.energy.Fracture;
-import com.auroali.glyphcast.common.network.client.ClientPacketHandler;
-import com.auroali.glyphcast.common.network.client.SpawnParticlesMessage;
 import com.auroali.glyphcast.common.network.client.SyncChunkEnergyMessage;
+import com.auroali.glyphcast.common.registry.GCBlocks;
 import com.auroali.glyphcast.common.registry.GCNetwork;
 import com.auroali.glyphcast.common.registry.GCParticles;
 import com.auroali.glyphcast.common.registry.tags.GCItemTags;
@@ -23,7 +22,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraft.world.level.levelgen.LegacyRandomSource;
 import net.minecraft.world.level.levelgen.synth.PerlinSimplexNoise;
-import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.network.PacketDistributor;
@@ -171,7 +169,8 @@ public class ChunkEnergy implements IChunkEnergy {
     @OnlyIn(Dist.CLIENT)
     public void spawnFractureParticles() {
         fractures.forEach(f -> {
-            if(PlayerHelper.hasItemInHand(net.minecraft.client.Minecraft.getInstance().player, GCItemTags.WAND_ENERGY_GAUGE_OVERLAY))
+            if (PlayerHelper.hasItemInHand(net.minecraft.client.Minecraft.getInstance().player, GCItemTags.WAND_ENERGY_GAUGE_OVERLAY)
+                    || level.getBlockState(f.position()).is(GCBlocks.FRACTURE_SIPHON.get()))
                 level.addParticle(GCParticles.FRACTURE.get(),
                         f.position().getX() + 0.5,
                         f.position().getY() + 0.5,

@@ -1,10 +1,7 @@
 package com.auroali.glyphcast.common.registry;
 
 import com.auroali.glyphcast.GlyphCast;
-import com.auroali.glyphcast.common.blocks.CarvingTableBlock;
-import com.auroali.glyphcast.common.blocks.CrystalOreBlock;
-import com.auroali.glyphcast.common.blocks.GlyphFlowerBlock;
-import com.auroali.glyphcast.common.blocks.TrimmedGlyphFlowerBlock;
+import com.auroali.glyphcast.common.blocks.*;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraftforge.registries.DeferredRegister;
@@ -19,4 +16,6 @@ public class GCBlocks {
     public static final RegistryObject<Block> CRYSTAL_ORE = BLOCKS.register("crystal_ore", () -> new CrystalOreBlock(SoundType.STONE));
     public static final RegistryObject<Block> DEEPSLATE_CRYSTAL_ORE = BLOCKS.register("deepslate_crystal_ore", () -> new CrystalOreBlock(SoundType.DEEPSLATE));
     public static final RegistryObject<Block> CARVING_TABLE = BLOCKS.register("carving_table", CarvingTableBlock::new);
+    public static final RegistryObject<Block> FRACTURE_SIPHON = BLOCKS.register("fracture_siphon", FractureSiphonBlock::new);
+    public static final RegistryObject<Block> CONDENSED_ENERGY_CAULDRON = BLOCKS.register("condensed_energy_cauldron", CondensedEnergyCauldron::new);
 }

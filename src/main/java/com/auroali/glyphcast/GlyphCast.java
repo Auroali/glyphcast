@@ -62,6 +62,7 @@ public class GlyphCast {
         GCMenus.MENUS.register(modEventBus);
         GCRecipesSerializers.RECIPES.register(modEventBus);
         GCRecipeTypes.RECIPE_TYPES.register(modEventBus);
+        GCFluids.FLUIDS.register(modEventBus);
         modEventBus.addListener(GCEntityDataSerializers::register);
 
         GCNetwork.registerPackets();

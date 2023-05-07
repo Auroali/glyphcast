@@ -156,12 +156,14 @@ public abstract class Spell {
 
         /**
          * Plays a sound at the player's position
-         * @param sound the sound to play
+         *
+         * @param sound  the sound to play
          * @param volume the volume to play the sound at
          */
         default void playSound(SoundEvent sound, float volume) {
             level().playSound(null, player(), sound, SoundSource.PLAYERS, volume, 1.0f);
         }
+
         Player player();
 
         SpellStats stats();

@@ -3,7 +3,6 @@ package com.auroali.glyphcast.common.wands;
 import com.auroali.glyphcast.common.spells.SpellStats;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.resources.ResourceLocation;
 
 import java.util.UUID;
 

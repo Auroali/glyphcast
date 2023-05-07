@@ -24,6 +24,7 @@ public class FractureProvider implements ParticleProvider<SimpleParticleType> {
 
     public static class FractureParticle extends TextureSheetParticle {
         private final SpriteSet sprites;
+
         public FractureParticle(ClientLevel pLevel, double pX, double pY, double pZ, double pXSpeed, double pYSpeed, double pZSpeed, SpriteSet pSprites) {
             super(pLevel, pX, pY, pZ, pXSpeed, pYSpeed, pZSpeed);
             this.hasPhysics = false;
