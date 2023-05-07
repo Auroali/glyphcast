@@ -26,7 +26,7 @@ public class MagicExtractSpell extends HoldSpell {
         Vec3 end = ctx.player().getEyePosition().add(ctx.player().getLookAngle().scale(ctx.player().getReachDistance()));
 
         Fracture fracture = clipFracture(ctx, start, end);
-        if (fracture == null)
+        if (fracture == null || fracture.energy() < 5)
             return;
 
         double drainedAmount = fracture.drain((16 * ctx.stats().averageAffinity()) * 0.05, false);

@@ -158,7 +158,7 @@ public class ChunkEnergy implements IChunkEnergy {
 
         fractures.forEach(f -> {
             if (f.energy() < f.maxEnergy()) {
-                f.setEnergy(f.energy() + 0.02);
+                f.setEnergy(f.energy() + 0.05);
                 needsSync = true;
             }
         });
