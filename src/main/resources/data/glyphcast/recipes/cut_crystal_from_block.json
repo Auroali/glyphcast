@@ -1,0 +1,15 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "#": {
+      "item": "glyphcast:cut_crystal_block"
+    }
+  },
+  "pattern": [
+    "#"
+  ],
+  "result": {
+    "item": "glyphcast:cut_crystal",
+    "Count": 4
+  }
+}

@@ -26,4 +26,5 @@ public class GCItems {
     public static final RegistryObject<Item> ENERGY_GAUGE = ITEMS.register("energy_gauge", () -> new EnergyGaugeItem(new Item.Properties().tab(GlyphCast.GLYPHCAST_TAB).stacksTo(1)));
     public static final RegistryObject<VialItem> VIAL = ITEMS.register("vial", VialItem::new);
     public static final RegistryObject<Item> FRACTURE_SIPHON = ITEMS.register("fracture_siphon", () -> new BlockItem(GCBlocks.FRACTURE_SIPHON.get(), new Item.Properties().tab(GlyphCast.GLYPHCAST_TAB)));
+    public static final RegistryObject<Item> CUT_CRYSTAL_BLOCK = ITEMS.register("cut_crystal_block", () -> new BlockItem(GCBlocks.CUT_CRYSTAL_BLOCK.get(), new Item.Properties().tab(GlyphCast.GLYPHCAST_TAB)));
 }

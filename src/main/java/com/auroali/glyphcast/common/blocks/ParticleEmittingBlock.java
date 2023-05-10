@@ -3,6 +3,7 @@ package com.auroali.glyphcast.common.blocks;
 import com.auroali.glyphcast.common.registry.GCParticles;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -10,15 +11,26 @@ import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Material;
 
-public class CrystalOreBlock extends Block {
-    public CrystalOreBlock(SoundType type) {
-        super(Properties.of(Material.STONE).sound(type).requiresCorrectToolForDrops().strength(12.0f, 4.0f));
+import java.util.function.Supplier;
+
+public class ParticleEmittingBlock extends Block {
+    ParticleOptions particle;
+    Supplier<ParticleOptions> particleSupplier;
+    public ParticleEmittingBlock(Properties properties, Supplier<ParticleOptions> particle) {
+        super(properties);
+        this.particleSupplier = particle;
+    }
+
+    public ParticleOptions getParticle() {
+        if(particle == null)
+            particle = particleSupplier.get();
+        return particle;
     }
 
     /**
      * @see net.minecraft.world.level.block.RedStoneOreBlock#animateTick(BlockState, Level, BlockPos, RandomSource)
      */
-    private static void spawnParticles(Level pLevel, BlockPos pPos) {
+    private static void spawnParticles(Level pLevel, BlockPos pPos, ParticleOptions particle) {
         RandomSource randomsource = pLevel.random;
 
         for (Direction direction : Direction.values()) {
@@ -28,7 +40,7 @@ public class CrystalOreBlock extends Block {
                 double d1 = direction$axis == Direction.Axis.X ? 0.5D + 0.5625D * (double) direction.getStepX() : (double) randomsource.nextFloat();
                 double d2 = direction$axis == Direction.Axis.Y ? 0.5D + 0.5625D * (double) direction.getStepY() : (double) randomsource.nextFloat();
                 double d3 = direction$axis == Direction.Axis.Z ? 0.5D + 0.5625D * (double) direction.getStepZ() : (double) randomsource.nextFloat();
-                pLevel.addParticle(GCParticles.MAGIC_AMBIENCE.get(), (double) pPos.getX() + d1, (double) pPos.getY() + d2, (double) pPos.getZ() + d3, 0.0D, 0.0D, 0.0D);
+                pLevel.addParticle(particle, (double) pPos.getX() + d1, (double) pPos.getY() + d2, (double) pPos.getZ() + d3, 0.0D, 0.0D, 0.0D);
             }
         }
 
@@ -36,6 +48,6 @@ public class CrystalOreBlock extends Block {
 
     @Override
     public void animateTick(BlockState pState, Level pLevel, BlockPos pPos, RandomSource pRandom) {
-        spawnParticles(pLevel, pPos);
+        spawnParticles(pLevel, pPos, getParticle());
     }
 }

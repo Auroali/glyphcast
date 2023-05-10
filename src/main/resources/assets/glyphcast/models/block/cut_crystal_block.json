@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:block/cube_all",
+  "textures": {
+    "all": "glyphcast:block/cut_crystal_block"
+  }
+}
