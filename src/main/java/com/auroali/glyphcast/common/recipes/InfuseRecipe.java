@@ -18,11 +18,11 @@ import net.minecraftforge.common.crafting.CraftingHelper;
 import org.jetbrains.annotations.Nullable;
 
 public record InfuseRecipe(ResourceLocation id, double cost, Ingredient input, Ingredient other,
-                           ItemStack result) implements Recipe<Container> {
+                           ItemStack result, boolean preserveNbt) implements Recipe<Container> {
 
     @Override
     public boolean matches(Container pContainer, Level pLevel) {
-        return input.test(pContainer.getItem(0));
+        return itemsMatch(pContainer.getItem(0), pContainer.getItem(1));
     }
 
     @Override
@@ -32,7 +32,14 @@ public record InfuseRecipe(ResourceLocation id, double cost, Ingredient input, I
 
     @Override
     public ItemStack assemble(Container pContainer) {
-        return result.copy();
+        return assemble(pContainer.getItem(0));
+    }
+
+    public ItemStack assemble(ItemStack input) {
+        ItemStack output = result.copy();
+        if(preserveNbt)
+            output.getOrCreateTag().merge(input.getOrCreateTag());
+        return output;
     }
 
     @Override
@@ -78,11 +85,12 @@ public record InfuseRecipe(ResourceLocation id, double cost, Ingredient input, I
             if (!pSerializedRecipe.has("cost"))
                 throw new JsonParseException("No cost for infuse recipe");
 
+            boolean preserveNbt = pSerializedRecipe.has("preserve_input_nbt") && pSerializedRecipe.get("preserve_input_nbt").getAsBoolean();
             Ingredient input = Ingredient.fromJson(pSerializedRecipe.get("input"));
             Ingredient other = pSerializedRecipe.has("other") ? Ingredient.fromJson(pSerializedRecipe.get("other")) : Ingredient.EMPTY;
             double cost = pSerializedRecipe.get("cost").getAsDouble();
             ItemStack result = CraftingHelper.getItemStack(pSerializedRecipe.getAsJsonObject("result"), true, true);
-            return new InfuseRecipe(pRecipeId, cost, input, other, result);
+            return new InfuseRecipe(pRecipeId, cost, input, other, result, preserveNbt);
         }
 
         @Override
@@ -91,7 +99,8 @@ public record InfuseRecipe(ResourceLocation id, double cost, Ingredient input, I
             Ingredient input = Ingredient.fromNetwork(pBuffer);
             Ingredient other = Ingredient.fromNetwork(pBuffer);
             ItemStack result = pBuffer.readItem();
-            return new InfuseRecipe(pRecipeId, cost, input, other, result);
+            boolean preserveNbt = pBuffer.readBoolean();
+            return new InfuseRecipe(pRecipeId, cost, input, other, result, preserveNbt);
         }
 
         @Override
@@ -100,6 +109,7 @@ public record InfuseRecipe(ResourceLocation id, double cost, Ingredient input, I
             pRecipe.input.toNetwork(pBuffer);
             pRecipe.other.toNetwork(pBuffer);
             pBuffer.writeItem(pRecipe.result);
+            pBuffer.writeBoolean(pRecipe.preserveNbt);
         }
     }
 }

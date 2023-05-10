@@ -53,7 +53,7 @@ public class MagicInfuseSpell extends Spell {
                 return;
             if (!ctx.player().isCreative() && r.consumesOther())
                 offhandStack.shrink(1);
-            ItemStack result = r.result();
+            ItemStack result = r.assemble(stack);
             result.setCount(stack.getCount());
             drainEnergy(ctx.stats(), ctx.player(), r.cost());
             if (entityPair != null)
