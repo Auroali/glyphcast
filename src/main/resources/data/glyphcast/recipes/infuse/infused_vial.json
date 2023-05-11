@@ -1,0 +1,10 @@
+{
+  "type": "glyphcast:infuse",
+  "cost": 5,
+  "input": {
+    "item": "minecraft:glass_bottle"
+  },
+  "result": {
+    "item": "glyphcast:vial"
+  }
+}

@@ -1,30 +1,22 @@
 package com.auroali.glyphcast.common.blocks;
 
-import com.auroali.glyphcast.common.registry.GCParticles;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.material.Material;
 
 import java.util.function.Supplier;
 
 public class ParticleEmittingBlock extends Block {
     ParticleOptions particle;
     Supplier<ParticleOptions> particleSupplier;
+
     public ParticleEmittingBlock(Properties properties, Supplier<ParticleOptions> particle) {
         super(properties);
         this.particleSupplier = particle;
-    }
-
-    public ParticleOptions getParticle() {
-        if(particle == null)
-            particle = particleSupplier.get();
-        return particle;
     }
 
     /**
@@ -44,6 +36,12 @@ public class ParticleEmittingBlock extends Block {
             }
         }
 
+    }
+
+    public ParticleOptions getParticle() {
+        if (particle == null)
+            particle = particleSupplier.get();
+        return particle;
     }
 
     @Override

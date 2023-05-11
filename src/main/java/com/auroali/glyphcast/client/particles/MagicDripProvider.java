@@ -41,7 +41,7 @@ public class MagicDripProvider implements ParticleProvider<SimpleParticleType> {
             if (this.onGround) {
                 this.remove();
                 this.level.addParticle(this.landParticle, this.x, this.y, this.z, 0.0D, 0.0D, 0.0D);
-                SoundEvent soundevent = SoundEvents.POINTED_DRIPSTONE_DRIP_WATER;
+                SoundEvent soundevent = SoundEvents.AMETHYST_BLOCK_CHIME;
                 float f = Mth.randomBetween(this.random, 0.3F, 1.0F);
                 this.level.playLocalSound(this.x, this.y, this.z, soundevent, SoundSource.BLOCKS, f, 1.0F, false);
             }

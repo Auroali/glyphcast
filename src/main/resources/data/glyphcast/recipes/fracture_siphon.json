@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "C": {
+      "item": "glyphcast:cut_crystal"
+    },
+    "S": {
+      "item": "minecraft:smooth_stone_slab"
+    },
+    "I": {
+      "tag": "forge:ingots/copper"
+    }
+  },
+  "pattern": [
+    "C C",
+    "I I",
+    "SSS"
+  ],
+  "result": {
+    "item": "glyphcast:fracture_siphon"
+  }
+}

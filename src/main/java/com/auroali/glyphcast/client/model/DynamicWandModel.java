@@ -2,8 +2,6 @@ package com.auroali.glyphcast.client.model;
 
 import com.auroali.glyphcast.GlyphCast;
 import com.auroali.glyphcast.common.items.WandItem;
-import com.auroali.glyphcast.common.registry.GCWandCaps;
-import com.auroali.glyphcast.common.registry.GCWandMaterials;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.google.gson.JsonDeserializationContext;
@@ -108,14 +106,12 @@ public class DynamicWandModel implements IUnbakedGeometry<DynamicWandModel> {
             BakedModel overridden = nested.resolve(pModel, pStack, pLevel, pEntity, pSeed);
             if (overridden != pModel) return overridden;
             if (pStack.getItem() instanceof WandItem wand) {
-                ResourceLocation material = wand.getMaterial(pStack).map(GCWandMaterials::getKey).orElse(null);
-                ResourceLocation cap = wand.getCap(pStack).map(GCWandCaps::getKey).orElse(null);
-                if (material == null)
-                    return pModel;
-                String key = material + ";" + (cap == null ? "" : cap.toString());
+                ResourceLocation material = wand.getMaterialResourceLocation(pStack);
+                ResourceLocation cap = wand.getCapResourceLocation(pStack);
+                String key = material + ";" + cap.toString();
                 if (!cache.containsKey(key)) {
                     ResourceLocation texPath = new ResourceLocation(material.getNamespace(), "item/wand/" + material.getPath());
-                    ResourceLocation capPath = cap == null ? null : new ResourceLocation(cap.getNamespace(), "item/wand_cap/" + cap.getPath());
+                    ResourceLocation capPath = cap.getNamespace().isEmpty() ? null : new ResourceLocation(cap.getNamespace(), "item/wand_cap/" + cap.getPath());
                     DynamicWandModel unbaked = new DynamicWandModel(texPath, capPath);
                     BakedModel model = unbaked.bake(owner, bakery, Material::sprite, BlockModelRotation.X0_Y0, this, new ResourceLocation("glyphcast:wand_override"));
                     cache.put(key, model);

@@ -137,13 +137,25 @@ public class WandItem extends Item implements IPointItem, IWandLike {
     }
 
     public Optional<WandMaterial> getMaterial(ItemStack stack) {
-        ResourceLocation location = new ResourceLocation(stack.getOrCreateTag().getString("WandMaterial"));
+        ResourceLocation location = getMaterialResourceLocation(stack);
         return Optional.ofNullable(GCWandMaterials.getValue(location));
     }
 
     public Optional<WandCap> getCap(ItemStack stack) {
-        ResourceLocation location = new ResourceLocation(stack.getOrCreateTag().getString("WandCap"));
+        ResourceLocation location = getCapResourceLocation(stack);
         return Optional.ofNullable(GCWandCaps.getValue(location));
+    }
+
+    public ResourceLocation getMaterialResourceLocation(ItemStack stack) {
+        return stack.getOrCreateTag().contains("WandMaterial")
+                ? new ResourceLocation(stack.getOrCreateTag().getString("WandMaterial"))
+                : new ResourceLocation("", "");
+    }
+
+    public ResourceLocation getCapResourceLocation(ItemStack stack) {
+        return stack.getOrCreateTag().contains("WandCap")
+                ? new ResourceLocation(stack.getOrCreateTag().getString("WandCap"))
+                : new ResourceLocation("", "");
     }
 
     @Override

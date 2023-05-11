@@ -61,10 +61,15 @@ public class CommonEventHandler {
         if (event.side != LogicalSide.SERVER)
             return;
 
-        SpellUser.get(event.player).ifPresent(user -> user.getTickingSpells().removeIf(data -> {
-            boolean flag = !data.getSpell().tick(new Spell.BasicContext(event.player.level, event.player, data.getHand(), data.getStats()), data.getTicks(), data.getTag());
-            data.setTicks(data.getTicks() + 1);
-            return flag;
-        }));
+        SpellUser.get(event.player).ifPresent(user -> {
+            if (user.getEnergy() > user.getMaxEnergy())
+                user.setEnergy(user.getEnergy());
+
+            user.getTickingSpells().removeIf(data -> {
+                boolean flag = !data.getSpell().tick(new Spell.BasicContext(event.player.level, event.player, data.getHand(), data.getStats()), data.getTicks(), data.getTag());
+                data.setTicks(data.getTicks() + 1);
+                return flag;
+            });
+        });
     }
 }

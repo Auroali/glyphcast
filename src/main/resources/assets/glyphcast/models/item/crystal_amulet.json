@@ -1,6 +1,6 @@
 {
   "parent": "minecraft:item/generated",
   "textures": {
-    "layer0": "glyphcast:item/fracture_siphon"
+    "layer0": "glyphcast:item/crystal_amulet"
   }
 }

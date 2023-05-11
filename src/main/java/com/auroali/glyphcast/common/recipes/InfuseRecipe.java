@@ -37,7 +37,7 @@ public record InfuseRecipe(ResourceLocation id, double cost, Ingredient input, I
 
     public ItemStack assemble(ItemStack input) {
         ItemStack output = result.copy();
-        if(preserveNbt)
+        if (preserveNbt)
             output.getOrCreateTag().merge(input.getOrCreateTag());
         return output;
     }

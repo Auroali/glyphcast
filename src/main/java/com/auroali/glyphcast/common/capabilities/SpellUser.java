@@ -3,6 +3,7 @@ package com.auroali.glyphcast.common.capabilities;
 import com.auroali.glyphcast.GlyphCast;
 import com.auroali.glyphcast.common.PlayerHelper;
 import com.auroali.glyphcast.common.items.IWandLike;
+import com.auroali.glyphcast.common.items.equipment.IMaxEnergyModifier;
 import com.auroali.glyphcast.common.network.client.SyncSpellUserDataMessage;
 import com.auroali.glyphcast.common.network.client.SyncSpellUserEnergyMessage;
 import com.auroali.glyphcast.common.registry.GCCapabilities;
@@ -18,11 +19,14 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.util.LazyOptional;
+import top.theillusivec4.curios.api.CuriosApi;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 public class SpellUser implements ISpellUser {
@@ -130,7 +134,33 @@ public class SpellUser implements ISpellUser {
 
     @Override
     public double getMaxEnergy() {
-        return 250;
+        List<ItemStack> energyMod = new ArrayList<>();
+        player.getArmorSlots().forEach(i -> {
+            if (i.getItem() instanceof IMaxEnergyModifier)
+                energyMod.add(i);
+        });
+        CuriosApi.getCuriosHelper().getEquippedCurios(player)
+                .ifPresent(slots -> {
+                    for (int i = 0; i < slots.getSlots(); i++) {
+                        if (slots.getStackInSlot(i).getItem() instanceof IMaxEnergyModifier) {
+                            energyMod.add(slots.getStackInSlot(i));
+                        }
+                    }
+                });
+
+        // this is so cursed
+        final double[] finalMaxEnergy = {250};
+
+        energyMod.stream()
+                .sorted(Comparator.comparing(e -> ((IMaxEnergyModifier) e.getItem()).getEnergyModType()))
+                .forEach(i -> {
+                    switch (((IMaxEnergyModifier) i.getItem()).getEnergyModType()) {
+                        case ADDITION -> finalMaxEnergy[0] += (((IMaxEnergyModifier) i.getItem()).getEnergyMod(i));
+                        case MULTIPLIER -> finalMaxEnergy[0] *= (((IMaxEnergyModifier) i.getItem()).getEnergyMod(i));
+                    }
+                });
+
+        return finalMaxEnergy[0];
     }
 
     @Override
