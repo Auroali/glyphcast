@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "C": {
+      "item": "glyphcast:cut_crystal"
+    },
+    "S": {
+      "tag": "forge:string"
+    },
+    "I": {
+      "tag": "forge:ingots/copper"
+    }
+  },
+  "pattern": [
+    "S",
+    "I",
+    "C"
+  ],
+  "result": {
+    "item": "glyphcast:crystal_amulet"
+  }
+}

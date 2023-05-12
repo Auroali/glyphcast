@@ -1,6 +1,3 @@
 {
-  "parent": "minecraft:item/generated",
-  "textures": {
-    "layer0": "glyphcast:item/fracture_siphon"
-  }
+  "parent": "glyphcast:block/fracture_siphon"
 }
