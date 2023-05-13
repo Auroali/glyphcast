@@ -111,7 +111,7 @@ public class DynamicWandModel implements IUnbakedGeometry<DynamicWandModel> {
                 String key = material + ";" + cap.toString();
                 if (!cache.containsKey(key)) {
                     ResourceLocation texPath = new ResourceLocation(material.getNamespace(), "item/wand/" + material.getPath());
-                    ResourceLocation capPath = cap.getNamespace().isEmpty() ? null : new ResourceLocation(cap.getNamespace(), "item/wand_cap/" + cap.getPath());
+                    ResourceLocation capPath = cap.getPath().isEmpty() ? null : new ResourceLocation(cap.getNamespace(), "item/wand_cap/" + cap.getPath());
                     DynamicWandModel unbaked = new DynamicWandModel(texPath, capPath);
                     BakedModel model = unbaked.bake(owner, bakery, Material::sprite, BlockModelRotation.X0_Y0, this, new ResourceLocation("glyphcast:wand_override"));
                     cache.put(key, model);
