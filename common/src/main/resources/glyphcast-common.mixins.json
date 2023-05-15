@@ -1,0 +1,20 @@
+{
+  "required": true,
+  "package": "com.auroali.glyphcast.mixins",
+  "compatibilityLevel": "JAVA_17",
+  "minVersion": "0.8",
+  "client": [
+    "client.BlockLightEngineMixin",
+    "client.ItemInHandMixin",
+    "client.KeyMappingAccessor"
+  ],
+  "mixins": [
+    "common.CauldronBlockMixin",
+    "common.FluidInfoAccessor",
+    "common.PointedDripstoneBlockMixin",
+    "common.SimpleParticleTypeAccessor"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}
