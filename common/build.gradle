@@ -13,8 +13,8 @@ dependencies {
     // Remove the next line if you don't want to depend on the API
     modApi "dev.architectury:architectury:${rootProject.architectury_version}"
 
-    modCompileOnlyApi("mezz.jei:jei-1.19.2-common-api:${rootProject.jei_version}")
-    modCompileOnlyApi("mezz.jei:jei-1.19.2-lib:${rootProject.jei_version}")
+    modCompileOnlyApi("mezz.jei:jei-${rootProject.minecraft_version}-common-api:${rootProject.jei_version}")
+    modCompileOnlyApi("mezz.jei:jei-${rootProject.minecraft_version}-lib:${rootProject.jei_version}")
 }
 
 publishing {

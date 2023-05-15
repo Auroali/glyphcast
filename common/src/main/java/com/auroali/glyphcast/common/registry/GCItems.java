@@ -12,10 +12,10 @@ import net.minecraft.world.item.Item;
 @SuppressWarnings("unused")
 public class GCItems {
     public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(Glyphcast.MODID, Registry.ITEM_REGISTRY);
+    public static final RegistrySupplier<BlankParchmentItem> BLANK_PARCHMENT = ITEMS.register("blank_parchment", BlankParchmentItem::new);
     public static final RegistrySupplier<WandItem> WAND = ITEMS.register("wand", WandItem::new);
     public static final RegistrySupplier<StaffItem> STAFF = ITEMS.register("staff", StaffItem::new);
 
-    public static final RegistrySupplier<BlankParchmentItem> BLANK_PARCHMENT = ITEMS.register("blank_parchment", BlankParchmentItem::new);
     public static final RegistrySupplier<GlyphParchmentItem> PARCHMENT = ITEMS.register("parchment", GlyphParchmentItem::new);
     public static final RegistrySupplier<Item> ENERGY_GAUGE = ITEMS.register("energy_gauge", () -> new EnergyGaugeItem(new Item.Properties().tab(Glyphcast.GLYPHCAST_TAB).stacksTo(1)));
     public static final RegistrySupplier<VialItem> VIAL = ITEMS.register("vial", VialItem::new);

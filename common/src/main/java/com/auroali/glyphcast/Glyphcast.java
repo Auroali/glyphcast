@@ -43,8 +43,8 @@ public class Glyphcast {
         GCNetwork.registerPackets();
 
         GCFluids.FLUIDS.register();
-        GCItems.ITEMS.register();
         GCBlocks.BLOCKS.register();
+        GCItems.ITEMS.register();
         GCParticles.PARTICLES.register();
         GCRecipesSerializers.RECIPES.register();
         GCRecipeTypes.RECIPE_TYPES.register();
@@ -64,5 +64,6 @@ public class Glyphcast {
     public static void initClient() {
         GCKeybinds.register();
         ClientTickEvent.CLIENT_LEVEL_PRE.register(LightTracker::tick);
+
     }
 }
