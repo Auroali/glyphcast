@@ -5,7 +5,10 @@ import com.auroali.glyphcast.client.screen.SpellWheelScreen;
 import com.auroali.glyphcast.common.capabilities.SpellUser;
 import com.auroali.glyphcast.common.network.GCNetwork;
 import com.auroali.glyphcast.common.network.server.SetSlotSpellMessage;
-import com.auroali.glyphcast.common.registry.*;
+import com.auroali.glyphcast.common.registry.GCItems;
+import com.auroali.glyphcast.common.registry.GCWandCaps;
+import com.auroali.glyphcast.common.registry.GCWandCores;
+import com.auroali.glyphcast.common.registry.GCWandMaterials;
 import com.auroali.glyphcast.common.spells.HoldSpell;
 import com.auroali.glyphcast.common.spells.SpellStats;
 import com.auroali.glyphcast.common.wands.WandCap;
@@ -66,7 +69,7 @@ public class WandItem extends Item implements IPointItem, IWandLike {
 
         pTooltipComponents.add(Component.translatable("item.glyphcast.wand.tooltip", Component.translatable(coreKey).withStyle(ChatFormatting.BLUE).withStyle(ChatFormatting.BOLD)).withStyle(ChatFormatting.GRAY).withStyle(ChatFormatting.ITALIC));
 
-        if (!InputConstants.isKeyDown(Minecraft.getInstance().getWindow().getWindow(), ((KeyMappingAccessor)Minecraft.getInstance().options.keySprint).getKey().getValue())) {
+        if (!InputConstants.isKeyDown(Minecraft.getInstance().getWindow().getWindow(), ((KeyMappingAccessor) Minecraft.getInstance().options.keySprint).getKey().getValue())) {
             pTooltipComponents.add(Component.translatable("tooltip.glyphcast.more_info", Component.keybind("key.sprint").withStyle(ChatFormatting.GOLD)).withStyle(ChatFormatting.GRAY).withStyle(ChatFormatting.ITALIC));
             return;
         }

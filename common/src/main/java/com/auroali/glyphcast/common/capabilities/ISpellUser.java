@@ -4,8 +4,8 @@ import com.auroali.glyphcast.common.spells.*;
 import com.auroali.glyphcast.common.spells.glyph.Glyph;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.InteractionHand;
+
 import java.util.List;
-import java.util.Optional;
 
 public interface ISpellUser {
     /**
@@ -85,7 +85,10 @@ public interface ISpellUser {
     double drainEnergy(double amount, boolean simulate);
 
     CompoundTag serializeNBT();
+
     void deserializeNBT(CompoundTag tag);
+
+    void sync();
 
     /**
      * Clones this capability to another

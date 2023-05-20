@@ -8,6 +8,7 @@ import java.nio.file.Path;
 
 public class GlyphcastExpectPlatformImpl {
     public static MinecraftServer server;
+
     /**
      * This is our actual method to {@link GlyphcastExpectPlatform#getConfigDirectory()}.
      */

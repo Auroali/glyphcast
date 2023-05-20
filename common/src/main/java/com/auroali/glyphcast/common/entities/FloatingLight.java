@@ -5,8 +5,8 @@ import com.auroali.glyphcast.common.network.GCNetwork;
 import com.auroali.glyphcast.common.registry.GCEntities;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -141,6 +141,15 @@ public class FloatingLight extends Entity {
 
     @Override
     public Packet<?> getAddEntityPacket() {
-        return GCNetwork.getEntitySpawnPacket(this);
+        return GCNetwork.getEntitySpawnPacket(this, getOwner() == null ? 0 : getOwner().getId());
+    }
+
+    @Override
+    public void recreateFromPacket(ClientboundAddEntityPacket clientboundAddEntityPacket) {
+        super.recreateFromPacket(clientboundAddEntityPacket);
+        Entity entity = this.level.getEntity(clientboundAddEntityPacket.getData());
+        if (entity != null) {
+            this.setOwner(entity);
+        }
     }
 }

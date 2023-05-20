@@ -14,18 +14,17 @@ import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 
 import java.util.ArrayList;
-import java.util.Optional;
 import java.util.function.Function;
 
 public class NetworkChannelImpl extends NetworkChannel {
     private static final ResourceLocation CHANNEL_NAME = new ResourceLocation(Glyphcast.MODID, "channel");
+
     protected NetworkChannelImpl(String protocol) {
         ServerPlayNetworking.registerGlobalReceiver(CHANNEL_NAME, (server, player, handler, buf, sender) -> {
             int id = buf.readInt();
@@ -37,7 +36,7 @@ public class NetworkChannelImpl extends NetworkChannel {
             server.execute(() -> msg.handleC2S(player));
         });
         this.messages = new ArrayList<>();
-        if(Platform.getEnv() != EnvType.CLIENT)
+        if (Platform.getEnv() != EnvType.CLIENT)
             return;
 
         ClientPlayNetworking.registerGlobalReceiver(new ResourceLocation(Glyphcast.MODID, "channel"), (client, handler, buf, sender) -> {
@@ -50,13 +49,14 @@ public class NetworkChannelImpl extends NetworkChannel {
             client.execute(msg::handleS2C);
         });
     }
+
     public static NetworkChannel create(String version) {
         return new NetworkChannelImpl(version);
     }
 
     @SuppressWarnings("rawtypes")
     Pair<FriendlyByteBuf, MessageInfo> createBufferFor(Object msg) {
-        for(int i = 0; i < messages.size(); i++) {
+        for (int i = 0; i < messages.size(); i++) {
             if (!messages.get(i).getMsgClass().equals(msg.getClass()))
                 continue;
 
@@ -68,6 +68,7 @@ public class NetworkChannelImpl extends NetworkChannel {
         LOGGER.error("Packet of type {} is not registered!", msg.getClass());
         throw new IllegalArgumentException("Packet of type %s is not registered!".formatted(msg.getClass()));
     }
+
     @Override
     public <T extends NetworkMessage> void registerS2C(Class<T> type, Function<FriendlyByteBuf, T> decoder) {
         MessageInfo<T> info = new MessageInfo<>(type, decoder);

@@ -3,7 +3,6 @@ package com.auroali.glyphcast;
 import dev.architectury.injectables.annotations.ExpectPlatform;
 import dev.architectury.platform.Platform;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.world.item.ItemStack;
 
 import java.nio.file.Path;
 

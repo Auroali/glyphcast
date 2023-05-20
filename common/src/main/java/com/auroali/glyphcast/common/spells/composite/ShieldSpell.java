@@ -1,7 +1,7 @@
 package com.auroali.glyphcast.common.spells.composite;
 
-import com.auroali.glyphcast.common.network.client.SpawnParticlesMessage;
 import com.auroali.glyphcast.common.network.GCNetwork;
+import com.auroali.glyphcast.common.network.client.SpawnParticlesMessage;
 import com.auroali.glyphcast.common.registry.GCParticles;
 import com.auroali.glyphcast.common.spells.HoldSpell;
 import com.auroali.glyphcast.common.spells.glyph.Glyph;

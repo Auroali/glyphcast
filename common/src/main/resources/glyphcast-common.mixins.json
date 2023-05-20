@@ -5,7 +5,8 @@
   "minVersion": "0.8",
   "client": [
     "client.BlockLightEngineMixin",
-    "client.ItemInHandMixin",
+    "client.HumanoidModelMixin",
+    "client.ItemInHandLayerMixin",
     "client.KeyMappingAccessor"
   ],
   "mixins": [

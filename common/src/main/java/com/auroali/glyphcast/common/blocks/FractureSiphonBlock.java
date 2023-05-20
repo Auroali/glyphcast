@@ -1,6 +1,6 @@
 package com.auroali.glyphcast.common.blocks;
 
-import com.auroali.glyphcast.common.capabilities.chunk.IChunkEnergy;
+import com.auroali.glyphcast.common.entities.FractureEntity;
 import com.auroali.glyphcast.common.registry.GCFluids;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -34,7 +34,7 @@ public class FractureSiphonBlock extends Block {
     @Override
     public BlockState getStateForPlacement(BlockPlaceContext pContext) {
         BlockState state = super.getStateForPlacement(pContext);
-        return state.setValue(CHARGED, IChunkEnergy.getFractureAt(pContext.getLevel(), pContext.getClickedPos()).isPresent());
+        return state.setValue(CHARGED, FractureEntity.getAt(pContext.getLevel(), pContext.getClickedPos()).isPresent());
     }
 
     @Override

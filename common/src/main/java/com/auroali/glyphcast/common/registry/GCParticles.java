@@ -1,7 +1,6 @@
 package com.auroali.glyphcast.common.registry;
 
 import com.auroali.glyphcast.Glyphcast;
-import com.auroali.glyphcast.mixins.common.SimpleParticleTypeAccessor;
 import dev.architectury.injectables.annotations.ExpectPlatform;
 import dev.architectury.registry.registries.DeferredRegister;
 import dev.architectury.registry.registries.RegistrySupplier;

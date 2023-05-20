@@ -2,10 +2,10 @@ package com.auroali.glyphcast.common.entities;
 
 import com.auroali.glyphcast.client.LightTracker;
 import com.auroali.glyphcast.common.damage.GCDamageSources;
+import com.auroali.glyphcast.common.network.GCNetwork;
 import com.auroali.glyphcast.common.network.client.ClientPacketHandler;
 import com.auroali.glyphcast.common.network.client.SpawnParticlesMessage;
 import com.auroali.glyphcast.common.registry.GCEntities;
-import com.auroali.glyphcast.common.network.GCNetwork;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -111,7 +111,7 @@ public class FireSpellProjectile extends Projectile {
     }
 
     void igniteBlock() {
-        var result = level.clip(new ClipContext(this.position(), this.position().add(this.getDeltaMovement()), ClipContext.Block.COLLIDER, ClipContext.Fluid.ANY, null));
+        var result = level.clip(new ClipContext(this.position(), this.position().add(this.getDeltaMovement()), ClipContext.Block.COLLIDER, ClipContext.Fluid.ANY, this));
         if (result.getType() != HitResult.Type.MISS) {
             BlockPos pos = result.getBlockPos().relative(result.getDirection());
             BlockState state = level.getBlockState(result.getBlockPos());

@@ -1,10 +1,7 @@
 package com.auroali.glyphcast.common.registry;
 
 import com.auroali.glyphcast.Glyphcast;
-import com.auroali.glyphcast.common.fluids.CondensedEnergyFluid;
 import dev.architectury.core.fluid.ArchitecturyFlowingFluid;
-import dev.architectury.core.fluid.ArchitecturyFluidAttributes;
-import dev.architectury.core.fluid.SimpleArchitecturyFluidAttributes;
 import dev.architectury.registry.registries.DeferredRegister;
 import dev.architectury.registry.registries.RegistrySupplier;
 import net.minecraft.core.Registry;

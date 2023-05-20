@@ -2,7 +2,6 @@ package com.auroali.glyphcast.common.spells.glyph;
 
 import com.auroali.glyphcast.Glyphcast;
 import com.auroali.glyphcast.common.spells.Spell;
-import net.minecraft.core.Registry;
 import net.minecraft.nbt.*;
 import net.minecraft.network.FriendlyByteBuf;
 

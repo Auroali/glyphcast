@@ -1,19 +1,13 @@
 package com.auroali.glyphcast.common.network;
 
-import com.auroali.glyphcast.common.network.NetworkMessage;
 import com.auroali.glyphcast.common.network.client.*;
-import com.auroali.glyphcast.common.network.server.*;
+import com.auroali.glyphcast.common.network.server.ClearSpellSlotMessage;
+import com.auroali.glyphcast.common.network.server.SelectSpellSlotMessage;
+import com.auroali.glyphcast.common.network.server.SetSlotSpellMessage;
+import com.auroali.glyphcast.common.network.server.WriteParchmentMessage;
 import dev.architectury.injectables.annotations.ExpectPlatform;
-import dev.architectury.networking.NetworkManager;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.protocol.Packet;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.phys.Vec3;
-import java.util.Optional;
-import java.util.function.Function;
 
 @SuppressWarnings("unused")
 public class GCNetwork {
@@ -28,7 +22,6 @@ public class GCNetwork {
         CHANNEL.registerS2C(SyncWandMaterialsMessage.class, SyncWandMaterialsMessage::new);
         CHANNEL.registerS2C(SyncWandCapsMessage.class, SyncWandCapsMessage::new);
         CHANNEL.registerS2C(SpellEventMessage.class, SpellEventMessage::new);
-        CHANNEL.registerS2C(SyncChunkEnergyMessage.class, SyncChunkEnergyMessage::new);
         CHANNEL.registerC2S(WriteParchmentMessage.class, WriteParchmentMessage::new);
         CHANNEL.registerC2S(SetSlotSpellMessage.class, SetSlotSpellMessage::new);
         CHANNEL.registerC2S(SelectSpellSlotMessage.class, SelectSpellSlotMessage::new);
@@ -73,6 +66,11 @@ public class GCNetwork {
 
     @ExpectPlatform
     public static Packet<?> getEntitySpawnPacket(Entity entity) {
+        throw new AssertionError();
+    }
+
+    @ExpectPlatform
+    public static Packet<?> getEntitySpawnPacket(Entity entity, int data) {
         throw new AssertionError();
     }
 }

@@ -1,6 +1,5 @@
 package com.auroali.glyphcast.client;
 
-import com.auroali.glyphcast.Glyphcast;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.BlockPos;
@@ -8,8 +7,8 @@ import net.minecraft.world.entity.Entity;
 
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Tracks the dynamic lighting for an entity
@@ -18,7 +17,7 @@ import java.util.List;
  * @author Auroali
  */
 public class LightTracker {
-    public static final HashMap<Entity, DynamicLightSource> LIGHTS = new HashMap<>();
+    public static final ConcurrentHashMap<Entity, DynamicLightSource> LIGHTS = new ConcurrentHashMap<>();
     private static final List<Entity> REMOVALS = new ArrayList<>();
 
     public static void tick(ClientLevel level) {

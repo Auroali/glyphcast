@@ -3,7 +3,6 @@ package com.auroali.glyphcast.common.network;
 import net.minecraft.network.FriendlyByteBuf;
 
 import java.util.function.BiConsumer;
-import java.util.function.Consumer;
 import java.util.function.Function;
 
 public class MessageInfo<T extends NetworkMessage> {

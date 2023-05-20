@@ -71,13 +71,13 @@ public class PointedDripstoneBlockMixin {
             cancellable = true
     )
     private static void glyphcast$maybeTransferFluid(BlockState pState, ServerLevel pLevel, BlockPos pPos, float pRandChance, CallbackInfo ci, Optional<FluidInfo> optional) {
-        if (!((FluidInfoAccessor)(Object)optional.get()).getFluid().isSame(GCFluids.CONDENSED_ENERGY.get()))
+        if (!((FluidInfoAccessor) (Object) optional.get()).getFluid().isSame(GCFluids.CONDENSED_ENERGY.get()))
             return;
 
         if (!(pRandChance >= 0.17578125F)) {
             BlockPos blockpos = findTip(pState, pLevel, pPos, 11, false);
             if (blockpos != null) {
-                BlockPos blockpos1 = findFillableCauldronBelowStalactiteTip(pLevel, blockpos, ((FluidInfoAccessor)(Object)optional.get()).getFluid());
+                BlockPos blockpos1 = findFillableCauldronBelowStalactiteTip(pLevel, blockpos, ((FluidInfoAccessor) (Object) optional.get()).getFluid());
                 if (blockpos1 != null) {
                     pLevel.levelEvent(1504, blockpos, 0);
                     int i = blockpos.getY() - blockpos1.getY();

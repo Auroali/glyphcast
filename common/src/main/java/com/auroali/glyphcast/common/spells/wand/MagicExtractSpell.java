@@ -1,8 +1,7 @@
 package com.auroali.glyphcast.common.spells.wand;
 
 import com.auroali.glyphcast.common.capabilities.SpellUser;
-import com.auroali.glyphcast.common.capabilities.chunk.IChunkEnergy;
-import com.auroali.glyphcast.common.energy.Fracture;
+import com.auroali.glyphcast.common.entities.FractureEntity;
 import com.auroali.glyphcast.common.registry.GCItems;
 import com.auroali.glyphcast.common.registry.GCParticles;
 import com.auroali.glyphcast.common.spells.HoldSpell;
@@ -25,13 +24,13 @@ public class MagicExtractSpell extends HoldSpell {
         Vec3 start = ctx.player().getEyePosition();
         Vec3 end = ctx.player().getEyePosition().add(ctx.player().getLookAngle().scale(4.0f));
 
-        Fracture fracture = clipFracture(ctx, start, end);
-        if (fracture == null || fracture.energy() < 5)
+        FractureEntity fracture = clipFracture(ctx, start, end);
+        if (fracture == null || fracture.getEnergy() < 5)
             return;
 
-        double drainedAmount = fracture.drain((16 * ctx.stats().averageAffinity()) * 0.05, false);
+        double drainedAmount = fracture.drain((16 * ctx.stats().averageAffinity()) * 0.05);
 
-        Vec3 fracturePos = new Vec3(fracture.position().getX() + 0.5, fracture.position().getY() + 0.5, fracture.position().getZ() + 0.5);
+        Vec3 fracturePos = new Vec3(fracture.position().x, fracture.position().y, fracture.position().z);
         triggerEvent((byte) 0, PositionedContext.with(ctx, fracturePos));
 
         if (!ctx.getOtherHandItem().is(GCItems.VIAL.get())) {
@@ -62,13 +61,13 @@ public class MagicExtractSpell extends HoldSpell {
         }
     }
 
-    private Fracture clipFracture(IContext ctx, Vec3 start, Vec3 end) {
+    private FractureEntity clipFracture(IContext ctx, Vec3 start, Vec3 end) {
         double d0 = Double.MAX_VALUE;
-        Fracture fracture = null;
+        FractureEntity fracture = null;
 
-        List<Fracture> fractures = IChunkEnergy.getNearbyFractures(ctx.level(), ctx.player().blockPosition(), 1);
-        for (Fracture f : fractures) {
-            AABB aabb = new AABB(f.position()).inflate(0.5);
+        List<FractureEntity> fractures = FractureEntity.getNear(ctx.level(), ctx.player().blockPosition(), 4.0d);
+        for (FractureEntity f : fractures) {
+            AABB aabb = new AABB(f.blockPosition()).inflate(0.5);
             Optional<Vec3> pos = aabb.clip(start, end);
             if (pos.isPresent()) {
                 double d1 = start.distanceToSqr(pos.get());

@@ -23,6 +23,14 @@
     ],
     "jei_mod_plugin": [
       "com.auroali.glyphcast.compat.jei.GlyphcastJEIPlugin"
+    ],
+    "cardinal-components": [
+      "com.auroali.glyphcast.common.capabilities.fabric.GCComponents"
+    ]
+  },
+  "custom": {
+    "cardinal-components": [
+      "glyphcast:spell_user"
     ]
   },
   "mixins": [

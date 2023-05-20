@@ -1,6 +1,5 @@
 package com.auroali.glyphcast.client;
 
-import com.auroali.glyphcast.Glyphcast;
 import com.auroali.glyphcast.client.screen.SpellWheelScreen;
 import com.auroali.glyphcast.common.capabilities.SpellUser;
 import com.mojang.blaze3d.platform.InputConstants;

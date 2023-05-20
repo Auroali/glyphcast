@@ -18,6 +18,7 @@ import java.util.Map;
 
 public class WandCoreReloadListener extends SimpleJsonResourceReloadListener {
     public static final Logger LOGGER = LogUtils.getLogger();
+
     public WandCoreReloadListener(Gson p_10768_, String p_10769_) {
         super(p_10768_, p_10769_);
     }
@@ -54,7 +55,7 @@ public class WandCoreReloadListener extends SimpleJsonResourceReloadListener {
 
         LOGGER.info("Successfully loaded {} wand cores", GCWandCores.KEY_MAP.size());
 
-        if(GlyphcastExpectPlatform.getServer() != null)
+        if (GlyphcastExpectPlatform.getServer() != null)
             GCWandCores.syncToClients();
         pProfiler.pop();
     }

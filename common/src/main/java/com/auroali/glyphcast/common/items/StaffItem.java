@@ -1,11 +1,10 @@
 package com.auroali.glyphcast.common.items;
 
-import com.auroali.glyphcast.Glyphcast;
 import com.auroali.glyphcast.client.screen.SpellWheelScreen;
 import com.auroali.glyphcast.common.capabilities.SpellUser;
+import com.auroali.glyphcast.common.network.GCNetwork;
 import com.auroali.glyphcast.common.network.server.SetSlotSpellMessage;
 import com.auroali.glyphcast.common.registry.GCItems;
-import com.auroali.glyphcast.common.network.GCNetwork;
 import com.auroali.glyphcast.common.spells.HoldSpell;
 import com.auroali.glyphcast.common.spells.SpellStats;
 import com.auroali.glyphcast.common.spells.glyph.Glyph;
@@ -43,7 +42,7 @@ public class StaffItem extends Item implements IPointItem, IWandLike {
     private static final DecimalFormat STATS_COOLDOWN_FORMAT = new DecimalFormat("##.#");
 
     public StaffItem() {
-        super(new Properties().tab(Glyphcast.GLYPHCAST_TAB).stacksTo(1).rarity(Rarity.EPIC).fireResistant());
+        super(new Properties().stacksTo(1).rarity(Rarity.EPIC).fireResistant());
     }
 
     private static void openSpellWheelEditor(Level pLevel, Player pPlayer, ItemStack other) {
@@ -66,7 +65,7 @@ public class StaffItem extends Item implements IPointItem, IWandLike {
 
         pTooltipComponents.add(Component.translatable("item.glyphcast.wand.tooltip", Component.translatable(coreKey).withStyle(ChatFormatting.BLUE).withStyle(ChatFormatting.BOLD)).withStyle(ChatFormatting.GRAY).withStyle(ChatFormatting.ITALIC));
 
-        if (!InputConstants.isKeyDown(Minecraft.getInstance().getWindow().getWindow(), ((KeyMappingAccessor)Minecraft.getInstance().options.keySprint).getKey().getValue())) {
+        if (!InputConstants.isKeyDown(Minecraft.getInstance().getWindow().getWindow(), ((KeyMappingAccessor) Minecraft.getInstance().options.keySprint).getKey().getValue())) {
             pTooltipComponents.add(Component.translatable("tooltip.glyphcast.more_info", Component.keybind("key.sprint").withStyle(ChatFormatting.GOLD)).withStyle(ChatFormatting.GRAY).withStyle(ChatFormatting.ITALIC));
             return;
         }

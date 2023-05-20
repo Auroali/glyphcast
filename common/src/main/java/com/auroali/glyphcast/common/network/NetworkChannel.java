@@ -4,7 +4,6 @@ import com.mojang.logging.LogUtils;
 import dev.architectury.injectables.annotations.ExpectPlatform;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import org.slf4j.Logger;
@@ -13,15 +12,15 @@ import java.util.List;
 import java.util.function.Function;
 
 public class NetworkChannel {
-    protected List<MessageInfo<?>> messages;
     protected static Logger LOGGER = LogUtils.getLogger();
+    protected List<MessageInfo<?>> messages;
 
     @ExpectPlatform
     public static NetworkChannel create(String version) {
         throw new AssertionError();
     }
 
-    public <T extends NetworkMessage> void  registerS2C(Class<T> type, Function<FriendlyByteBuf, T> decoder) {
+    public <T extends NetworkMessage> void registerS2C(Class<T> type, Function<FriendlyByteBuf, T> decoder) {
         throw new AssertionError();
     }
 

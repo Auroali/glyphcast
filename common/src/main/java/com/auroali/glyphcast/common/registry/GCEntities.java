@@ -1,10 +1,7 @@
 package com.auroali.glyphcast.common.registry;
 
 import com.auroali.glyphcast.Glyphcast;
-import com.auroali.glyphcast.common.entities.FireSpellProjectile;
-import com.auroali.glyphcast.common.entities.Flare;
-import com.auroali.glyphcast.common.entities.FloatingLight;
-import com.auroali.glyphcast.common.entities.StaffEntity;
+import com.auroali.glyphcast.common.entities.*;
 import dev.architectury.registry.registries.DeferredRegister;
 import dev.architectury.registry.registries.RegistrySupplier;
 import net.minecraft.core.Registry;
@@ -38,6 +35,14 @@ public class GCEntities {
                     .updateInterval(3)
                     .sized(0.25f, 0.25f)
                     .build(new ResourceLocation(Glyphcast.MODID, "flare").toString()));
+
+    public static final RegistrySupplier<EntityType<FractureEntity>> FRACTURE = ENTITIES.register("fracture", () ->
+            EntityType.Builder.<FractureEntity>of(FractureEntity::new, MobCategory.MISC)
+                    .clientTrackingRange(64)
+                    .fireImmune()
+                    .updateInterval(20)
+                    .sized(0.25f, 0.25f)
+                    .build(new ResourceLocation(Glyphcast.MODID, "fracture").toString()));
 
     public static final RegistrySupplier<EntityType<StaffEntity>> STAFF_ENTITY = ENTITIES.register("staff", () ->
             EntityType.Builder.<StaffEntity>of(StaffEntity::new, MobCategory.CREATURE)

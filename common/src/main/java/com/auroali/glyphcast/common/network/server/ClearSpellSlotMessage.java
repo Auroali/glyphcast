@@ -5,8 +5,6 @@ import com.auroali.glyphcast.common.network.NetworkMessage;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
 
-import java.util.function.Supplier;
-
 
 public class ClearSpellSlotMessage extends NetworkMessage {
 

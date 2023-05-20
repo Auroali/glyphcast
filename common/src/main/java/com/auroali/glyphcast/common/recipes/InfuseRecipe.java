@@ -11,7 +11,6 @@ import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.level.Level;
-
 import org.jetbrains.annotations.Nullable;
 
 public record InfuseRecipe(ResourceLocation id, double cost, Ingredient input, Ingredient other,

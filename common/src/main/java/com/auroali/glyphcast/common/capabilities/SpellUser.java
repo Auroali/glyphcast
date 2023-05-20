@@ -4,9 +4,9 @@ import com.auroali.glyphcast.Glyphcast;
 import com.auroali.glyphcast.common.PlayerHelper;
 import com.auroali.glyphcast.common.items.IWandLike;
 import com.auroali.glyphcast.common.items.equipment.IMaxEnergyModifier;
+import com.auroali.glyphcast.common.network.GCNetwork;
 import com.auroali.glyphcast.common.network.client.SyncSpellUserDataMessage;
 import com.auroali.glyphcast.common.network.client.SyncSpellUserEnergyMessage;
-import com.auroali.glyphcast.common.network.GCNetwork;
 import com.auroali.glyphcast.common.registry.GCSpells;
 import com.auroali.glyphcast.common.spells.*;
 import com.auroali.glyphcast.common.spells.glyph.Glyph;
@@ -216,7 +216,8 @@ public class SpellUser implements ISpellUser {
     }
 
     // Syncs current spell user data to the client
-    void sync() {
+    @Override
+    public void sync() {
         // If we aren't on the client, don't do anything
         if (player instanceof ServerPlayer serverPlayer)
             GCNetwork.CHANNEL.sendToPlayer(serverPlayer, new SyncSpellUserDataMessage(this));

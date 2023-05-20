@@ -1,8 +1,6 @@
 package com.auroali.glyphcast.common.registry;
 
-import com.auroali.glyphcast.Glyphcast;
 import com.auroali.glyphcast.common.items.StaffItem;
-import dev.architectury.registry.registries.DeferredRegister;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.syncher.EntityDataSerializer;
 

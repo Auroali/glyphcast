@@ -1,10 +1,8 @@
 package com.auroali.glyphcast.common.registry;
 
 import com.auroali.glyphcast.Glyphcast;
-import com.auroali.glyphcast.Glyphcast;
 import com.auroali.glyphcast.common.blocks.*;
 import dev.architectury.registry.registries.DeferredRegister;
-import dev.architectury.registry.registries.Registries;
 import dev.architectury.registry.registries.RegistrySupplier;
 import net.minecraft.core.Registry;
 import net.minecraft.world.level.block.Block;

@@ -7,6 +7,9 @@ public abstract class NetworkMessage {
 
     public abstract void encode(FriendlyByteBuf buf);
 
-    public void handleC2S(ServerPlayer player) {}
-    public void handleS2C() {}
+    public void handleC2S(ServerPlayer player) {
+    }
+
+    public void handleS2C() {
+    }
 }

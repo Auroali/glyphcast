@@ -1,7 +1,7 @@
 package com.auroali.glyphcast.forge;
 
 import com.auroali.glyphcast.Glyphcast;
-import com.auroali.glyphcast.common.registry.GCOres;
+import com.auroali.glyphcast.common.forge.CommonEvents;
 import com.auroali.glyphcast.common.registry.listeners.WandCapReloadListener;
 import com.auroali.glyphcast.common.registry.listeners.WandCoreReloadListener;
 import com.auroali.glyphcast.common.registry.listeners.WandMaterialReloadListener;
@@ -13,7 +13,6 @@ import net.minecraftforge.event.AddReloadListenerEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
@@ -27,15 +26,13 @@ public class GlyphcastForge {
         modBus.addListener(this::setup);
 
         MinecraftForge.EVENT_BUS.addListener(this::addReloadListeners);
+        MinecraftForge.EVENT_BUS.register(CommonEvents.class);
 
         Glyphcast.init();
         DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> Glyphcast::initClient);
     }
 
     public void setup(final FMLCommonSetupEvent event) {
-        event.enqueueWork(() -> {
-            GCOres.init();
-        });
     }
 
     public void addReloadListeners(AddReloadListenerEvent event) {

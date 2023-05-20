@@ -12,12 +12,12 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class MinecraftServerMixin {
     @Inject(method = "runServer", at = @At("HEAD"))
     public void glyphcastfabric$runServer(CallbackInfo ci) {
-        GlyphcastExpectPlatformImpl.server = (MinecraftServer)(Object) this;
+        GlyphcastExpectPlatformImpl.server = (MinecraftServer) (Object) this;
     }
 
     @Inject(method = "stopServer", at = @At("TAIL"))
     public void glyphcastfabric$stopServer(CallbackInfo ci) {
-        if(GlyphcastExpectPlatformImpl.server == (Object) this)
+        if (GlyphcastExpectPlatformImpl.server == (Object) this)
             GlyphcastExpectPlatformImpl.server = null;
     }
 }

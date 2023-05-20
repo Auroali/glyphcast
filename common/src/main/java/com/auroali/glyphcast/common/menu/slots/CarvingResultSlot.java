@@ -1,7 +1,6 @@
 package com.auroali.glyphcast.common.menu.slots;
 
 import com.auroali.glyphcast.common.menu.container.CarvingTableContainer;
-import dev.architectury.event.events.common.PlayerEvent;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.RecipeHolder;

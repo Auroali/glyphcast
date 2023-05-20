@@ -7,7 +7,6 @@ import com.auroali.glyphcast.common.network.NetworkMessage;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.network.NetworkDirection;
@@ -21,6 +20,7 @@ import java.util.function.Function;
 
 public class NetworkChannelImpl extends NetworkChannel {
     SimpleChannel channel;
+
     protected NetworkChannelImpl(String protocol) {
         channel = NetworkRegistry.newSimpleChannel(
                 new ResourceLocation(Glyphcast.MODID, "channel"),
@@ -57,16 +57,16 @@ public class NetworkChannelImpl extends NetworkChannel {
 
     @Override
     public void sendToPlayer(ServerPlayer player, Object msg) {
-        if(isInvalid(msg)) {
+        if (isInvalid(msg)) {
             LOGGER.error("Message {} is not registered!", msg.getClass());
             return;
         }
-        channel.send(PacketDistributor.PLAYER.with(() -> player),  msg);
+        channel.send(PacketDistributor.PLAYER.with(() -> player), msg);
     }
 
     @Override
     public void sendToServer(Object msg) {
-        if(isInvalid(msg)) {
+        if (isInvalid(msg)) {
             LOGGER.error("Message {} is not registered!", msg.getClass());
             return;
         }
@@ -75,7 +75,7 @@ public class NetworkChannelImpl extends NetworkChannel {
 
     @Override
     public void sendToNear(Level level, Vec3 position, double range, Object msg) {
-        if(isInvalid(msg)) {
+        if (isInvalid(msg)) {
             LOGGER.error("Message {} is not registered!", msg.getClass());
             return;
         }
@@ -84,7 +84,7 @@ public class NetworkChannelImpl extends NetworkChannel {
 
     @Override
     public void sendToAll(Object msg) {
-        if(isInvalid(msg)) {
+        if (isInvalid(msg)) {
             LOGGER.error("Message {} is not registered!", msg.getClass());
             return;
         }

@@ -1,6 +1,5 @@
 package com.auroali.glyphcast.common.spells.composite;
 
-import com.auroali.glyphcast.GlyphcastExpectPlatform;
 import com.auroali.glyphcast.common.items.IWandLike;
 import com.auroali.glyphcast.common.spells.HoldSpell;
 import com.auroali.glyphcast.common.spells.glyph.Glyph;
