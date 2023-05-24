@@ -7,12 +7,13 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 
 import java.util.HashMap;
+import java.util.IdentityHashMap;
 import java.util.Map;
 import java.util.Optional;
 
 public class GCWandCores {
     public static final Map<ResourceLocation, WandCore> KEY_MAP = new HashMap<>();
-    public static final Map<WandCore, ResourceLocation> VALUE_MAP = new HashMap<>();
+    public static final Map<WandCore, ResourceLocation> VALUE_MAP = new IdentityHashMap<>();
 
     public static WandCore getValue(ResourceLocation location) {
         return KEY_MAP.get(location);

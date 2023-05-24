@@ -24,6 +24,12 @@ repositories {
         name = "Ladysnake Mods"
         url = 'https://ladysnake.jfrog.io/artifactory/mods'
     }
+    maven {
+        url "https://maven.jamieswhiteshirt.com/libs-release"
+        content {
+            includeGroup "com.jamieswhiteshirt"
+        }
+    }
 }
 
 dependencies {
@@ -36,15 +42,20 @@ dependencies {
 
     // Replace modImplementation with modApi if you expose components in your own API
     modImplementation "dev.onyxstudios.cardinal-components-api:cardinal-components-entity:${rootProject.cardinal_components_version}"
-    modImplementation "dev.onyxstudios.cardinal-components-api:cardinal-components-chunk:${rootProject.cardinal_components_version}"
     // Includes Cardinal Components API as a Jar-in-Jar dependency (optional but recommended)
     include "dev.onyxstudios.cardinal-components-api:cardinal-components-entity:${rootProject.cardinal_components_version}"
-    include "dev.onyxstudios.cardinal-components-api:cardinal-components-chunk:${rootProject.cardinal_components_version}"
 
-    modRuntimeOnly("mezz.jei:jei-${rootProject.minecraft_version}-fabric:${rootProject.jei_version}") { transitive false }
+    include modImplementation("com.jamieswhiteshirt:reach-entity-attributes:${rootProject.reach_entity_attributes_version}") { transitive false }
+
+    modRuntimeOnly("mezz.jei:jei-${rootProject.minecraft_version}-fabric:${rootProject.jei_version}")
 
     common(project(path: ":common", configuration: "namedElements")) { transitive false }
     shadowCommon(project(path: ":common", configuration: "transformProductionFabric")) { transitive false }
+
+    modImplementation "dev.emi:trinkets:${trinkets_version}"
+
+    // here so the game doesn't crash at launch
+    modImplementation "com.terraformersmc:modmenu:4.1.2"
 }
 
 processResources {

@@ -2,19 +2,19 @@ package com.auroali.glyphcast.forge;
 
 import com.auroali.glyphcast.Glyphcast;
 import com.auroali.glyphcast.common.forge.CommonEvents;
-import com.auroali.glyphcast.common.registry.listeners.WandCapReloadListener;
-import com.auroali.glyphcast.common.registry.listeners.WandCoreReloadListener;
-import com.auroali.glyphcast.common.registry.listeners.WandMaterialReloadListener;
-import com.google.gson.Gson;
 import dev.architectury.platform.forge.EventBuses;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.AddReloadListenerEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.DistExecutor;
+import net.minecraftforge.fml.InterModComms;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.minecraftforge.fml.event.lifecycle.InterModEnqueueEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import top.theillusivec4.curios.api.CuriosApi;
+import top.theillusivec4.curios.api.SlotTypeMessage;
+import top.theillusivec4.curios.api.SlotTypePreset;
 
 @Mod(Glyphcast.MODID)
 public class GlyphcastForge {
@@ -24,8 +24,8 @@ public class GlyphcastForge {
         IEventBus modBus = FMLJavaModLoadingContext.get().getModEventBus();
 
         modBus.addListener(this::setup);
+        modBus.addListener(this::enqueueIMC);
 
-        MinecraftForge.EVENT_BUS.addListener(this::addReloadListeners);
         MinecraftForge.EVENT_BUS.register(CommonEvents.class);
 
         Glyphcast.init();
@@ -35,9 +35,7 @@ public class GlyphcastForge {
     public void setup(final FMLCommonSetupEvent event) {
     }
 
-    public void addReloadListeners(AddReloadListenerEvent event) {
-        event.addListener(new WandMaterialReloadListener(new Gson(), "wands/material"));
-        event.addListener(new WandCoreReloadListener(new Gson(), "wands/core"));
-        event.addListener(new WandCapReloadListener(new Gson(), "wands/cap"));
+    public void enqueueIMC(final InterModEnqueueEvent event) {
+        InterModComms.sendTo("curios", SlotTypeMessage.REGISTER_TYPE, SlotTypePreset.NECKLACE::getMessageBuilder);
     }
 }

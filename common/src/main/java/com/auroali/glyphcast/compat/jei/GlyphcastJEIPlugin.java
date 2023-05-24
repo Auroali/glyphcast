@@ -1,15 +1,17 @@
 package com.auroali.glyphcast.compat.jei;
 
 import com.auroali.glyphcast.Glyphcast;
+import com.auroali.glyphcast.common.items.IWandLike;
 import com.auroali.glyphcast.common.registry.GCBlocks;
 import com.auroali.glyphcast.common.registry.GCItems;
-import com.auroali.glyphcast.common.registry.GCWandMaterials;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
 import mezz.jei.api.registration.IRecipeCatalystRegistration;
 import mezz.jei.api.registration.IRecipeCategoryRegistration;
 import mezz.jei.api.registration.IRecipeRegistration;
+import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
 @JeiPlugin
@@ -39,13 +41,17 @@ public class GlyphcastJEIPlugin implements IModPlugin {
 
     @Override
     public void registerRecipeCatalysts(IRecipeCatalystRegistration registration) {
-        GCWandMaterials.KEY_MAP.keySet().forEach(mat -> {
-            ItemStack wand = new ItemStack(GCItems.WAND.get());
-            GCItems.WAND.get().setCap(wand, new ResourceLocation(Glyphcast.MODID, "iron"));
-            GCItems.WAND.get().setMaterial(wand, mat);
-            GCItems.WAND.get().setCore(wand, new ResourceLocation(Glyphcast.MODID, "petal"));
-            registration.addRecipeCatalyst(wand, GCRecipeTypes.INFUSE);
+        Registry.ITEM.stream().forEach(item -> {
+            if(item instanceof IWandLike wandLike)
+                registration.addRecipeCatalyst(wandWithCore(wandLike, new ResourceLocation(Glyphcast.MODID, "petal")), GCRecipeTypes.INFUSE);
         });
+
         registration.addRecipeCatalyst(new ItemStack(GCBlocks.CARVING_TABLE.get()), GCRecipeTypes.CARVING);
+    }
+
+    public ItemStack wandWithCore(IWandLike item, ResourceLocation location) {
+        ItemStack wand = new ItemStack((Item)item);
+        item.setCore(wand, location);
+        return wand;
     }
 }

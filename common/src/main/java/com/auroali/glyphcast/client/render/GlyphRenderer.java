@@ -1,10 +1,13 @@
 package com.auroali.glyphcast.client.render;
 
 import com.auroali.glyphcast.Glyphcast;
+import com.auroali.glyphcast.common.capabilities.SpellUser;
 import com.auroali.glyphcast.common.spells.Spell;
+import com.auroali.glyphcast.common.spells.SpellCooldownManager;
 import com.auroali.glyphcast.common.spells.glyph.Glyph;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.resources.ResourceKey;
@@ -97,6 +100,17 @@ public class GlyphRenderer {
         RenderSystem.setShaderTexture(0, getSpellPath(spell));
         GuiComponent.blit(stack, x, y, 0, 0, 32, 32, 32, 32);
         RenderSystem.setShaderTexture(0, GLYPHS);
+        renderCooldownOverlay(stack, x, y, spell);
         GuiComponent.blit(stack, x, y, 0, 98, 32, 32, 256, 256);
+    }
+
+    private static void renderCooldownOverlay(PoseStack stack, int x, int y, Spell spell) {
+        SpellCooldownManager manager = SpellUser.getCooldownManager(Minecraft.getInstance().player);
+        if(!manager.isOnCooldown(spell))
+            return;
+        double percent = (double) manager.getRemainingCooldownTicks(spell) / spell.getCooldown();
+        RenderSystem.enableBlend();
+        GuiComponent.blit(stack, x, (int) (y + 32 * percent), 0, (int) (130 + 32 * percent), 32, (int) (32 * (1 - percent)), 256, 256);
+        RenderSystem.disableBlend();
     }
 }

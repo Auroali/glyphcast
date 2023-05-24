@@ -27,6 +27,11 @@ public class PlayerHelper {
     }
 
     @ExpectPlatform
+    public static double getReachDistance(Player player) {
+        throw new AssertionError();
+    }
+
+    @ExpectPlatform
     public static NonNullList<ItemStack> getAllEquipment(Player player) {
         throw new AssertionError();
     }

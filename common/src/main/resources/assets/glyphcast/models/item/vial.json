@@ -6,7 +6,7 @@
   "overrides": [
     {
       "predicate": {
-        "glyphcast:vial_level": 0.25
+        "glyphcast:vial_level": 0.05
       },
       "model": "glyphcast:item/vial_1"
     },

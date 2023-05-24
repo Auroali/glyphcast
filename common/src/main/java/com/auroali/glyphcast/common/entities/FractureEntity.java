@@ -1,11 +1,16 @@
 package com.auroali.glyphcast.common.entities;
 
 import com.auroali.glyphcast.common.network.GCNetwork;
+import com.auroali.glyphcast.common.registry.GCEntityDataSerializers;
 import com.auroali.glyphcast.common.registry.GCParticles;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializer;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.level.Level;
@@ -15,8 +20,8 @@ import java.util.List;
 import java.util.Optional;
 
 public class FractureEntity extends Entity {
-    public static final double MAX_ENERGY = 0.0;
-
+    public static final double MAX_ENERGY = 300.0;
+    public static final EntityDataAccessor<Double> ENERGY = SynchedEntityData.defineId(FractureEntity.class, GCEntityDataSerializers.DOUBLE);
     public FractureEntity(EntityType<?> entityType, Level level) {
         super(entityType, level);
     }
@@ -35,7 +40,7 @@ public class FractureEntity extends Entity {
         double amount = 0.0;
         for (FractureEntity entity : fractures) {
             double dist = entity.blockPosition().distToLowCornerSqr(pos.getX(), pos.getY(), pos.getZ());
-            amount += (1 - dist / range * range) * entity.getEnergy();
+            amount += Math.min(1, Math.max(1 - dist / (range * range), 0)) * entity.getEnergy();
         }
         return amount / fractures.size();
     }
@@ -48,11 +53,14 @@ public class FractureEntity extends Entity {
     }
 
     public double drain(double amount) {
-        return 0.0;
+        double current = this.entityData.get(ENERGY);
+        double drained = current - amount < 0 ? current : amount;
+        this.entityData.set(ENERGY, current - drained);
+        return drained;
     }
 
     public double getEnergy() {
-        return 0.0;
+        return this.entityData.get(ENERGY);
     }
 
     @Override
@@ -60,21 +68,24 @@ public class FractureEntity extends Entity {
         super.tick();
         if (level.isClientSide && level.getGameTime() % 2 == 0)
             level.addParticle(GCParticles.FRACTURE.get(), position().x, position().y, position().z, 0, 0, 0);
+        if(this.entityData.get(ENERGY) < MAX_ENERGY) {
+            this.entityData.set(ENERGY, this.entityData.get(ENERGY) + 0.05);
+        }
     }
 
     @Override
     protected void defineSynchedData() {
-
+        this.entityData.define(ENERGY, MAX_ENERGY);
     }
 
     @Override
     protected void readAdditionalSaveData(CompoundTag compoundTag) {
-
+        this.entityData.set(ENERGY, compoundTag.getDouble("Energy"));
     }
 
     @Override
     protected void addAdditionalSaveData(CompoundTag compoundTag) {
-
+        compoundTag.putDouble("Energy", this.entityData.get(ENERGY));
     }
 
     @Override

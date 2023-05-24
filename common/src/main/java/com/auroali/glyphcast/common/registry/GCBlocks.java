@@ -17,6 +17,7 @@ public class GCBlocks {
     public static final RegistrySupplier<Block> CRYSTAL_ORE = BLOCKS.register("crystal_ore", () -> new ParticleEmittingBlock(BlockBehaviour.Properties.copy(Blocks.STONE), () -> GCParticles.MAGIC_AMBIENCE.get()));
     public static final RegistrySupplier<Block> DEEPSLATE_CRYSTAL_ORE = BLOCKS.register("deepslate_crystal_ore", () -> new ParticleEmittingBlock(BlockBehaviour.Properties.copy(Blocks.DEEPSLATE), () -> GCParticles.MAGIC_AMBIENCE.get()));
     public static final RegistrySupplier<Block> CARVING_TABLE = BLOCKS.register("carving_table", CarvingTableBlock::new);
+    public static final RegistrySupplier<Block> SCRIBING_TABLE = BLOCKS.register("scribing_table", ScribingTableBlock::new);
     public static final RegistrySupplier<Block> FRACTURE_SIPHON = BLOCKS.register("fracture_siphon", FractureSiphonBlock::new);
     public static final RegistrySupplier<Block> CONDENSED_ENERGY_CAULDRON = BLOCKS.register("condensed_energy_cauldron", CondensedEnergyCauldron::new);
     public static final RegistrySupplier<Block> CUT_CRYSTAL_BLOCK = BLOCKS.register("cut_crystal_block", () -> new ParticleEmittingBlock(BlockBehaviour.Properties.copy(Blocks.AMETHYST_BLOCK), () -> GCParticles.MAGIC_AMBIENCE.get()));

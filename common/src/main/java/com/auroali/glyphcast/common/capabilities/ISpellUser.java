@@ -65,7 +65,7 @@ public interface ISpellUser {
      * @param spell the spell to add
      * @param tag   the spell's data
      */
-    void addTickingSpell(TickingSpell spell, InteractionHand hand, SpellStats stats, CompoundTag tag);
+    void addTickingSpell(TickingSpell spell, InteractionHand hand, CompoundTag tag);
 
     /**
      * Gets all active ticking spells data
@@ -90,6 +90,12 @@ public interface ISpellUser {
 
     void sync();
 
+    SpellCooldownManager getCooldownManager();
+
+    void loadCooldownManagerData(CompoundTag tag);
+
+    void loadFloatingLights();
+    void saveFloatingLights();
     /**
      * Clones this capability to another
      *

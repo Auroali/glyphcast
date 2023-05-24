@@ -43,11 +43,4 @@ public class GCEntities {
                     .updateInterval(20)
                     .sized(0.25f, 0.25f)
                     .build(new ResourceLocation(Glyphcast.MODID, "fracture").toString()));
-
-    public static final RegistrySupplier<EntityType<StaffEntity>> STAFF_ENTITY = ENTITIES.register("staff", () ->
-            EntityType.Builder.<StaffEntity>of(StaffEntity::new, MobCategory.CREATURE)
-                    .clientTrackingRange(64)
-                    .fireImmune()
-                    .updateInterval(3)
-                    .build(new ResourceLocation(Glyphcast.MODID, "staff").toString()));
 }

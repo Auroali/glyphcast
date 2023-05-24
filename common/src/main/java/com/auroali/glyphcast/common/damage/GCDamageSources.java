@@ -26,17 +26,17 @@ public class GCDamageSources {
     }
 
     @ExpectPlatform
-    private static DamageSource create(String str) {
+    public static DamageSource create(String str) {
         throw new AssertionError();
     }
 
     @ExpectPlatform
-    private static DamageSource burn(DamageSource source) {
+    public static DamageSource burn(DamageSource source) {
         throw new AssertionError();
     }
 
     @ExpectPlatform
-    private static DamageSource magic(DamageSource source) {
+    public static DamageSource magic(DamageSource source) {
         throw new AssertionError();
     }
 }

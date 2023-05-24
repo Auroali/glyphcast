@@ -19,7 +19,7 @@ import org.jetbrains.annotations.Nullable;
 
 public class CarvingTableBlock extends Block {
     public CarvingTableBlock() {
-        super(Properties.of(Material.STONE).sound(SoundType.WOOD).strength(2.5f));
+        super(Properties.of(Material.WOOD).sound(SoundType.WOOD).strength(2.5f));
     }
 
     @Nullable

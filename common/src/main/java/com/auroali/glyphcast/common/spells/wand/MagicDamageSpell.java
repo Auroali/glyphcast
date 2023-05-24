@@ -1,5 +1,6 @@
 package com.auroali.glyphcast.common.spells.wand;
 
+import com.auroali.glyphcast.common.PlayerHelper;
 import com.auroali.glyphcast.common.damage.GCDamageSources;
 import com.auroali.glyphcast.common.network.client.ClientPacketHandler;
 import com.auroali.glyphcast.common.network.client.SpawnParticlesMessage;
@@ -27,21 +28,21 @@ public class MagicDamageSpell extends Spell {
 
     @Override
     public void activate(IContext ctx) {
-        double maxDist = 4.0f * 1.5;
+        double maxDist = PlayerHelper.getReachDistance(ctx.player()) * 1.5;
         EntityHitResult result = clipEntityFromPlayer(ctx.player(), maxDist, e -> !e.isRemoved());
         if (result == null) {
             triggerEvent((byte) 0, PositionedContext.with(ctx, new Vec3(getDist(ctx.player(), maxDist), 0, 0)));
             return;
         }
 
-        result.getEntity().hurt(GCDamageSources.magic(ctx.player()), (float) ctx.stats().averageAffinity() * 12);
+        result.getEntity().hurt(GCDamageSources.magic(ctx.player()), (float) 9);
         double dist = Math.ceil(ctx.player().getEyePosition().distanceTo(result.getLocation()));
         triggerEvent((byte) 0, PositionedContext.with(ctx, new Vec3(dist, 0, 0)));
         spawnEffects(ctx.player(), dist);
     }
 
     double getDist(Player player, double max) {
-        BlockHitResult result = player.level.clip(new ClipContext(player.getEyePosition(), player.getEyePosition().add(player.getLookAngle().scale(max)), ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, null));
+        BlockHitResult result = player.level.clip(new ClipContext(player.getEyePosition(), player.getEyePosition().add(player.getLookAngle().scale(max)), ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, player));
         return result.getType() != HitResult.Type.BLOCK ? max : player.getEyePosition().distanceTo(result.getLocation());
     }
 

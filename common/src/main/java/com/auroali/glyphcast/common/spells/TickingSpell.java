@@ -18,10 +18,8 @@ public abstract class TickingSpell extends Spell {
     }
 
     @Override
-    public void tryActivate(Level level, Player player, InteractionHand hand, SpellStats stats) {
-        if (stats.efficiency() <= 0 || stats.averageAffinity() <= 0)
-            return;
-        activate(new BasicContext(level, player, hand, stats));
+    public void tryActivate(Level level, Player player, InteractionHand hand) {
+        activate(new BasicContext(level, player, hand));
     }
 
 
@@ -30,7 +28,7 @@ public abstract class TickingSpell extends Spell {
         SpellUser.get(ctx.player()).ifPresent(user -> {
             CompoundTag tag = new CompoundTag();
             this.onActivate(ctx, tag);
-            user.addTickingSpell(this, ctx.hand(), ctx.stats(), tag);
+            user.addTickingSpell(this, ctx.hand(), tag);
         });
     }
 

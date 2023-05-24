@@ -41,7 +41,7 @@ public class SpellWheelScreen extends Screen {
 
     public static void openCombined() {
         openWithModifiable(e -> {
-            if (e.visible) GCNetwork.CHANNEL.sendToServer(new SelectSpellSlotMessage(e.slotIndex));
+            if (e.spell == null || e.visible) GCNetwork.CHANNEL.sendToServer(new SelectSpellSlotMessage(e.slotIndex));
         }, true, false);
     }
 

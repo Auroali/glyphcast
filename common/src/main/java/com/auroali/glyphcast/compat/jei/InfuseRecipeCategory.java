@@ -26,9 +26,7 @@ public class InfuseRecipeCategory implements IRecipeCategory<InfuseRecipe> {
         name = Component.translatable("gui.glyphcast.category.infuse");
         ResourceLocation location = new ResourceLocation(Glyphcast.MODID, "textures/gui/jei.png");
         background = helper.createDrawable(location, 0, 0, width, height);
-        ItemStack stack = new ItemStack(GCItems.WAND.get());
-        GCItems.WAND.get().setMaterial(stack, new ResourceLocation(Glyphcast.MODID, "wandering"));
-        GCItems.WAND.get().setCap(stack, new ResourceLocation(Glyphcast.MODID, "iron"));
+        ItemStack stack = new ItemStack(GCItems.WANDERING_WAND.get());
         icon = helper.createDrawableItemStack(stack);
     }
 

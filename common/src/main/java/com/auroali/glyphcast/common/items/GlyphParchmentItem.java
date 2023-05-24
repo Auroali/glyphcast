@@ -4,10 +4,10 @@ import com.auroali.glyphcast.Glyphcast;
 import com.auroali.glyphcast.common.capabilities.SpellUser;
 import com.auroali.glyphcast.common.items.tooltip.GlyphTooltipComponent;
 import com.auroali.glyphcast.common.spells.Spell;
-import com.auroali.glyphcast.common.spells.SpellStats;
 import com.auroali.glyphcast.common.spells.glyph.Glyph;
 import com.auroali.glyphcast.common.spells.glyph.GlyphSequence;
 import com.auroali.glyphcast.common.spells.glyph.Ring;
+import com.auroali.glyphcast.common.wands.CastingTrait;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.chat.Component;
@@ -21,9 +21,11 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
-public class GlyphParchmentItem extends Item implements ISpellHolder {
+public class GlyphParchmentItem extends Item implements ISpellHolder, ICastingItem {
 
     public GlyphParchmentItem() {
         super(new Properties().stacksTo(16).tab(Glyphcast.GLYPHCAST_TAB));
@@ -67,8 +69,8 @@ public class GlyphParchmentItem extends Item implements ISpellHolder {
         if (!pLevel.isClientSide) {
             Optional<Spell> spell = getSpell(stack);
             spell.ifPresent(_spell -> {
-                _spell.tryActivate(pLevel, pPlayer, pUsedHand, SpellStats.PARCHMENT);
-                pPlayer.getCooldowns().addCooldown(this, SpellStats.PARCHMENT.cooldown());
+                _spell.tryActivate(pLevel, pPlayer, pUsedHand);
+                //pPlayer.getCooldowns().addCooldown(this, SpellStats.PARCHMENT.cooldown());
                 if (pPlayer instanceof ServerPlayer) {
                     CriteriaTriggers.USING_ITEM.trigger((ServerPlayer) pPlayer, stack);
                 }
@@ -86,5 +88,10 @@ public class GlyphParchmentItem extends Item implements ISpellHolder {
             return spell.isPresent() ? InteractionResultHolder.consume(stack) : InteractionResultHolder.pass(stack);
         }
         return InteractionResultHolder.success(stack);
+    }
+
+    @Override
+    public List<CastingTrait> getTraits(ItemStack stack) {
+        return Collections.emptyList();
     }
 }

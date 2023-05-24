@@ -1,9 +1,10 @@
 package com.auroali.glyphcast.common.recipes;
 
+import com.auroali.glyphcast.common.items.IWandLike;
 import com.auroali.glyphcast.common.registry.GCItems;
 import com.auroali.glyphcast.common.registry.GCRecipesSerializers;
 import com.auroali.glyphcast.common.registry.GCWandCores;
-import com.auroali.glyphcast.common.registry.GCWandMaterials;
+import com.auroali.glyphcast.common.registry.tags.GCItemTags;
 import com.auroali.glyphcast.common.wands.WandCore;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.CraftingContainer;
@@ -14,8 +15,6 @@ import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.Level;
 
 public class WandCoreRecipe extends CustomRecipe {
-    public static final Ingredient WAND_INGREDIENT = Ingredient.of(GCItems.WAND.get());
-
     public WandCoreRecipe(ResourceLocation pId) {
         super(pId);
     }
@@ -32,7 +31,7 @@ public class WandCoreRecipe extends CustomRecipe {
             WandCore core = GCWandCores.fromItem(stack).orElse(null);
             if (core != null)
                 hasCore = true;
-            if (WAND_INGREDIENT.test(stack) && GCItems.WAND.get().getCap(stack).isEmpty() && GCItems.WAND.get().getCore(stack).isEmpty())
+            if (stack.getItem() instanceof IWandLike wandLike && wandLike.getCore(stack).isEmpty())
                 hasWand = true;
         }
         return numItems == 2 && hasWand && hasCore;
@@ -40,14 +39,18 @@ public class WandCoreRecipe extends CustomRecipe {
 
     @Override
     public ItemStack assemble(CraftingContainer pContainer) {
-        ItemStack stack = new ItemStack(GCItems.WAND.get());
+        ItemStack stack = ItemStack.EMPTY;
+        for(int i = 0; i < pContainer.getContainerSize(); i++) {
+            if(pContainer.getItem(i).getItem() instanceof IWandLike)
+                stack = pContainer.getItem(i);
+        }
         for (int i = 0; i < pContainer.getContainerSize(); i++) {
             ItemStack slot = pContainer.getItem(i);
-            if (stack.isEmpty())
+            if (slot.isEmpty())
                 continue;
-            GCWandCores.fromItem(slot).ifPresent(core -> GCItems.WAND.get().setCore(stack, GCWandCores.getKey(core)));
-            if (WAND_INGREDIENT.test(slot))
-                GCItems.WAND.get().getMaterial(slot).ifPresent(mat -> GCItems.WAND.get().setMaterial(stack, GCWandMaterials.getKey(mat)));
+            if(stack.getItem() instanceof IWandLike wandLike) {
+                GCWandCores.fromItem(slot).ifPresent(core -> wandLike.setCore(slot, GCWandCores.getKey(core)));
+            }
         }
         return stack;
     }

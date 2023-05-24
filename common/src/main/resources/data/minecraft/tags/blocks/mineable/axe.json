@@ -1,6 +1,7 @@
 {
   "replace": false,
   "values": [
-    "glyphcast:carving_table"
+    "glyphcast:carving_table",
+    "glyphcast:scribing_table"
   ]
 }

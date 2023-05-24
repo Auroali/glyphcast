@@ -19,8 +19,7 @@ public class GCNetwork {
         CHANNEL.registerS2C(SyncSpellUserDataMessage.class, SyncSpellUserDataMessage::new);
         CHANNEL.registerS2C(SyncSpellUserEnergyMessage.class, SyncSpellUserEnergyMessage::new);
         CHANNEL.registerS2C(SyncWandCoresMessage.class, SyncWandCoresMessage::new);
-        CHANNEL.registerS2C(SyncWandMaterialsMessage.class, SyncWandMaterialsMessage::new);
-        CHANNEL.registerS2C(SyncWandCapsMessage.class, SyncWandCapsMessage::new);
+        CHANNEL.registerS2C(SyncCooldownManagerMessage.class, SyncCooldownManagerMessage::new);
         CHANNEL.registerS2C(SpellEventMessage.class, SpellEventMessage::new);
         CHANNEL.registerC2S(WriteParchmentMessage.class, WriteParchmentMessage::new);
         CHANNEL.registerC2S(SetSlotSpellMessage.class, SetSlotSpellMessage::new);

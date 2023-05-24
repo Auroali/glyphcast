@@ -6,15 +6,13 @@ import net.minecraft.world.InteractionHand;
 public class TickingSpellData {
     private final TickingSpell spell;
     private final CompoundTag tag;
-    private final SpellStats stats;
     private final InteractionHand hand;
     private int ticks;
 
-    public TickingSpellData(TickingSpell spell, InteractionHand hand, SpellStats stats, CompoundTag tag) {
+    public TickingSpellData(TickingSpell spell, InteractionHand hand, CompoundTag tag) {
         this.spell = spell;
         this.hand = hand;
         this.ticks = 0;
-        this.stats = stats;
         this.tag = tag;
     }
 
@@ -36,9 +34,5 @@ public class TickingSpellData {
 
     public InteractionHand getHand() {
         return hand;
-    }
-
-    public SpellStats getStats() {
-        return stats;
     }
 }

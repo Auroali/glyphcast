@@ -65,7 +65,6 @@ public class SpellWheelEntry extends GuiComponent implements Widget, GuiEventLis
     public boolean isMouseOver(double pMouseX, double pMouseY) {
         double mouseAngle = Math.atan2(pMouseY - centerY, pMouseX - centerX);
         mouseAngle = mouseAngle < 0 ? mouseAngle + 2 * Math.PI : mouseAngle;
-        // TODO: Fix it not working when the angle wraps back around to 0
         double angle = 2 * Math.PI * ((double) this.index / 9);
         double upper_bound = angle + 0.34906585039;
         double lower_bound = angle - 0.34906585039;

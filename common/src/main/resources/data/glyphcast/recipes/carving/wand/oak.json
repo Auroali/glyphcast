@@ -1,7 +1,9 @@
 {
-  "type": "glyphcast:wand_carving",
+  "type": "glyphcast:carving",
   "input": {
     "tag": "minecraft:oak_logs"
   },
-  "wand_material": "glyphcast:oak"
+  "result": {
+    "item": "glyphcast:oak_wand"
+  }
 }

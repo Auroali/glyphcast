@@ -9,7 +9,8 @@
     "hidden": true,
     "description": {
       "translate": "advancements.glyphcast.root.description"
-    }
+    },
+    "background": "minecraft:textures/block/deepslate.png"
   },
   "criteria": {
     "use_parchment": {

@@ -19,8 +19,10 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.ProjectileUtil;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
@@ -92,20 +94,22 @@ public abstract class Spell {
         GCNetwork.CHANNEL.sendToNear(ctx.level(), ctx.player().position(), 64, new SpellEventMessage(id, this, ctx));
     }
 
+    public long getCooldown() {
+        return 12;
+    }
 
     /**
      * Wrapper around activate that automatically handles verifying stats and energy costs
      *
      * @param level  the level this spell is activated in
      * @param player the player who activated this spell
-     * @param stats  the stats used to activate this spell
      */
-    public void tryActivate(Level level, Player player, InteractionHand hand, SpellStats stats) {
-        if (stats.efficiency() <= 0 || stats.averageAffinity() <= 0 || !canDrainEnergy(stats, player, getCost()))
+    public void tryActivate(Level level, Player player, InteractionHand hand) {
+        if (!canDrainEnergy(player, getCost()))
             return;
 
-        drainEnergy(stats, player, getCost());
-        activate(new BasicContext(level, player, hand, stats));
+        drainEnergy(player, getCost());
+        activate(new BasicContext(level, player, hand));
     }
 
     @Nullable
@@ -120,17 +124,17 @@ public abstract class Spell {
         return clipEntity(player.level, player, player.getEyePosition(), player.getLookAngle(), filter, dist);
     }
 
-    protected void drainEnergy(SpellStats stats, Player player, double amount) {
+    protected void drainEnergy(Player player, double amount) {
         SpellUser.get(player).ifPresent(user ->
-                user.drainEnergy(amount / stats.efficiency(), false)
+                user.drainEnergy(amount, false)
         );
     }
 
-    protected boolean canDrainEnergy(SpellStats stats, Player player, double amount) {
+    protected boolean canDrainEnergy(Player player, double amount) {
         return SpellUser.get(player)
-                .map(user -> user.drainEnergy(amount / stats.efficiency(), true))
+                .map(user -> user.drainEnergy(amount, true))
                 .orElse(Double.NaN)
-                == (amount / stats.efficiency());
+                == amount;
     }
 
     public interface IContext {
@@ -166,19 +170,29 @@ public abstract class Spell {
 
         Player player();
 
-        SpellStats stats();
-
         default void toNetwork(FriendlyByteBuf buf) {
             buf.writeInt(ctxType());
             buf.writeInt(hand().ordinal());
             buf.writeInt(player().getId());
-            buf.writeDouble(stats().efficiency());
-            buf.writeInt(stats().cooldown());
-            buf.writeDouble(stats().fireAffinity());
-            buf.writeDouble(stats().lightAffinity());
-            buf.writeDouble(stats().iceAffinity());
-            buf.writeDouble(stats().earthAffinity());
             writeAdditional(buf);
+        }
+
+        default BlockHitResult clipBlock(ClipContext.Block block, ClipContext.Fluid fluid, double range) {
+            return level().clip(new ClipContext(
+                    player().getEyePosition(),
+                    player().getEyePosition().add(player().getLookAngle().scale(range)),
+                    block,
+                    fluid,
+                    player()
+            ));
+        }
+
+        default BlockHitResult clipBlock(ClipContext.Block block, double range) {
+            return clipBlock(block, ClipContext.Fluid.NONE, range);
+        }
+
+        default BlockHitResult clipBlock(ClipContext.Fluid fluid, double range) {
+            return clipBlock(ClipContext.Block.COLLIDER, fluid, range);
         }
 
         int ctxType();
@@ -186,7 +200,7 @@ public abstract class Spell {
         void writeAdditional(FriendlyByteBuf buf);
     }
 
-    public record BasicContext(Level level, Player player, InteractionHand hand, SpellStats stats) implements IContext {
+    public record BasicContext(Level level, Player player, InteractionHand hand) implements IContext {
         @Override
         public int ctxType() {
             return 0;
@@ -198,19 +212,19 @@ public abstract class Spell {
         }
     }
 
-    public record PositionedContext(Level level, Player player, InteractionHand hand, SpellStats stats, Vec3 start,
+    public record PositionedContext(Level level, Player player, InteractionHand hand, Vec3 start,
                                     Vec3 end) implements IContext {
 
         public static PositionedContext with(IContext ctx, Vec3 pos) {
-            return new PositionedContext(ctx.level(), ctx.player(), ctx.hand(), ctx.stats(), pos, Vec3.ZERO);
+            return new PositionedContext(ctx.level(), ctx.player(), ctx.hand(), pos, Vec3.ZERO);
         }
 
         public static PositionedContext with(IContext ctx, BlockPos pos) {
-            return new PositionedContext(ctx.level(), ctx.player(), ctx.hand(), ctx.stats(), new Vec3(pos.getX(), pos.getY(), pos.getZ()), Vec3.ZERO);
+            return new PositionedContext(ctx.level(), ctx.player(), ctx.hand(), new Vec3(pos.getX(), pos.getY(), pos.getZ()), Vec3.ZERO);
         }
 
         public static PositionedContext withRange(IContext ctx, Vec3 start, Vec3 end) {
-            return new PositionedContext(ctx.level(), ctx.player(), ctx.hand(), ctx.stats(), start, end);
+            return new PositionedContext(ctx.level(), ctx.player(), ctx.hand(), start, end);
         }
 
         @Override

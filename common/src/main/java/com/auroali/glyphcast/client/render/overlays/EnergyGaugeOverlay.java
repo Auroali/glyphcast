@@ -6,6 +6,7 @@ import com.auroali.glyphcast.common.PlayerHelper;
 import com.auroali.glyphcast.common.capabilities.ISpellUser;
 import com.auroali.glyphcast.common.capabilities.SpellUser;
 import com.auroali.glyphcast.common.entities.FractureEntity;
+import com.auroali.glyphcast.common.items.IWandLike;
 import com.auroali.glyphcast.common.registry.GCItems;
 import com.auroali.glyphcast.common.registry.tags.GCItemTags;
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -16,7 +17,6 @@ import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 
-// TODO: Fix this
 public class EnergyGaugeOverlay {
     public static final ResourceLocation OVERLAY_LOCATION = new ResourceLocation(Glyphcast.MODID, "textures/gui/energy_gauge.png");
 
@@ -58,8 +58,8 @@ public class EnergyGaugeOverlay {
         GuiComponent.blit(poseStack, 20, fractureNeedleY, 62, 2, 3, 2, 256, 256);
 
         ItemStack overlayItem = PlayerHelper.getHeldItem(player, GCItemTags.WAND_ENERGY_GAUGE_OVERLAY);
-        if (overlayItem.is(GCItems.WAND.get())) {
-            GCItems.WAND.get().getCore(overlayItem)
+        if (overlayItem.getItem() instanceof IWandLike wandLike) {
+            wandLike.getCore(overlayItem)
                     .ifPresent(c ->
                             Minecraft.getInstance().getItemRenderer().renderAndDecorateFakeItem(new ItemStack(c.item()), 9, 64)
                     );

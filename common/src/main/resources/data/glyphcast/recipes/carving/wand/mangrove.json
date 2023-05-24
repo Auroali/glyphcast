@@ -1,0 +1,9 @@
+{
+  "type": "glyphcast:carving",
+  "input": {
+    "tag": "minecraft:mangrove_logs"
+  },
+  "result": {
+    "item": "glyphcast:mangrove_wand"
+  }
+}

@@ -33,3 +33,10 @@ mandatory = true
 versionRange = "[6.5.77,)"
 ordering = "AFTER"
 side = "BOTH"
+
+[[dependencies.glyphcast]]
+modId="curios"
+mandatory=true
+versionRange="[1.19.2-5.1,)"
+ordering="BEFORE"
+side="BOTH"

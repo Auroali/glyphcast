@@ -11,7 +11,7 @@
     "homepage": "https://fabricmc.net/",
     "sources": "https://github.com/FabricMC/fabric-example-mod"
   },
-  "license": "Insert License Here",
+  "license": "MIT",
   "icon": "assets/glyphcast/icon.png",
   "environment": "*",
   "entrypoints": {
@@ -40,6 +40,9 @@
   "depends": {
     "fabric": "*",
     "minecraft": ">=1.19.2",
-    "architectury": ">=6.5.77"
+    "architectury": ">=6.5.77",
+    "cardinal-components-base": ">=5.0.2",
+    "cardinal-components-entity": ">=5.0.2",
+    "trinkets": ">=3.4.0"
   }
 }

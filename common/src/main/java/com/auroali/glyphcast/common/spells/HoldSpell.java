@@ -15,10 +15,10 @@ public abstract class HoldSpell extends TickingSpell {
 
     @Override
     public boolean tick(IContext ctx, int ticks, CompoundTag tag) {
-        if (!canDrainEnergy(ctx.stats(), ctx.player(), getCost()))
+        if (!canDrainEnergy(ctx.player(), getCost()))
             return false;
 
-        drainEnergy(ctx.stats(), ctx.player(), getCost());
+        drainEnergy(ctx.player(), getCost());
         run(ctx, ticks);
         return ctx.isWand();
     }

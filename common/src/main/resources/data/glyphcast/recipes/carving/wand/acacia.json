@@ -1,7 +1,9 @@
 {
-  "type": "glyphcast:wand_carving",
+  "type": "glyphcast:carving",
   "input": {
     "tag": "minecraft:acacia_logs"
   },
-  "wand_material": "glyphcast:acacia"
+  "result": {
+    "item": "glyphcast:acacia_wand"
+  }
 }

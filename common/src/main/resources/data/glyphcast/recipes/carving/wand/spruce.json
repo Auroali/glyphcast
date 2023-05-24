@@ -1,7 +1,9 @@
 {
-  "type": "glyphcast:wand_carving",
+  "type": "glyphcast:carving",
   "input": {
     "tag": "minecraft:spruce_logs"
   },
-  "wand_material": "glyphcast:spruce"
+  "result": {
+    "item": "glyphcast:spruce_wand"
+  }
 }

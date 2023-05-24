@@ -2,9 +2,11 @@ package com.auroali.glyphcast.common.capabilities;
 
 import com.auroali.glyphcast.Glyphcast;
 import com.auroali.glyphcast.common.PlayerHelper;
+import com.auroali.glyphcast.common.entities.FloatingLight;
 import com.auroali.glyphcast.common.items.IWandLike;
 import com.auroali.glyphcast.common.items.equipment.IMaxEnergyModifier;
 import com.auroali.glyphcast.common.network.GCNetwork;
+import com.auroali.glyphcast.common.network.client.SyncCooldownManagerMessage;
 import com.auroali.glyphcast.common.network.client.SyncSpellUserDataMessage;
 import com.auroali.glyphcast.common.network.client.SyncSpellUserEnergyMessage;
 import com.auroali.glyphcast.common.registry.GCSpells;
@@ -19,6 +21,7 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import org.slf4j.Logger;
@@ -29,8 +32,10 @@ public class SpellUser implements ISpellUser {
     public static final Logger LOGGER = LogUtils.getLogger();
     final List<SpellSlot> slots;
     final List<TickingSpellData> tickingSpells;
+    final List<FloatingLight> floatingLights;
     // The player this capability is attached to
     final Player player;
+    final SpellCooldownManager cooldownManager;
     int glyphMask;
     int selectedSlot;
     double energy;
@@ -39,6 +44,8 @@ public class SpellUser implements ISpellUser {
         this.slots = SpellSlot.makeSlots(18);
         this.tickingSpells = new ArrayList<>();
         this.player = player;
+        this.cooldownManager = new SpellCooldownManager();
+        this.floatingLights = new ArrayList<>();
         this.populateDefaultSpells();
     }
 
@@ -47,11 +54,14 @@ public class SpellUser implements ISpellUser {
         throw new AssertionError();
     }
 
+    public static SpellCooldownManager getCooldownManager(Player player) {
+        return get(player).map(ISpellUser::getCooldownManager).orElse(new SpellCooldownManager.Immutable(null));
+    }
+
     void populateDefaultSpells() {
-        slots.set(9, new SpellSlot(9, GCSpells.WAND_ATTACK.get()));
-        slots.set(10, new SpellSlot(10, GCSpells.INFUSE.get()));
-        slots.set(11, new SpellSlot(11, GCSpells.EXTRACT.get()));
-        slots.set(17, new SpellSlot(17, GCSpells.SEPERATE_STAFF.get()));
+        slots.set(9, new SpellSlot(9, GCSpells.WAND_INFUSE.get()));
+        slots.set(10, new SpellSlot(10, GCSpells.WAND_ATTACK.get()));
+        slots.set(11, new SpellSlot(11, GCSpells.WAND_EXTRACT.get()));
     }
 
 
@@ -103,8 +113,8 @@ public class SpellUser implements ISpellUser {
     }
 
     @Override
-    public void addTickingSpell(TickingSpell spell, InteractionHand hand, SpellStats stats, CompoundTag tag) {
-        tickingSpells.add(new TickingSpellData(spell, hand, stats, tag));
+    public void addTickingSpell(TickingSpell spell, InteractionHand hand, CompoundTag tag) {
+        tickingSpells.add(new TickingSpellData(spell, hand, tag));
     }
 
     @Override
@@ -183,10 +193,23 @@ public class SpellUser implements ISpellUser {
 
             spellSlotsTag.add(StringTag.valueOf(id.toString()));
         }
+        ListTag lights = new ListTag();
+        for(FloatingLight light : floatingLights) {
+            CompoundTag lightData = new CompoundTag();
+            lightData.putDouble("PosX", light.getX());
+            lightData.putDouble("PosY", light.getY());
+            lightData.putDouble("PosZ", light.getZ());
+            lights.add(lightData);
+            light.remove(Entity.RemovalReason.UNLOADED_WITH_PLAYER);
+        }
+        floatingLights.clear();
+
         tag.putInt("SelectedSlot", selectedSlot);
         tag.put("SpellSlots", spellSlotsTag);
         tag.putInt("DiscoveredGlyphs", glyphMask);
         tag.putDouble("Energy", energy);
+        tag.put("CooldownManager", cooldownManager.serialize());
+        tag.put("FloatingLights", lights);
         return tag;
     }
 
@@ -209,10 +232,20 @@ public class SpellUser implements ISpellUser {
             }
             slots.set(i, new SpellSlot(i, spell));
         }
-
+        ListTag lights = nbt.getList("FloatingLights", Tag.TAG_COMPOUND);
+        for(int i = 0; i < lights.size(); i++) {
+            FloatingLight light = new FloatingLight(player.level,
+                    lights.getCompound(i).getDouble("PosX"),
+                    lights.getCompound(i).getDouble("PosY"),
+                    lights.getCompound(i).getDouble("PosZ")
+            );
+            light.setOwner(player);
+            floatingLights.add(light);
+        }
         selectedSlot = nbt.getInt("SelectedSlot");
         glyphMask = nbt.getInt("DiscoveredGlyphs");
         energy = nbt.getDouble("Energy");
+        cooldownManager.deserialize(nbt.getCompound("CooldownManager"));
     }
 
     // Syncs current spell user data to the client
@@ -221,6 +254,28 @@ public class SpellUser implements ISpellUser {
         // If we aren't on the client, don't do anything
         if (player instanceof ServerPlayer serverPlayer)
             GCNetwork.CHANNEL.sendToPlayer(serverPlayer, new SyncSpellUserDataMessage(this));
+    }
+
+    @Override
+    public SpellCooldownManager getCooldownManager() {
+        return player.level.isClientSide ? new SpellCooldownManager.Immutable(cooldownManager) : cooldownManager;
+    }
+
+    @Override
+    public void loadCooldownManagerData(CompoundTag tag) {
+        cooldownManager.deserialize(tag);
+    }
+
+    @Override
+    public void loadFloatingLights() {
+        floatingLights.forEach(player.level::addFreshEntity);
+        floatingLights.clear();
+    }
+
+    @Override
+    public void saveFloatingLights() {
+        floatingLights.clear();
+        floatingLights.addAll(FloatingLight.getAllFollowing(player));
     }
 
     void syncEnergy() {

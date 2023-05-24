@@ -33,6 +33,10 @@ public class ClientPacketHandler {
         SpellUser.get(Minecraft.getInstance().player).ifPresent(user -> user.setEnergy(energy));
     }
 
+    public static void syncCooldownManager(CompoundTag data) {
+        SpellUser.get(Minecraft.getInstance().player).ifPresent(user -> user.loadCooldownManagerData(data));
+    }
+
     public static void triggerSpellEvent(Byte id, Spell spell, Spell.IContext ctx) {
         if (ctx instanceof Spell.PositionedContext posCtx)
             spell.handleEvent(id, posCtx);

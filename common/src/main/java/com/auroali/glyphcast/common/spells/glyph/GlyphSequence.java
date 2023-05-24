@@ -21,12 +21,12 @@ public class GlyphSequence {
     private Spell cachedSpell;
 
     private GlyphSequence() {
-        this.glyphList = List.of();
-        this.findSpell().ifPresent(s -> this.cachedSpell = s);
+        this.glyphList = Collections.emptyList();
     }
 
     public GlyphSequence(List<Ring> ringList) {
         this.glyphList = ringList;
+        this.findSpell().ifPresent(s -> this.cachedSpell = s);
     }
 
     public GlyphSequence(Ring... rings) {

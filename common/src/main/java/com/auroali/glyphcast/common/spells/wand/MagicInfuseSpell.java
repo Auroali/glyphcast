@@ -1,5 +1,6 @@
 package com.auroali.glyphcast.common.spells.wand;
 
+import com.auroali.glyphcast.common.PlayerHelper;
 import com.auroali.glyphcast.common.network.client.ClientPacketHandler;
 import com.auroali.glyphcast.common.network.client.SpawnParticlesMessage;
 import com.auroali.glyphcast.common.recipes.InfuseRecipe;
@@ -42,20 +43,20 @@ public class MagicInfuseSpell extends Spell {
     @Override
     public void activate(IContext ctx) {
         var blockStackPair = getTargetedBlock(ctx.level(), ctx.player());
-        var entityPair = getTargetedEntityStack(ctx.level(), ctx.player());
+        var entityPair = getTargetedEntityStack(ctx.player());
         if (blockStackPair == null && entityPair == null)
             return;
         ItemStack stack = entityPair != null ? entityPair.first() : blockStackPair.first();
         ItemStack offhandStack = ctx.getOtherHandItem();
         List<InfuseRecipe> recipes = ctx.level().getServer().getRecipeManager().getAllRecipesFor(GCRecipeTypes.INFUSE_RECIPE.get());
         recipes.stream().filter(r -> r.itemsMatch(stack, offhandStack)).findFirst().ifPresent(r -> {
-            if (!canDrainEnergy(ctx.stats(), ctx.player(), r.cost()))
+            if (!canDrainEnergy(ctx.player(), r.cost()))
                 return;
             if (!ctx.player().isCreative() && r.consumesOther())
                 offhandStack.shrink(1);
             ItemStack result = r.assemble(stack);
             result.setCount(stack.getCount());
-            drainEnergy(ctx.stats(), ctx.player(), r.cost());
+            drainEnergy(ctx.player(), r.cost());
             if (entityPair != null)
                 transformEntity(ctx, ctx.level(), entityPair, result);
             else
@@ -132,7 +133,7 @@ public class MagicInfuseSpell extends Spell {
     }
 
     public Pair<ItemStack, BlockPos> getTargetedBlock(Level level, Player player) {
-        BlockHitResult bResult = level.clip(new ClipContext(player.getEyePosition(), player.getEyePosition().add(player.getLookAngle().scale(4.0f)), ClipContext.Block.OUTLINE, ClipContext.Fluid.SOURCE_ONLY, null));
+        BlockHitResult bResult = level.clip(new ClipContext(player.getEyePosition(), player.getEyePosition().add(player.getLookAngle().scale(PlayerHelper.getReachDistance(player))), ClipContext.Block.OUTLINE, ClipContext.Fluid.SOURCE_ONLY, player));
         if (bResult.getType() == HitResult.Type.MISS)
             return null;
         BlockState state = level.getBlockState(bResult.getBlockPos());
@@ -140,8 +141,8 @@ public class MagicInfuseSpell extends Spell {
         return Pair.of(stack, bResult.getBlockPos());
     }
 
-    public Pair<ItemStack, ItemEntity> getTargetedEntityStack(Level level, Player player) {
-        EntityHitResult eResult = clipEntityFromPlayer(player, 4.0f, e -> e instanceof ItemEntity);
+    public Pair<ItemStack, ItemEntity> getTargetedEntityStack(Player player) {
+        EntityHitResult eResult = clipEntityFromPlayer(player, PlayerHelper.getReachDistance(player), e -> e instanceof ItemEntity);
         if (eResult == null || eResult.getType() == HitResult.Type.MISS)
             return null;
 

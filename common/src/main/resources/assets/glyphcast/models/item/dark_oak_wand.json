@@ -1,0 +1,6 @@
+{
+  "parent": "glyphcast:item/wand",
+  "textures": {
+    "layer0": "glyphcast:item/wand/dark_oak_wand"
+  }
+}

@@ -1,5 +1,6 @@
 package com.auroali.glyphcast.common.spells.wand;
 
+import com.auroali.glyphcast.common.PlayerHelper;
 import com.auroali.glyphcast.common.capabilities.SpellUser;
 import com.auroali.glyphcast.common.entities.FractureEntity;
 import com.auroali.glyphcast.common.registry.GCItems;
@@ -22,13 +23,13 @@ public class MagicExtractSpell extends HoldSpell {
     @Override
     protected void run(IContext ctx, int usedTicks) {
         Vec3 start = ctx.player().getEyePosition();
-        Vec3 end = ctx.player().getEyePosition().add(ctx.player().getLookAngle().scale(4.0f));
+        Vec3 end = ctx.player().getEyePosition().add(ctx.player().getLookAngle().scale(PlayerHelper.getReachDistance(ctx.player())));
 
         FractureEntity fracture = clipFracture(ctx, start, end);
         if (fracture == null || fracture.getEnergy() < 5)
             return;
 
-        double drainedAmount = fracture.drain((16 * ctx.stats().averageAffinity()) * 0.05);
+        double drainedAmount = fracture.drain(16 * 0.05);
 
         Vec3 fracturePos = new Vec3(fracture.position().x, fracture.position().y, fracture.position().z);
         triggerEvent((byte) 0, PositionedContext.with(ctx, fracturePos));
@@ -38,7 +39,7 @@ public class MagicExtractSpell extends HoldSpell {
             return;
         }
 
-        fillVial(ctx, drainedAmount * ctx.stats().efficiency());
+        fillVial(ctx, drainedAmount);
     }
 
     private void fillVial(IContext ctx, double amountToDrain) {
@@ -65,7 +66,7 @@ public class MagicExtractSpell extends HoldSpell {
         double d0 = Double.MAX_VALUE;
         FractureEntity fracture = null;
 
-        List<FractureEntity> fractures = FractureEntity.getNear(ctx.level(), ctx.player().blockPosition(), 4.0d);
+        List<FractureEntity> fractures = FractureEntity.getNear(ctx.level(), ctx.player().blockPosition(), PlayerHelper.getReachDistance(ctx.player()));
         for (FractureEntity f : fractures) {
             AABB aabb = new AABB(f.blockPosition()).inflate(0.5);
             Optional<Vec3> pos = aabb.clip(start, end);

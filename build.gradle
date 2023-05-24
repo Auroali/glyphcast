@@ -41,10 +41,6 @@ allprojects {
         // Loom adds the essential maven repositories to download Minecraft and libraries from automatically.
         // See https://docs.gradle.org/current/userguide/declaring_repositories.html
         // for more information about repositories.
-        maven {
-            name = "Progwml6's maven"
-            url = "https://dvs1.progwml6.com/files/maven/"
-        }
         maven { url 'https://maven.blamejared.com' }
         maven {
             // location of a maven mirror for JEI files, as a fallback
@@ -55,6 +51,14 @@ allprojects {
             url = "https://maven.theillusivec4.top/"
         }
         maven { url = 'https://maven.parchmentmc.org' }
+        maven {
+            name = "TerraformersMC"
+            url = "https://maven.terraformersmc.com/"
+        }
+        maven {
+            name = "Ladysnake Libs"
+            url = "https://ladysnake.jfrog.io/artifactory/mods"
+        }
     }
 
     tasks.withType(JavaCompile) {
