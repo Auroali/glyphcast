@@ -7,7 +7,6 @@ import com.auroali.glyphcast.common.capabilities.ISpellUser;
 import com.auroali.glyphcast.common.capabilities.SpellUser;
 import com.auroali.glyphcast.common.entities.FractureEntity;
 import com.auroali.glyphcast.common.items.IWandLike;
-import com.auroali.glyphcast.common.registry.GCItems;
 import com.auroali.glyphcast.common.registry.tags.GCItemTags;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;

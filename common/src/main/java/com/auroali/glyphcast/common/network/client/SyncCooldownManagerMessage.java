@@ -1,6 +1,5 @@
 package com.auroali.glyphcast.common.network.client;
 
-import com.auroali.glyphcast.common.capabilities.ISpellUser;
 import com.auroali.glyphcast.common.network.NetworkMessage;
 import com.auroali.glyphcast.common.spells.SpellCooldownManager;
 import net.minecraft.nbt.CompoundTag;

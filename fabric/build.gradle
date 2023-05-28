@@ -47,12 +47,14 @@ dependencies {
 
     include modImplementation("com.jamieswhiteshirt:reach-entity-attributes:${rootProject.reach_entity_attributes_version}") { transitive false }
 
-    modRuntimeOnly("mezz.jei:jei-${rootProject.minecraft_version}-fabric:${rootProject.jei_version}")
+    //modRuntimeOnly("mezz.jei:jei-${rootProject.minecraft_version}-fabric:${rootProject.jei_version}")
 
     common(project(path: ":common", configuration: "namedElements")) { transitive false }
     shadowCommon(project(path: ":common", configuration: "transformProductionFabric")) { transitive false }
 
-    modImplementation "dev.emi:trinkets:${trinkets_version}"
+    modImplementation "dev.emi:trinkets:${rootProject.trinkets_version}"
+
+    modImplementation "dev.emi:emi:${rootProject.emi_version}"
 
     // here so the game doesn't crash at launch
     modImplementation "com.terraformersmc:modmenu:4.1.2"

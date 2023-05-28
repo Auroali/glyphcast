@@ -6,6 +6,8 @@ public class SpellSlot {
     private final Spell spell;
     private final int index;
 
+    private int quickSelectId = -1;
+
     public SpellSlot(int index, Spell spell) {
         this.spell = spell;
         this.index = index;
@@ -14,6 +16,14 @@ public class SpellSlot {
     public SpellSlot(int index) {
         this.spell = null;
         this.index = index;
+    }
+
+    public void setQuickSelect(int id) {
+        this.quickSelectId = Math.min(id, 2);
+    }
+
+    public int getQuickSelectId() {
+        return quickSelectId;
     }
 
     public static ArrayList<SpellSlot> makeSlots(int size) {

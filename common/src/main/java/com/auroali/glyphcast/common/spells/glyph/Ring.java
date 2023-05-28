@@ -15,11 +15,11 @@ public class Ring {
     }
 
     public static Ring of(Glyph... glyphs) {
-        return new Ring(Arrays.stream(glyphs).sorted().toList());
+        return new Ring(Arrays.stream(glyphs).toList());
     }
 
     public static Ring of(List<Glyph> glyphs) {
-        return new Ring(glyphs.stream().sorted().toList());
+        return new Ring(glyphs.stream().toList());
     }
 
     public static Ring decode(FriendlyByteBuf buf) {
@@ -29,6 +29,10 @@ public class Ring {
             glyphs.add(Glyph.values()[buf.readInt()]);
         }
         return Ring.of(glyphs);
+    }
+
+    public Ring sorted() {
+        return new Ring(this.glyphs.stream().sorted().toList());
     }
 
     public static List<Glyph> mergeRings(Ring... rings) {

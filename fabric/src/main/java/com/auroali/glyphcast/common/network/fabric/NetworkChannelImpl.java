@@ -12,6 +12,7 @@ import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
+import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
@@ -28,7 +29,7 @@ public class NetworkChannelImpl extends NetworkChannel {
     protected NetworkChannelImpl(String protocol) {
         ServerPlayNetworking.registerGlobalReceiver(CHANNEL_NAME, (server, player, handler, buf, sender) -> {
             int id = buf.readInt();
-            if (messages.isEmpty() || id < 0 || id > messages.size()) {
+            if (messages.isEmpty() || id < 0 || id > messages.size() || !messages.get(id).isC2S()) {
                 LOGGER.error("Unable to handle packet <id: {}> on the server!", id);
             }
             MessageInfo<?> info = messages.get(id);
@@ -41,7 +42,7 @@ public class NetworkChannelImpl extends NetworkChannel {
 
         ClientPlayNetworking.registerGlobalReceiver(new ResourceLocation(Glyphcast.MODID, "channel"), (client, handler, buf, sender) -> {
             int id = buf.readInt();
-            if (messages.isEmpty() || id < 0 || id > messages.size()) {
+            if (messages.isEmpty() || id < 0 || id > messages.size() || messages.get(id).isC2S()) {
                 LOGGER.error("Unable to handle packet <id: {}> on the client!", id);
             }
             MessageInfo<? extends NetworkMessage> info = messages.get(id);
@@ -55,9 +56,9 @@ public class NetworkChannelImpl extends NetworkChannel {
     }
 
     @SuppressWarnings("rawtypes")
-    Pair<FriendlyByteBuf, MessageInfo> createBufferFor(Object msg) {
+    Pair<FriendlyByteBuf, MessageInfo> createBufferFor(Object msg, boolean c2s) {
         for (int i = 0; i < messages.size(); i++) {
-            if (!messages.get(i).getMsgClass().equals(msg.getClass()))
+            if (!messages.get(i).getMsgClass().equals(msg.getClass()) || messages.get(i).isC2S() != c2s)
                 continue;
 
             FriendlyByteBuf buf = PacketByteBufs.create();
@@ -71,13 +72,13 @@ public class NetworkChannelImpl extends NetworkChannel {
 
     @Override
     public <T extends NetworkMessage> void registerS2C(Class<T> type, Function<FriendlyByteBuf, T> decoder) {
-        MessageInfo<T> info = new MessageInfo<>(type, decoder);
+        MessageInfo<T> info = new MessageInfo<>(type, decoder, false);
         messages.add(info);
     }
 
     @Override
     public <T extends NetworkMessage> void registerC2S(Class<T> type, Function<FriendlyByteBuf, T> decoder) {
-        MessageInfo<T> info = new MessageInfo<>(type, decoder);
+        MessageInfo<T> info = new MessageInfo<>(type, decoder, true);
         messages.add(info);
     }
 
@@ -85,7 +86,7 @@ public class NetworkChannelImpl extends NetworkChannel {
     @Override
     @SuppressWarnings({"unchecked", "rawtypes"})
     public void sendToPlayer(ServerPlayer player, Object msg) {
-        Pair<FriendlyByteBuf, MessageInfo> bufferPair = createBufferFor(msg);
+        Pair<FriendlyByteBuf, MessageInfo> bufferPair = createBufferFor(msg, false);
         bufferPair.second().encode((NetworkMessage) msg, bufferPair.first());
         ServerPlayNetworking.send(player, CHANNEL_NAME, bufferPair.first());
     }
@@ -93,7 +94,7 @@ public class NetworkChannelImpl extends NetworkChannel {
     @Override
     @SuppressWarnings({"unchecked", "rawtypes"})
     public void sendToServer(Object msg) {
-        Pair<FriendlyByteBuf, MessageInfo> bufferPair = createBufferFor(msg);
+        Pair<FriendlyByteBuf, MessageInfo> bufferPair = createBufferFor(msg, true);
         bufferPair.second().encode((NetworkMessage) msg, bufferPair.first());
         ClientPlayNetworking.send(CHANNEL_NAME, bufferPair.first());
     }
@@ -101,7 +102,7 @@ public class NetworkChannelImpl extends NetworkChannel {
     @Override
     @SuppressWarnings({"unchecked", "rawtypes"})
     public void sendToNear(Level level, Vec3 position, double range, Object msg) {
-        Pair<FriendlyByteBuf, MessageInfo> bufferPair = createBufferFor(msg);
+        Pair<FriendlyByteBuf, MessageInfo> bufferPair = createBufferFor(msg, false);
         bufferPair.second().encode((NetworkMessage) msg, bufferPair.first());
         PlayerLookup.around((ServerLevel) level, position, range)
                 .forEach(p -> ServerPlayNetworking.send(p, CHANNEL_NAME, bufferPair.first()));
@@ -110,8 +111,16 @@ public class NetworkChannelImpl extends NetworkChannel {
     @Override
     @SuppressWarnings({"unchecked", "rawtypes"})
     public void sendToAll(Object msg) {
-        Pair<FriendlyByteBuf, MessageInfo> bufferPair = createBufferFor(msg);
+        Pair<FriendlyByteBuf, MessageInfo> bufferPair = createBufferFor(msg, false);
         bufferPair.second().encode((NetworkMessage) msg, bufferPair.first());
         PlayerLookup.all(GlyphcastExpectPlatform.getServer()).forEach(p -> ServerPlayNetworking.send(p, CHANNEL_NAME, bufferPair.first()));
+    }
+
+    @Override
+    @SuppressWarnings({"unchecked", "rawtypes"})
+    public void sendToTracking(ServerLevel level, BlockPos pos, Object msg) {
+        Pair<FriendlyByteBuf, MessageInfo> bufferPair = createBufferFor(msg, false);
+        bufferPair.second().encode((NetworkMessage) msg, bufferPair.first());
+        PlayerLookup.tracking(level, pos).forEach(p -> ServerPlayNetworking.send(p, CHANNEL_NAME, bufferPair.first()));
     }
 }

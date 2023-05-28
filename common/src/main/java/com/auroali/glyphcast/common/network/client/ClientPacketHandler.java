@@ -1,12 +1,16 @@
 package com.auroali.glyphcast.common.network.client;
 
+import com.auroali.glyphcast.client.screen.ScribingTableScreen;
 import com.auroali.glyphcast.common.capabilities.SpellUser;
+import com.auroali.glyphcast.common.network.both.SetQuickSelectSlotMessage;
+import com.auroali.glyphcast.common.network.client.menu.SendScribingGlyphListMessage;
 import com.auroali.glyphcast.common.spells.Spell;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
 
 public class ClientPacketHandler {
@@ -42,9 +46,20 @@ public class ClientPacketHandler {
             spell.handleEvent(id, posCtx);
     }
 
+    public static void setQuickSelectForSlot(SetQuickSelectSlotMessage msg) {
+        SpellUser.get(Minecraft.getInstance().player).ifPresent(user -> user.setQuickSelectForSlot(msg.slot, msg.quickSelect));
+    }
+
     public static Entity fromId(int id) {
         if (Minecraft.getInstance().level == null)
             return null;
         return Minecraft.getInstance().level.getEntity(id);
+    }
+
+    public static void sendScribingGlyphList(SendScribingGlyphListMessage msg) {
+        Player player = Minecraft.getInstance().player;
+        if(Minecraft.getInstance().screen instanceof ScribingTableScreen screen && screen.getMenu().containerId == msg.containerId) {
+            screen.setGlyphs(msg.glyphs);
+        }
     }
 }

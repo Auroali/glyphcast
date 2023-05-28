@@ -3,8 +3,13 @@ package com.auroali.glyphcast;
 import com.auroali.glyphcast.client.GCKeybinds;
 import com.auroali.glyphcast.client.LightTracker;
 import com.auroali.glyphcast.client.model.FloatingLightModel;
+import com.auroali.glyphcast.client.particles.FractureProvider;
+import com.auroali.glyphcast.client.particles.MagicAmbienceProvider;
+import com.auroali.glyphcast.client.particles.MagicDripProvider;
+import com.auroali.glyphcast.client.particles.MagicPulseProvider;
 import com.auroali.glyphcast.client.render.entity.EmptyEntityRenderer;
 import com.auroali.glyphcast.client.render.entity.LightEntityRenderer;
+import com.auroali.glyphcast.client.render.overlays.EnergyGaugeOverlay;
 import com.auroali.glyphcast.client.screen.CarvingTableScreen;
 import com.auroali.glyphcast.client.screen.ScribingTableScreen;
 import com.auroali.glyphcast.common.capabilities.ISpellUser;
@@ -18,6 +23,7 @@ import com.auroali.glyphcast.common.spells.Spell;
 import com.auroali.glyphcast.common.wands.CastingTrait;
 import com.google.common.base.Suppliers;
 import com.google.gson.Gson;
+import dev.architectury.event.events.client.ClientGuiEvent;
 import dev.architectury.event.events.client.ClientTickEvent;
 import dev.architectury.event.events.common.PlayerEvent;
 import dev.architectury.event.events.common.TickEvent;
@@ -25,16 +31,15 @@ import dev.architectury.registry.CreativeTabRegistry;
 import dev.architectury.registry.ReloadListenerRegistry;
 import dev.architectury.registry.client.level.entity.EntityModelLayerRegistry;
 import dev.architectury.registry.client.level.entity.EntityRendererRegistry;
+import dev.architectury.registry.client.particle.ParticleProviderRegistry;
 import dev.architectury.registry.client.rendering.RenderTypeRegistry;
 import dev.architectury.registry.item.ItemPropertiesRegistry;
 import dev.architectury.registry.menu.MenuRegistry;
 import dev.architectury.registry.registries.DeferredRegister;
 import dev.architectury.registry.registries.Registrar;
 import dev.architectury.registry.registries.Registries;
-import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.Registry;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -129,6 +134,17 @@ public class Glyphcast {
         EntityRendererRegistry.register(GCEntities.FRACTURE, EmptyEntityRenderer::new);
         EntityRendererRegistry.register(GCEntities.FIRE, EmptyEntityRenderer::new);
 
+        EntityDataSerializers.registerSerializer(GCEntityDataSerializers.DOUBLE);
+
+        ParticleProviderRegistry.register(GCParticles.FRACTURE, FractureProvider::new);
+        ParticleProviderRegistry.register(GCParticles.MAGIC_DRIP, MagicDripProvider::new);
+        ParticleProviderRegistry.register(GCParticles.MAGIC_PULSE, MagicPulseProvider::new);
+        ParticleProviderRegistry.register(GCParticles.MAGIC_AMBIENCE, MagicAmbienceProvider::new);
+
+        ClientGuiEvent.RENDER_HUD.register((EnergyGaugeOverlay::renderOverlay));
+    }
+
+    public static void postClient() {
         RenderTypeRegistry.register(RenderType.cutout(), GCBlocks.FRACTURE_SIPHON.get());
 
         MenuRegistry.registerScreenFactory(GCMenus.CARVING_TABLE.get(), CarvingTableScreen::new);
@@ -137,7 +153,5 @@ public class Glyphcast {
         ItemPropertiesRegistry.register(GCItems.VIAL.get(), new ResourceLocation(MODID, "vial_level"), ((itemStack, clientLevel, livingEntity, i) ->
                 (float) (itemStack.getOrCreateTag().getDouble("Amount") / 250.0)
         ));
-
-        EntityDataSerializers.registerSerializer(GCEntityDataSerializers.DOUBLE);
     }
 }

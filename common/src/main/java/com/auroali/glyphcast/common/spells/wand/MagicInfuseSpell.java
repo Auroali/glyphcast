@@ -17,7 +17,6 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.item.ItemEntity;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
@@ -42,8 +41,8 @@ public class MagicInfuseSpell extends Spell {
 
     @Override
     public void activate(IContext ctx) {
-        var blockStackPair = getTargetedBlock(ctx.level(), ctx.player());
-        var entityPair = getTargetedEntityStack(ctx.player());
+        var blockStackPair = getTargetedBlock(ctx);
+        var entityPair = getTargetedEntityStack(ctx);
         if (blockStackPair == null && entityPair == null)
             return;
         ItemStack stack = entityPair != null ? entityPair.first() : blockStackPair.first();
@@ -54,7 +53,7 @@ public class MagicInfuseSpell extends Spell {
                 return;
             if (!ctx.player().isCreative() && r.consumesOther())
                 offhandStack.shrink(1);
-            ItemStack result = r.assemble(stack);
+            ItemStack result = r.assemble(stack, offhandStack);
             result.setCount(stack.getCount());
             drainEnergy(ctx.player(), r.cost());
             if (entityPair != null)
@@ -132,17 +131,17 @@ public class MagicInfuseSpell extends Spell {
         }
     }
 
-    public Pair<ItemStack, BlockPos> getTargetedBlock(Level level, Player player) {
-        BlockHitResult bResult = level.clip(new ClipContext(player.getEyePosition(), player.getEyePosition().add(player.getLookAngle().scale(PlayerHelper.getReachDistance(player))), ClipContext.Block.OUTLINE, ClipContext.Fluid.SOURCE_ONLY, player));
+    public Pair<ItemStack, BlockPos> getTargetedBlock(IContext ctx) {
+        BlockHitResult bResult = ctx.clipBlock(ClipContext.Block.OUTLINE, ClipContext.Fluid.SOURCE_ONLY, PlayerHelper.getReachDistance(ctx.player()));
         if (bResult.getType() == HitResult.Type.MISS)
             return null;
-        BlockState state = level.getBlockState(bResult.getBlockPos());
-        ItemStack stack = state.getBlock().getCloneItemStack(level, bResult.getBlockPos(), state);
+        BlockState state = ctx.level().getBlockState(bResult.getBlockPos());
+        ItemStack stack = state.getBlock().getCloneItemStack(ctx.level(), bResult.getBlockPos(), state);
         return Pair.of(stack, bResult.getBlockPos());
     }
 
-    public Pair<ItemStack, ItemEntity> getTargetedEntityStack(Player player) {
-        EntityHitResult eResult = clipEntityFromPlayer(player, PlayerHelper.getReachDistance(player), e -> e instanceof ItemEntity);
+    public Pair<ItemStack, ItemEntity> getTargetedEntityStack(IContext ctx) {
+        EntityHitResult eResult = ctx.clipEntityWithCollision(PlayerHelper.getReachDistance(ctx.player()), e -> e instanceof ItemEntity);
         if (eResult == null || eResult.getType() == HitResult.Type.MISS)
             return null;
 

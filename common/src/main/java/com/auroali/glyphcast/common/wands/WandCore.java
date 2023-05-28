@@ -1,6 +1,5 @@
 package com.auroali.glyphcast.common.wands;
 
-import com.auroali.glyphcast.Glyphcast;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.Registry;

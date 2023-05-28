@@ -24,12 +24,17 @@ public interface ISpellHolder {
      * @param sequence the sequence of glyphs
      */
     default void writeSequence(ItemStack stack, GlyphSequence sequence) {
-        CompoundTag tag = sequence.serialize();
-        stack.getOrCreateTag().put("glyphcast:glyphs", sequence.serialize());
+
         // If the sequence has an associated spell, write the spell ID for faster lookups
-        sequence.findSpell().ifPresent(spell ->
-                tag.putString("cachedSpellId", Glyphcast.SPELLS.getKey(spell).get().location().toString()));
-        stack.getOrCreateTag().put("glyphcast:glyphs", tag);
+        Optional<Spell> spellOpt = sequence.findSpell();
+        spellOpt.ifPresent(spell -> {
+            CompoundTag tag = spell.getSequence().serialize();
+            tag.putString("cachedSpellId", Glyphcast.SPELLS.getId(spell).toString());
+            stack.getOrCreateTag().put("glyphcast:glyphs", tag);
+        });
+        if(spellOpt.isEmpty()) {
+            stack.getOrCreateTag().put("glyphcast:glyphs", sequence.serialize());
+        }
     }
 
     /**

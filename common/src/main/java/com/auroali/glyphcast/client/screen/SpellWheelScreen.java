@@ -6,6 +6,7 @@ import com.auroali.glyphcast.client.screen.widgets.SpellWheelEntry;
 import com.auroali.glyphcast.common.capabilities.SpellUser;
 import com.auroali.glyphcast.common.items.IWandLike;
 import com.auroali.glyphcast.common.network.GCNetwork;
+import com.auroali.glyphcast.common.network.both.SetQuickSelectSlotMessage;
 import com.auroali.glyphcast.common.network.server.SelectSpellSlotMessage;
 import com.auroali.glyphcast.common.spells.SpellSlot;
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -14,9 +15,11 @@ import net.minecraft.client.GameNarrator;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
@@ -109,6 +112,12 @@ public class SpellWheelScreen extends Screen {
     public boolean keyReleased(int pKeyCode, int pScanCode, int pModifiers) {
         if (closeOnRelease && GCKeybinds.SPELL_SELECTION.matches(pKeyCode, pScanCode))
             onClose();
+        if(selectedEntry != null && GCKeybinds.QUICK_SELECT_0.matches(pKeyCode, pScanCode))
+            GCNetwork.CHANNEL.sendToServer(new SetQuickSelectSlotMessage.C2S(slots.get(selectedEntry.index).getIndex(), 0));
+        if(selectedEntry != null && GCKeybinds.QUICK_SELECT_1.matches(pKeyCode, pScanCode))
+            GCNetwork.CHANNEL.sendToServer(new SetQuickSelectSlotMessage.C2S(slots.get(selectedEntry.index).getIndex(), 1));
+        if(selectedEntry != null && GCKeybinds.QUICK_SELECT_2.matches(pKeyCode, pScanCode))
+            GCNetwork.CHANNEL.sendToServer(new SetQuickSelectSlotMessage.C2S(slots.get(selectedEntry.index).getIndex(), 2));
         return super.keyReleased(pKeyCode, pScanCode, pModifiers);
     }
 
@@ -118,6 +127,12 @@ public class SpellWheelScreen extends Screen {
             onClose();
         if (pButton == 1)
             onRightClick.accept(this);
+        if(selectedEntry != null && GCKeybinds.QUICK_SELECT_0.matchesMouse(pButton))
+            GCNetwork.CHANNEL.sendToServer(new SetQuickSelectSlotMessage.C2S(slots.get(selectedEntry.index).getIndex(), 0));
+        if(selectedEntry != null && GCKeybinds.QUICK_SELECT_1.matchesMouse(pButton))
+            GCNetwork.CHANNEL.sendToServer(new SetQuickSelectSlotMessage.C2S(slots.get(selectedEntry.index).getIndex(), 1));
+        if(selectedEntry != null && GCKeybinds.QUICK_SELECT_2.matchesMouse(pButton))
+            GCNetwork.CHANNEL.sendToServer(new SetQuickSelectSlotMessage.C2S(slots.get(selectedEntry.index).getIndex(), 2));
         return super.mouseClicked(pMouseX, pMouseY, pButton);
     }
 
@@ -139,8 +154,15 @@ public class SpellWheelScreen extends Screen {
 
         blit(pPoseStack, selectedEntry.centerX + selectedEntry.posX - 17, selectedEntry.centerY + selectedEntry.posY - 17, 0, 64, 34, 34);
 
-        if (selectedEntry.visible && selectedEntry.spell != null)
-            renderTooltip(pPoseStack, List.of(selectedEntry.spell.getName(), selectedEntry.spell.getSpellDescription()), Optional.empty(), selectedEntry.centerX + selectedEntry.posX, selectedEntry.centerY + selectedEntry.posY);
+        if (selectedEntry.visible && selectedEntry.spell != null) {
+            List<Component> components = new ArrayList<>();
+            components.add(selectedEntry.spell.getName());
+            components.add(selectedEntry.spell.getSpellDescription());
+            if(slots.get(selectedEntry.index).getQuickSelectId() >= 0) {
+                components.add(Component.translatable("gui.glyphcast.quick_select_bound", Component.keybind("key.glyphcast.quick_select_%d".formatted(slots.get(selectedEntry.index).getQuickSelectId()))));
+            }
+            renderTooltip(pPoseStack, components, Optional.empty(), selectedEntry.centerX + selectedEntry.posX, selectedEntry.centerY + selectedEntry.posY);
+        }
     }
 
     @Override

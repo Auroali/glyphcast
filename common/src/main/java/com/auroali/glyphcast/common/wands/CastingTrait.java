@@ -3,7 +3,6 @@ package com.auroali.glyphcast.common.wands;
 import com.auroali.glyphcast.Glyphcast;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;

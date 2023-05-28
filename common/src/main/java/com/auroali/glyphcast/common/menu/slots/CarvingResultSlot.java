@@ -1,6 +1,6 @@
 package com.auroali.glyphcast.common.menu.slots;
 
-import com.auroali.glyphcast.common.menu.container.CarvingTableContainer;
+import com.auroali.glyphcast.common.menu.container.InputContainer;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.RecipeHolder;
@@ -8,11 +8,11 @@ import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 
 public class CarvingResultSlot extends Slot {
-    private final CarvingTableContainer craftSlots;
+    private final InputContainer craftSlots;
     private final Player player;
     private int removeCount;
 
-    public CarvingResultSlot(Player pPlayer, CarvingTableContainer slots, Container pContainer, int pSlot, int pXPosition, int pYPosition) {
+    public CarvingResultSlot(Player pPlayer, InputContainer slots, Container pContainer, int pSlot, int pXPosition, int pYPosition) {
         super(pContainer, pSlot, pXPosition, pYPosition);
         this.player = pPlayer;
         this.craftSlots = slots;

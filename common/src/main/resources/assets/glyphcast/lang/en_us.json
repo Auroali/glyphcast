@@ -33,7 +33,7 @@
   "block.glyphcast.cut_crystal_block": "Cut Crystal Block",
 
   "__comment3": "Item Groups",
-  "itemGroup.glyphcast.glyphcastTab": "Glyphcast",
+  "itemGroup.glyphcast.glyphcast_tab": "Glyphcast",
 
   "__comment4": "Glyphs",
   "glyph.glyphcast.fire": "Fire Glyph",
@@ -45,8 +45,10 @@
   "gui.glyphcast.save_glyphs": "Write Glyphs",
   "gui.glyphcast.select_spell": "Select Spell",
   "menu.title.glyphcast.carving": "Carving",
+  "menu.title.glyphcast.scribing": "Scribing",
   "gui.glyphcast.category.infuse": "Wand Infusing",
   "gui.glyphcast.category.carving": "Carving",
+  "gui.glyphcast.quick_select_bound": "Bound to [%s]",
 
   "__comment6": "Spells",
   "spell.glyphcast.fire": "Fire",
@@ -55,13 +57,14 @@
   "spell.glyphcast.earth": "Earth",
   "spell.glyphcast.mist": "Mist",
   "spell.glyphcast.push": "Push",
+  "spell.glyphcast.pull": "Pull",
   "spell.glyphcast.focused_stream": "Focused Stream",
   "spell.glyphcast.flare": "Flare",
   "spell.glyphcast.focused_infuse": "Focused Infuse",
   "spell.glyphcast.focused_extract": "Focused Extract",
   "spell.glyphcast.seperate_staff": "Awaken Staff",
   "spell.glyphcast.shield": "Shield",
-  "spell.glyphcast.mend_item": "Mend Item",
+  "spell.glyphcast.mend": "Mend Item",
 
   "__comment7": "Spell Descriptions",
   "spell.glyphcast.fire.desc": "Shoots a stream of fire in the direction the caster is looking",
@@ -69,18 +72,22 @@
   "spell.glyphcast.ice.desc": "Freezes blocks in the direction the caster is looking",
   "spell.glyphcast.earth.desc": "Causes plants the caster is looking at to grow",
   "spell.glyphcast.mist.desc": "Conjures a thick mist that blocks the view of others",
-  "spell.glyphcast.push.desc": "Pushes either the caster or the entity the caster is looking at back",
+  "spell.glyphcast.push.desc": "Pushes the entity the caster is looking at back",
+  "spell.glyphcast.pull.desc": "Pulls the entity the caster is looking at in front of them",
   "spell.glyphcast.focused_stream.desc": "Focuses magic into a stream shot from the wand",
   "spell.glyphcast.flare.desc": "Shoots a stream of fire forward that explodes like a firework",
   "spell.glyphcast.focused_infuse.desc": "Infuses magic from the surrounding area into a target",
   "spell.glyphcast.focused_extract.desc": "Extracts energy from a fracture, and condenses it down to liquid form",
   "spell.glyphcast.seperate_staff.desc": "Causes the creature at the end of the staff to detach itself",
   "spell.glyphcast.shield.desc": "Generates a protective barrier around the caster",
-  "spell.glyphcast.mend_item.desc": "Mends the appropriately enchanted item in the caster's other hand",
+  "spell.glyphcast.mend.desc": "Mends the appropriately enchanted item in the caster's other hand",
 
   "__comment8": "Key Mappings",
   "key.categories.glyphcast": "Glyphcast",
   "key.glyphcast.spells": "Spell Wheel",
+  "key.glyphcast.quick_select_0": "Quick Select 1",
+  "key.glyphcast.quick_select_1": "Quick Select 2",
+  "key.glyphcast.quick_select_2": "Quick Select 3",
 
   "__comment9": "Death Messages",
   "death.attack.glyphcast.magic": "%1$s's body was consumed by magic",
@@ -101,5 +108,12 @@
   "msg.glyphcast.wand_material_error": "Could not load invalid material '%s'",
 
   "__comment13": "Patchouli Book",
-  "guide.glyphcast.landing": "Test Landing Text"
+  "guide.glyphcast.landing": "Test Landing Text",
+
+  "__comment14": "EMI",
+  "emi.category.glyphcast.carving": "Carving",
+  "emi.category.glyphcast.infuse": "Wand Infusing",
+  "tag.glyphcast.shows_wand_energy_overlay": "Displays wand information",
+  "tag.glyphcast.shows_gauge_energy_overlay": "Displays player energy information",
+  "tag.glyphcast.wands": "Wands"
 }

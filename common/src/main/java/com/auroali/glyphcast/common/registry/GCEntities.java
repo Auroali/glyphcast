@@ -1,7 +1,10 @@
 package com.auroali.glyphcast.common.registry;
 
 import com.auroali.glyphcast.Glyphcast;
-import com.auroali.glyphcast.common.entities.*;
+import com.auroali.glyphcast.common.entities.FireSpellProjectile;
+import com.auroali.glyphcast.common.entities.Flare;
+import com.auroali.glyphcast.common.entities.FloatingLight;
+import com.auroali.glyphcast.common.entities.FractureEntity;
 import dev.architectury.registry.registries.DeferredRegister;
 import dev.architectury.registry.registries.RegistrySupplier;
 import net.minecraft.core.Registry;

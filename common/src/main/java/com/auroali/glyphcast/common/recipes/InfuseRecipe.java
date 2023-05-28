@@ -28,10 +28,10 @@ public record InfuseRecipe(ResourceLocation id, double cost, Ingredient input, I
 
     @Override
     public ItemStack assemble(Container pContainer) {
-        return assemble(pContainer.getItem(0));
+        return assemble(pContainer.getItem(0), pContainer.getItem(1));
     }
 
-    public ItemStack assemble(ItemStack input) {
+    public ItemStack assemble(ItemStack input, ItemStack other) {
         ItemStack output = result.copy();
         if (preserveNbt)
             output.getOrCreateTag().merge(input.getOrCreateTag());
@@ -65,6 +65,18 @@ public record InfuseRecipe(ResourceLocation id, double cost, Ingredient input, I
 
     public boolean itemsMatch(ItemStack input, ItemStack other) {
         return this.input.test(input) && (!this.consumesOther() || this.other.test(other));
+    }
+
+    public static boolean anyMatch(RecipeManager manager, ItemStack stack, ItemStack other) {
+        return manager.getAllRecipesFor(GCRecipeTypes.INFUSE_RECIPE.get()).stream().anyMatch(recipe -> recipe.input.test(stack) && recipe.other.test(other));
+    }
+
+    public static InfuseRecipe getFor(RecipeManager manager, ItemStack stack, ItemStack other) {
+        return manager.getAllRecipesFor(GCRecipeTypes.INFUSE_RECIPE.get())
+                .stream()
+                .filter(recipe -> recipe.input.test(stack) && recipe.other.test(other))
+                .findFirst()
+                .orElse(null);
     }
 
     public boolean consumesOther() {

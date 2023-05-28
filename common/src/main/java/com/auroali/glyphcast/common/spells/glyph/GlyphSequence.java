@@ -18,19 +18,22 @@ public class GlyphSequence {
 
     public static final GlyphSequence EMPTY = new GlyphSequence();
     private final List<Ring> glyphList;
+    private final List<Ring> visual;
     private Spell cachedSpell;
 
     private GlyphSequence() {
         this.glyphList = Collections.emptyList();
+        this.visual = Collections.emptyList();
     }
 
-    public GlyphSequence(List<Ring> ringList) {
-        this.glyphList = ringList;
+    public GlyphSequence(List<Ring> ringList, List<Ring> display) {
+        this.glyphList = ringList.stream().map(Ring::sorted).toList();
+        this.visual = display;
         this.findSpell().ifPresent(s -> this.cachedSpell = s);
     }
 
     public GlyphSequence(Ring... rings) {
-        this(Arrays.stream(rings).toList());
+        this(Arrays.stream(rings).toList(), Arrays.stream(rings).toList());
     }
 
     /**
@@ -45,7 +48,7 @@ public class GlyphSequence {
         for (int i = 0; i < numRings; i++) {
             rings.add(Ring.decode(buf));
         }
-        return new GlyphSequence(rings);
+        return new GlyphSequence(rings, rings);
     }
 
     /**
@@ -67,7 +70,7 @@ public class GlyphSequence {
             }
             ringsList.add(Ring.of(ringSequence));
         }
-        return new GlyphSequence(ringsList);
+        return new GlyphSequence(ringsList, ringsList);
     }
 
     /**
@@ -93,6 +96,9 @@ public class GlyphSequence {
     public List<Ring> getRings() {
         return glyphList;
     }
+    public List<Ring> getVisualRings() {
+        return visual;
+    }
 
     /**
      * Returns a list containing all the glyphs in the sequence
@@ -102,16 +108,15 @@ public class GlyphSequence {
     public List<Glyph> asList() {
         return Ring.mergeRings(glyphList);
     }
-
     public void encode(FriendlyByteBuf buf) {
         buf.writeInt(glyphList.size());
-        glyphList.forEach(ring -> ring.encode(buf));
+        visual.forEach(ring -> ring.encode(buf));
     }
 
     public CompoundTag serialize() {
         CompoundTag tag = new CompoundTag();
         ListTag rings = new ListTag();
-        glyphList.forEach(ring -> {
+        visual.forEach(ring -> {
             ByteArrayTag bytes = new ByteArrayTag(ring.glyphs.stream().map(g -> (byte) g.ordinal()).toList());
             rings.add(bytes);
         });
@@ -128,5 +133,25 @@ public class GlyphSequence {
         if (obj instanceof GlyphSequence sequence)
             return sequence.glyphList.equals(glyphList);
         return super.equals(obj);
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder builder = new StringBuilder();
+        builder.append("GlyphSequence[");
+        int i = 0;
+        for(Ring ring : visual) {
+            if(i != 0)
+                builder.append(',');
+            builder.append("%d: [".formatted(i));
+            ring.glyphs.forEach(g -> {
+                builder.append(g.toString());
+                builder.append(';');
+            });
+            builder.append("]");
+            i++;
+        }
+        builder.append("]");
+        return builder.toString();
     }
 }

@@ -21,10 +21,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.phys.AABB;
-import net.minecraft.world.phys.BlockHitResult;
-import net.minecraft.world.phys.EntityHitResult;
-import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.phys.*;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.function.Predicate;
@@ -112,18 +109,6 @@ public abstract class Spell {
         activate(new BasicContext(level, player, hand));
     }
 
-    @Nullable
-    protected EntityHitResult clipEntity(Level level, Entity entity, Vec3 startVec, Vec3 direction, Predicate<Entity> filter, double dist) {
-        Vec3 endVec = startVec.add(direction.scale(dist));
-        AABB bounds = new AABB(startVec, endVec).inflate(1);
-        return ProjectileUtil.getEntityHitResult(level, entity, startVec, endVec, bounds, filter, 0.3f);
-    }
-
-    @Nullable
-    protected EntityHitResult clipEntityFromPlayer(Player player, double dist, Predicate<Entity> filter) {
-        return clipEntity(player.level, player, player.getEyePosition(), player.getLookAngle(), filter, dist);
-    }
-
     protected void drainEnergy(Player player, double amount) {
         SpellUser.get(player).ifPresent(user ->
                 user.drainEnergy(amount, false)
@@ -168,6 +153,29 @@ public abstract class Spell {
             level().playSound(null, player(), sound, SoundSource.PLAYERS, volume, 1.0f);
         }
 
+        @Nullable
+        default EntityHitResult clipEntity(Entity entity, Vec3 startVec, Vec3 direction, Predicate<Entity> filter, double dist) {
+            Vec3 endVec = startVec.add(direction.scale(dist));
+            AABB bounds = new AABB(startVec, endVec).inflate(1);
+            return ProjectileUtil.getEntityHitResult(entity, startVec, endVec, bounds, filter, Double.MAX_VALUE);
+        }
+
+        @Nullable
+        default EntityHitResult clipEntity(double dist, Predicate<Entity> filter) {
+            return clipEntity(player(), player().getEyePosition(), player().getLookAngle(), filter, dist);
+        }
+
+        @Nullable
+        default EntityHitResult clipEntityWithCollision(double dist, Predicate<Entity> filter) {
+            BlockHitResult blockResult = clipBlock(ClipContext.Block.COLLIDER, dist);
+            EntityHitResult entityHitResult = clipEntity(dist, filter);
+            if(blockResult.getType() == HitResult.Type.MISS)
+                return entityHitResult;
+            if(entityHitResult == null || blockResult.distanceTo(player()) < entityHitResult.distanceTo(player()))
+                return null;
+            return entityHitResult;
+        }
+
         Player player();
 
         default void toNetwork(FriendlyByteBuf buf) {
@@ -193,6 +201,10 @@ public abstract class Spell {
 
         default BlockHitResult clipBlock(ClipContext.Fluid fluid, double range) {
             return clipBlock(ClipContext.Block.COLLIDER, fluid, range);
+        }
+
+        default BlockHitResult clipBlock(double range) {
+            return clipBlock(ClipContext.Block.COLLIDER, ClipContext.Fluid.ANY, range);
         }
 
         int ctxType();

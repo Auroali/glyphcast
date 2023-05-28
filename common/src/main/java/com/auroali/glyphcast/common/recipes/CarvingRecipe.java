@@ -1,6 +1,6 @@
 package com.auroali.glyphcast.common.recipes;
 
-import com.auroali.glyphcast.common.menu.container.CarvingTableContainer;
+import com.auroali.glyphcast.common.menu.container.InputContainer;
 import com.auroali.glyphcast.common.registry.GCRecipeTypes;
 import com.auroali.glyphcast.common.registry.GCRecipesSerializers;
 import com.google.gson.JsonObject;
@@ -14,14 +14,14 @@ import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.Nullable;
 
 public record CarvingRecipe(ResourceLocation id, Ingredient input,
-                            ItemStack output) implements Recipe<CarvingTableContainer> {
+                            ItemStack output) implements Recipe<InputContainer> {
     @Override
-    public boolean matches(CarvingTableContainer pContainer, Level pLevel) {
+    public boolean matches(InputContainer pContainer, Level pLevel) {
         return input.test(pContainer.getItem(0));
     }
 
     @Override
-    public ItemStack assemble(CarvingTableContainer pContainer) {
+    public ItemStack assemble(InputContainer pContainer) {
         return output.copy();
     }
 

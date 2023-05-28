@@ -52,7 +52,7 @@ public class GlyphRenderer {
                 GuiComponent.blit(pPoseStack, x - 20, y - 20, 256 - 40, 0, 40, 40, 256, 256);
                 GuiComponent.blit(pPoseStack, x - 54, y - 54, 256 - 108, 40, 108, 108, 256, 256);
                 for (int j = 0; j < glyphs.get(i).size(); j++) {
-                    renderGlyphOnRing(pPoseStack, x, y, glyphs.get(i).get(j), j, glyphs.get(i).size(), 35);
+                    renderGlyphOnRing(pPoseStack, x, y, glyphs.get(i).get(j), j, glyphs.get(i).size(), 35, Math.PI / 3);
                 }
             }
             if (i == 2) {
@@ -60,7 +60,7 @@ public class GlyphRenderer {
                 GuiComponent.blit(pPoseStack, x - 88, y - 88, 0, 0, 176, 176, 256, 256);
                 RenderSystem.setShaderTexture(0, GLYPHS);
                 for (int j = 0; j < glyphs.get(i).size(); j++) {
-                    renderGlyphOnRing(pPoseStack, x, y, glyphs.get(i).get(j), j, glyphs.get(i).size(), 70);
+                    renderGlyphOnRing(pPoseStack, x, y, glyphs.get(i).get(j), j, glyphs.get(i).size(), 70, Math.PI / 1.33333333333);
                 }
             }
         }
@@ -84,9 +84,9 @@ public class GlyphRenderer {
         RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f);
     }
 
-    public static void renderGlyphOnRing(PoseStack stack, int x, int y, Glyph glyph, int index, int maxPerRing, int size) {
+    public static void renderGlyphOnRing(PoseStack stack, int x, int y, Glyph glyph, int index, int maxPerRing, int size, double offset) {
         // Get the angle the glyph should be at
-        double angle = (2 * Math.PI * ((double) (index + 1) / (double) maxPerRing)) - Math.PI / 3;
+        double angle = (2 * Math.PI * ((double) (index + 1) / (double) maxPerRing)) - offset;
 
         // Convert the angle to screen coordinates, centered around the screen center
         int glyphX = x + (int) (size * Math.cos(angle));

@@ -6,9 +6,10 @@ import com.auroali.glyphcast.common.entities.FloatingLight;
 import com.auroali.glyphcast.common.items.IWandLike;
 import com.auroali.glyphcast.common.items.equipment.IMaxEnergyModifier;
 import com.auroali.glyphcast.common.network.GCNetwork;
-import com.auroali.glyphcast.common.network.client.SyncCooldownManagerMessage;
+import com.auroali.glyphcast.common.network.both.SetQuickSelectSlotMessage;
 import com.auroali.glyphcast.common.network.client.SyncSpellUserDataMessage;
 import com.auroali.glyphcast.common.network.client.SyncSpellUserEnergyMessage;
+import com.auroali.glyphcast.common.network.server.QuickSelectSlotMessage;
 import com.auroali.glyphcast.common.registry.GCSpells;
 import com.auroali.glyphcast.common.spells.*;
 import com.auroali.glyphcast.common.spells.glyph.Glyph;
@@ -39,6 +40,7 @@ public class SpellUser implements ISpellUser {
     int glyphMask;
     int selectedSlot;
     double energy;
+    boolean canSync = true;
 
     public SpellUser(Player player) {
         this.slots = SpellSlot.makeSlots(18);
@@ -193,6 +195,17 @@ public class SpellUser implements ISpellUser {
 
             spellSlotsTag.add(StringTag.valueOf(id.toString()));
         }
+
+        ListTag quickSelect = new ListTag();
+        slots.forEach(slot -> {
+            if(slot.getQuickSelectId() < 0)
+                return;
+            CompoundTag quickSelectSlot = new CompoundTag();
+            quickSelectSlot.putInt("Id", slot.getQuickSelectId());
+            quickSelectSlot.putInt("Slot", slot.getIndex());
+            quickSelect.add(quickSelectSlot);
+        });
+
         ListTag lights = new ListTag();
         for(FloatingLight light : floatingLights) {
             CompoundTag lightData = new CompoundTag();
@@ -206,6 +219,7 @@ public class SpellUser implements ISpellUser {
 
         tag.putInt("SelectedSlot", selectedSlot);
         tag.put("SpellSlots", spellSlotsTag);
+        tag.put("QuickSelect", quickSelect);
         tag.putInt("DiscoveredGlyphs", glyphMask);
         tag.putDouble("Energy", energy);
         tag.put("CooldownManager", cooldownManager.serialize());
@@ -215,6 +229,7 @@ public class SpellUser implements ISpellUser {
 
     @Override
     public void deserializeNBT(CompoundTag nbt) {
+        canSync = false;
         ListTag spellSlotsList = nbt.getList("SpellSlots", Tag.TAG_STRING);
 
         for (int i = 0; i < spellSlotsList.size(); i++) {
@@ -232,6 +247,15 @@ public class SpellUser implements ISpellUser {
             }
             slots.set(i, new SpellSlot(i, spell));
         }
+
+        ListTag quickSelect = nbt.getList("QuickSelect", Tag.TAG_COMPOUND);
+        for(int i = 0; i < quickSelect.size(); i++) {
+            CompoundTag quickSelectSlot = quickSelect.getCompound(i);
+            int quickSelectId = quickSelectSlot.getInt("Id");
+            int slotIndex = quickSelectSlot.getInt("Slot");
+            setQuickSelectForSlot(slotIndex, quickSelectId);
+        }
+
         ListTag lights = nbt.getList("FloatingLights", Tag.TAG_COMPOUND);
         for(int i = 0; i < lights.size(); i++) {
             FloatingLight light = new FloatingLight(player.level,
@@ -246,19 +270,47 @@ public class SpellUser implements ISpellUser {
         glyphMask = nbt.getInt("DiscoveredGlyphs");
         energy = nbt.getDouble("Energy");
         cooldownManager.deserialize(nbt.getCompound("CooldownManager"));
+        canSync = true;
     }
 
     // Syncs current spell user data to the client
     @Override
     public void sync() {
         // If we aren't on the client, don't do anything
-        if (player instanceof ServerPlayer serverPlayer)
+        if (canSync && player instanceof ServerPlayer serverPlayer)
             GCNetwork.CHANNEL.sendToPlayer(serverPlayer, new SyncSpellUserDataMessage(this));
     }
 
     @Override
     public SpellCooldownManager getCooldownManager() {
         return player.level.isClientSide ? new SpellCooldownManager.Immutable(cooldownManager) : cooldownManager;
+    }
+
+    @Override
+    public void setQuickSelectForSlot(int slot, int quickSelect) {
+        if(slot >= slots.size()) {
+            LOGGER.warn("Tried to set quick select for slot {}! (Max is {})", slot, slots.size() - 1);
+            return;
+        }
+        slots.forEach(s -> {
+            if(quickSelect >= 0 && s.getQuickSelectId() == quickSelect)
+                s.setQuickSelect(-1);
+        });
+        slots.get(slot).setQuickSelect(quickSelect);
+        if(canSync && player instanceof ServerPlayer p)
+            GCNetwork.CHANNEL.sendToPlayer(p, new SetQuickSelectSlotMessage.S2C(slot, quickSelect));
+    }
+
+    @Override
+    public void quickSelectSlot(int quickSelect) {
+        if(player.level.isClientSide) {
+            GCNetwork.CHANNEL.sendToServer(new QuickSelectSlotMessage(quickSelect));
+            return;
+        }
+        slots.forEach(slot -> {
+            if(slot.getQuickSelectId() == quickSelect)
+                selectSpellSlot(slot.getIndex());
+        });
     }
 
     @Override
@@ -280,7 +332,7 @@ public class SpellUser implements ISpellUser {
 
     void syncEnergy() {
         // If we aren't on the client, don't do anything
-        if (player instanceof ServerPlayer serverPlayer)
+        if (canSync && player instanceof ServerPlayer serverPlayer)
             GCNetwork.CHANNEL.sendToPlayer(serverPlayer, new SyncSpellUserEnergyMessage(this));
     }
 }

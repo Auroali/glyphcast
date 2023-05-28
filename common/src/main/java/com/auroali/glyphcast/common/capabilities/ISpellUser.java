@@ -92,6 +92,9 @@ public interface ISpellUser {
 
     SpellCooldownManager getCooldownManager();
 
+    void setQuickSelectForSlot(int slot, int quickSelect);
+    void quickSelectSlot(int quickSelect);
+
     void loadCooldownManagerData(CompoundTag tag);
 
     void loadFloatingLights();

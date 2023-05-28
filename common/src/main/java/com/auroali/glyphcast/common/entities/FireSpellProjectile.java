@@ -118,12 +118,15 @@ public class FireSpellProjectile extends Projectile {
             // If the block can be lit, we light it
             if (state.hasProperty(BlockStateProperties.LIT) && !state.getValue(BlockStateProperties.LIT)) {
                 level.setBlockAndUpdate(result.getBlockPos(), state.setValue(BlockStateProperties.LIT, true));
+                playSound(SoundEvents.FIRECHARGE_USE);
                 this.discard();
                 return;
             }
             // Otherwise we try to burn it
-            if (BaseFireBlock.canBePlacedAt(level, pos, result.getDirection()))
+            if (BaseFireBlock.canBePlacedAt(level, pos, result.getDirection())) {
                 level.setBlockAndUpdate(result.getBlockPos().relative(result.getDirection()), BaseFireBlock.getState(level, pos));
+                playSound(SoundEvents.FIRECHARGE_USE);
+            }
         }
     }
 
@@ -140,6 +143,8 @@ public class FireSpellProjectile extends Projectile {
             pResult.getEntity().hurt(GCDamageSources.burnIndirect(this, getOwner()), 4);
         else
             pResult.getEntity().hurt(GCDamageSources.BURN, 4);
+
+        playSound(SoundEvents.FIRECHARGE_USE);
         this.discard();
         if (!level.isClientSide) {
             GCNetwork.CHANNEL.sendToNear(level, position(), 32, new SpawnParticlesMessage(ParticleTypes.FLAME, 0.15, 15, position().add(0, 0.25, 0), getDeltaMovement().normalize().scale(-1), 0.05, 0.07));
@@ -149,6 +154,6 @@ public class FireSpellProjectile extends Projectile {
 
     @Override
     protected void defineSynchedData() {
-        entityData.define(DAMAGE, 4.0f);
+        entityData.define(DAMAGE, 5.0f);
     }
 }

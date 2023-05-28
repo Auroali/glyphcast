@@ -7,11 +7,11 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 
-public class CarvingTableContainer implements Container {
+public class InputContainer implements Container {
     public final NonNullList<ItemStack> items;
     private final AbstractContainerMenu menu;
 
-    public CarvingTableContainer(AbstractContainerMenu pMenu, int pWidth, int pHeight) {
+    public InputContainer(AbstractContainerMenu pMenu, int pWidth, int pHeight) {
         items = NonNullList.withSize(pWidth * pHeight, ItemStack.EMPTY);
         this.menu = pMenu;
     }

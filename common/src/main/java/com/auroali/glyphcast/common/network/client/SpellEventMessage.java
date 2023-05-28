@@ -33,7 +33,9 @@ public class SpellEventMessage extends NetworkMessage {
             return null;
 
         // A spell event is only ever triggered with a positioned context
-        return new Spell.PositionedContext(player.level, player, hand, new Vec3(buf.readDouble(), buf.readDouble(), buf.readDouble()), new Vec3(buf.readDouble(), buf.readDouble(), buf.readDouble()));
+        return new Spell.PositionedContext(player.level, player, hand,
+                new Vec3(buf.readDouble(), buf.readDouble(), buf.readDouble()),
+                new Vec3(buf.readDouble(), buf.readDouble(), buf.readDouble()));
 
     }
 

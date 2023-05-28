@@ -22,7 +22,7 @@ public class GlyphClientTooltipComponent implements ClientTooltipComponent {
 
     public GlyphClientTooltipComponent(GlyphSequence sequence) {
         this.glyphs = new ArrayList<>();
-        sequence.getRings().forEach(ring -> glyphs.add(ring.asList()));
+        sequence.getVisualRings().forEach(ring -> glyphs.add(ring.asList()));
     }
 
     @Override

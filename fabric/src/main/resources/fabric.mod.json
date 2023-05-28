@@ -24,6 +24,9 @@
     "jei_mod_plugin": [
       "com.auroali.glyphcast.compat.jei.GlyphcastJEIPlugin"
     ],
+    "emi": [
+      "com.auroali.glyphcast.compat.fabric.emi.GlyphcastEmiPlugin"
+    ],
     "cardinal-components": [
       "com.auroali.glyphcast.common.capabilities.fabric.GCComponents"
     ]

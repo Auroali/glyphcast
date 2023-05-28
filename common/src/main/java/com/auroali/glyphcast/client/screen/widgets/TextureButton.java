@@ -26,7 +26,7 @@ public class TextureButton extends Button {
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
         RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f);
         RenderSystem.setShaderTexture(0, texture);
-        this.blit(pPoseStack, x, y, isMouseOver(pMouseX, pMouseY) ? 16 : 0, 32, 16, 16);
-        this.blit(pPoseStack, x, y, uOffset, vOffset, width, height);
+        this.blit(pPoseStack, x, y, uOffset + (isMouseOver(pMouseX, pMouseY) ? 16 : 0), vOffset, 16, 16);
+        //this.blit(pPoseStack, x, y, uOffset, vOffset, width, height);
     }
 }

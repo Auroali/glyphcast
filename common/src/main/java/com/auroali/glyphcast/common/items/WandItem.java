@@ -6,18 +6,13 @@ import com.auroali.glyphcast.common.capabilities.SpellUser;
 import com.auroali.glyphcast.common.network.GCNetwork;
 import com.auroali.glyphcast.common.network.server.SetSlotSpellMessage;
 import com.auroali.glyphcast.common.registry.GCItems;
-import com.auroali.glyphcast.common.registry.GCWandCores;
 import com.auroali.glyphcast.common.spells.HoldSpell;
 import com.auroali.glyphcast.common.wands.CastingTrait;
 import com.auroali.glyphcast.common.wands.WandCore;
-import com.auroali.glyphcast.mixins.client.KeyMappingAccessor;
-import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Quaternion;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.Minecraft;
 import net.minecraft.core.NonNullList;
-import net.minecraft.core.Registry;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
@@ -31,10 +26,8 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.Nullable;
 
-import java.text.DecimalFormat;
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Stream;
 
 public class WandItem extends Item implements IPointItem, IWandLike, ICastingItem {

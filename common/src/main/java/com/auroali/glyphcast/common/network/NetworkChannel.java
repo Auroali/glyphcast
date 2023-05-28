@@ -2,7 +2,9 @@ package com.auroali.glyphcast.common.network;
 
 import com.mojang.logging.LogUtils;
 import dev.architectury.injectables.annotations.ExpectPlatform;
+import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
@@ -45,6 +47,9 @@ public class NetworkChannel {
     }
 
     public void sendToAll(Object msg) {
+        throw new AssertionError();
+    }
+    public void sendToTracking(ServerLevel level, BlockPos pos, Object msg) {
         throw new AssertionError();
     }
 }

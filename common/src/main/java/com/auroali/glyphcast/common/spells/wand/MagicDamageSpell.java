@@ -2,8 +2,6 @@ package com.auroali.glyphcast.common.spells.wand;
 
 import com.auroali.glyphcast.common.PlayerHelper;
 import com.auroali.glyphcast.common.damage.GCDamageSources;
-import com.auroali.glyphcast.common.network.client.ClientPacketHandler;
-import com.auroali.glyphcast.common.network.client.SpawnParticlesMessage;
 import com.auroali.glyphcast.common.registry.GCParticles;
 import com.auroali.glyphcast.common.spells.Spell;
 import com.auroali.glyphcast.common.spells.glyph.Glyph;
@@ -29,7 +27,7 @@ public class MagicDamageSpell extends Spell {
     @Override
     public void activate(IContext ctx) {
         double maxDist = PlayerHelper.getReachDistance(ctx.player()) * 1.5;
-        EntityHitResult result = clipEntityFromPlayer(ctx.player(), maxDist, e -> !e.isRemoved());
+        EntityHitResult result = ctx.clipEntityWithCollision(maxDist, e -> !e.isRemoved());
         if (result == null) {
             triggerEvent((byte) 0, PositionedContext.with(ctx, new Vec3(getDist(ctx.player(), maxDist), 0, 0)));
             return;
@@ -38,7 +36,6 @@ public class MagicDamageSpell extends Spell {
         result.getEntity().hurt(GCDamageSources.magic(ctx.player()), (float) 9);
         double dist = Math.ceil(ctx.player().getEyePosition().distanceTo(result.getLocation()));
         triggerEvent((byte) 0, PositionedContext.with(ctx, new Vec3(dist, 0, 0)));
-        spawnEffects(ctx.player(), dist);
     }
 
     double getDist(Player player, double max) {
@@ -48,14 +45,13 @@ public class MagicDamageSpell extends Spell {
 
     @Override
     public void handleEvent(Byte id, PositionedContext ctx) {
-        spawnEffects(ctx.player(), ctx.start().x);
+        spawnEffects(ctx, ctx.start().x);
     }
 
-    void spawnEffects(Player player, double maxDist) {
+    void spawnEffects(IContext ctx, double maxDist) {
         for (int i = 2; i < (int) maxDist * 2; i++) {
-            Vec3 pos = player.getEyePosition().add(player.getLookAngle().scale(maxDist * (i / (maxDist * 2))));
-            SpawnParticlesMessage msg = new SpawnParticlesMessage(GCParticles.MAGIC_PULSE.get(), 0.0, 4, pos, player.getLookAngle(), 0.1, 0.2);
-            ClientPacketHandler.spawnParticles(msg);
+            Vec3 pos = ctx.player().getEyePosition().add(ctx.player().getLookAngle().scale(maxDist * (i / (maxDist * 2))));
+            ctx.level().addParticle(GCParticles.MAGIC_PULSE.get(), pos.x, pos.y, pos.z, ctx.player().getLookAngle().x * 0.1, ctx.player().getLookAngle().y * 0.1, ctx.player().getLookAngle().z * 0.1);
         }
     }
 }

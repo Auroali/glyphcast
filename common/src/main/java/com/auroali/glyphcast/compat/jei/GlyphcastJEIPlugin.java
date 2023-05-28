@@ -3,7 +3,7 @@ package com.auroali.glyphcast.compat.jei;
 import com.auroali.glyphcast.Glyphcast;
 import com.auroali.glyphcast.common.items.IWandLike;
 import com.auroali.glyphcast.common.registry.GCBlocks;
-import com.auroali.glyphcast.common.registry.GCItems;
+import com.auroali.glyphcast.common.registry.tags.GCItemTags;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
 import mezz.jei.api.registration.IRecipeCatalystRegistration;
@@ -41,17 +41,17 @@ public class GlyphcastJEIPlugin implements IModPlugin {
 
     @Override
     public void registerRecipeCatalysts(IRecipeCatalystRegistration registration) {
-        Registry.ITEM.stream().forEach(item -> {
-            if(item instanceof IWandLike wandLike)
-                registration.addRecipeCatalyst(wandWithCore(wandLike, new ResourceLocation(Glyphcast.MODID, "petal")), GCRecipeTypes.INFUSE);
-        });
+        Registry.ITEM.stream().filter(i -> i.builtInRegistryHolder().is(GCItemTags.WANDS)).forEach(item ->
+            registration.addRecipeCatalyst(wandWithCore(item, new ResourceLocation(Glyphcast.MODID, "petal")), GCRecipeTypes.INFUSE)
+        );
 
         registration.addRecipeCatalyst(new ItemStack(GCBlocks.CARVING_TABLE.get()), GCRecipeTypes.CARVING);
     }
 
-    public ItemStack wandWithCore(IWandLike item, ResourceLocation location) {
-        ItemStack wand = new ItemStack((Item)item);
-        item.setCore(wand, location);
+    public ItemStack wandWithCore(Item item, ResourceLocation location) {
+        ItemStack wand = new ItemStack(item);
+        if(item instanceof IWandLike wandLike)
+            wandLike.setCore(wand, location);
         return wand;
     }
 }

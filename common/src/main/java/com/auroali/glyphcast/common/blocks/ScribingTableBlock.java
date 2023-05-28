@@ -1,6 +1,5 @@
 package com.auroali.glyphcast.common.blocks;
 
-import com.auroali.glyphcast.common.menu.CarvingMenu;
 import com.auroali.glyphcast.common.menu.ScribingMenu;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;

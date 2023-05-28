@@ -1,7 +1,7 @@
 package com.auroali.glyphcast.common.menu;
 
 import com.auroali.glyphcast.common.menu.container.CarvingResultsContainer;
-import com.auroali.glyphcast.common.menu.container.CarvingTableContainer;
+import com.auroali.glyphcast.common.menu.container.InputContainer;
 import com.auroali.glyphcast.common.menu.slots.CarvingResultSlot;
 import com.auroali.glyphcast.common.registry.GCBlocks;
 import com.auroali.glyphcast.common.registry.GCMenus;
@@ -21,7 +21,7 @@ import net.minecraft.world.level.Level;
 public class CarvingMenu extends AbstractContainerMenu {
     final Inventory inv;
     final ContainerLevelAccess access;
-    final CarvingTableContainer craftSlots = new CarvingTableContainer(this, 1, 1);
+    final InputContainer craftSlots = new InputContainer(this, 1, 1);
     final CarvingResultsContainer resultSlots = new CarvingResultsContainer();
 
     public CarvingMenu(int pContainerId, Inventory inv) {
@@ -64,7 +64,7 @@ public class CarvingMenu extends AbstractContainerMenu {
                 }
 
                 slot.onQuickCraft(itemstack1, itemstack);
-            } else if (pIndex >= 3 && pIndex < 39) {
+            } else if (pIndex >= 2 && pIndex < 39) {
                 if (!this.moveItemStackTo(itemstack1, 1, 2, false)) {
                     if (pIndex < 29) {
                         if (!this.moveItemStackTo(itemstack1, 29, 38, false)) {
@@ -74,7 +74,7 @@ public class CarvingMenu extends AbstractContainerMenu {
                         return ItemStack.EMPTY;
                     }
                 }
-            } else if (!this.moveItemStackTo(itemstack1, 3, 38, false)) {
+            } else if (!this.moveItemStackTo(itemstack1, 2, 38, false)) {
                 return ItemStack.EMPTY;
             }
 
@@ -112,11 +112,11 @@ public class CarvingMenu extends AbstractContainerMenu {
     @Override
     public void removed(Player pPlayer) {
         Slot slot = getSlot(1);
-        if (!moveItemStackTo(slot.getItem(), 3, 38, false))
+        if (!moveItemStackTo(slot.getItem(), 2, 38, false))
             pPlayer.drop(slot.getItem(), false);
     }
 
-    public void inputSlotChanged(Level level, Player player, CarvingResultsContainer results, CarvingTableContainer craftSlots) {
+    public void inputSlotChanged(Level level, Player player, CarvingResultsContainer results, InputContainer craftSlots) {
         if (level.isClientSide)
             return;
         ServerPlayer splayer = (ServerPlayer) player;
