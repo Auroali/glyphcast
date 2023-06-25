@@ -49,13 +49,13 @@ public class MagicInfuseSpell extends Spell {
         ItemStack offhandStack = ctx.getOtherHandItem();
         List<InfuseRecipe> recipes = ctx.level().getServer().getRecipeManager().getAllRecipesFor(GCRecipeTypes.INFUSE_RECIPE.get());
         recipes.stream().filter(r -> r.itemsMatch(stack, offhandStack)).findFirst().ifPresent(r -> {
-            if (!canDrainEnergy(ctx.player(), r.cost()))
+            if (!canDrainEnergy(ctx, r.cost()))
                 return;
             if (!ctx.player().isCreative() && r.consumesOther())
                 offhandStack.shrink(1);
             ItemStack result = r.assemble(stack, offhandStack);
             result.setCount(stack.getCount());
-            drainEnergy(ctx.player(), r.cost());
+            drainEnergy(ctx, r.cost());
             if (entityPair != null)
                 transformEntity(ctx, ctx.level(), entityPair, result);
             else

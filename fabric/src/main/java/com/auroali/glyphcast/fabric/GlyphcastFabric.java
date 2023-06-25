@@ -8,6 +8,7 @@ public class GlyphcastFabric implements ModInitializer {
     @Override
     public void onInitialize() {
         Glyphcast.init();
+        Glyphcast.post();
 
         ServerLifecycleEvents.SERVER_STARTING.register(server -> GlyphcastExpectPlatformImpl.server = server);
         ServerLifecycleEvents.SERVER_STOPPED.register(server -> GlyphcastExpectPlatformImpl.server = null);

@@ -27,6 +27,6 @@ public class CastingTrait {
             ResourceLocation location = Glyphcast.CASTING_TRAITS.getId(this);
             key = "casting_traits.%s.%s".formatted(location.getNamespace(), location.getPath());
         }
-        return Component.translatable(key).withStyle(formatting);
+        return Component.translatable(key).withStyle(formatting).withStyle(ChatFormatting.BOLD);
     }
 }

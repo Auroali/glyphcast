@@ -12,19 +12,14 @@ import net.minecraft.world.level.material.Material;
 
 public class TrimmedGlyphFlowerBlock extends FlowerBlock {
     public TrimmedGlyphFlowerBlock() {
-        super(MobEffects.BAD_OMEN, 20, Properties.of(Material.PLANT).noCollission().instabreak().sound(SoundType.GRASS).offsetType(OffsetType.XZ));
-    }
-
-    @Override
-    public boolean isRandomlyTicking(BlockState pState) {
-        return true;
+        super(MobEffects.BAD_OMEN, 20, Properties.of(Material.PLANT).randomTicks().noCollission().instabreak().sound(SoundType.GRASS).offsetType(OffsetType.XZ));
     }
 
     @Override
     @SuppressWarnings("deprecation")
     public void randomTick(BlockState pState, ServerLevel pLevel, BlockPos pPos, RandomSource pRandom) {
         super.randomTick(pState, pLevel, pPos, pRandom);
-        if (pRandom.nextInt(32) == 0) {
+        if (pRandom.nextInt(28) == 0) {
             pLevel.setBlockAndUpdate(pPos, GCBlocks.BLUE_GLYPH_FLOWER.get().defaultBlockState());
         }
     }

@@ -10,6 +10,7 @@ import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 
 import java.util.Collections;
+import java.util.List;
 
 @SuppressWarnings("unused")
 public class GCItems {
@@ -17,14 +18,14 @@ public class GCItems {
     public static final RegistrySupplier<BlankParchmentItem> BLANK_PARCHMENT = ITEMS.register("blank_parchment", BlankParchmentItem::new);
     public static final RegistrySupplier<GlyphParchmentItem> PARCHMENT = ITEMS.register("parchment", GlyphParchmentItem::new);
 
-    public static final RegistrySupplier<WandItem> WANDERING_WAND = ITEMS.register("wandering_wand", () -> new WandItem(Collections.emptyList()));
-    public static final RegistrySupplier<WandItem> OAK_WAND = ITEMS.register("oak_wand", () -> new WandItem(Collections.emptyList()));
-    public static final RegistrySupplier<WandItem> BIRCH_WAND = ITEMS.register("birch_wand", () -> new WandItem(Collections.emptyList()));
-    public static final RegistrySupplier<WandItem> SPRUCE_WAND = ITEMS.register("spruce_wand", () -> new WandItem(Collections.emptyList()));
-    public static final RegistrySupplier<WandItem> JUNGLE_WAND = ITEMS.register("jungle_wand", () -> new WandItem(Collections.emptyList()));
-    public static final RegistrySupplier<WandItem> ACACIA_WAND = ITEMS.register("acacia_wand", () -> new WandItem(Collections.emptyList()));
-    public static final RegistrySupplier<WandItem> DARK_OAK_WAND = ITEMS.register("dark_oak_wand", () -> new WandItem(Collections.emptyList()));
-    public static final RegistrySupplier<WandItem> MANGROVE_WAND = ITEMS.register("mangrove_wand", () -> new WandItem(Collections.emptyList()));
+    public static final RegistrySupplier<WandItem> WANDERING_WAND = ITEMS.register("wandering_wand", () -> new WandItem(() -> List.of(GCCastingTraits.ANCIENT.get())));
+    public static final RegistrySupplier<WandItem> OAK_WAND = ITEMS.register("oak_wand", () -> new WandItem(() -> Collections.emptyList()));
+    public static final RegistrySupplier<WandItem> BIRCH_WAND = ITEMS.register("birch_wand", () -> new WandItem(() -> Collections.emptyList()));
+    public static final RegistrySupplier<WandItem> SPRUCE_WAND = ITEMS.register("spruce_wand", () -> new WandItem(() -> Collections.emptyList()));
+    public static final RegistrySupplier<WandItem> JUNGLE_WAND = ITEMS.register("jungle_wand", () -> new WandItem(() -> Collections.emptyList()));
+    public static final RegistrySupplier<WandItem> ACACIA_WAND = ITEMS.register("acacia_wand", () -> new WandItem(() -> Collections.emptyList()));
+    public static final RegistrySupplier<WandItem> DARK_OAK_WAND = ITEMS.register("dark_oak_wand", () -> new WandItem(() -> Collections.emptyList()));
+    public static final RegistrySupplier<WandItem> MANGROVE_WAND = ITEMS.register("mangrove_wand", () -> new WandItem(() -> Collections.emptyList()));
 
     public static final RegistrySupplier<Item> ENERGY_GAUGE = ITEMS.register("energy_gauge", () -> new EnergyGaugeItem(new Item.Properties().tab(Glyphcast.GLYPHCAST_TAB).stacksTo(1)));
     public static final RegistrySupplier<VialItem> VIAL = ITEMS.register("vial", VialItem::new);

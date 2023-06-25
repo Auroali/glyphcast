@@ -9,6 +9,7 @@ import com.auroali.glyphcast.common.registry.GCItems;
 import com.auroali.glyphcast.common.spells.HoldSpell;
 import com.auroali.glyphcast.common.wands.CastingTrait;
 import com.auroali.glyphcast.common.wands.WandCore;
+import com.google.common.base.Suppliers;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Quaternion;
 import net.minecraft.ChatFormatting;
@@ -28,13 +29,14 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 public class WandItem extends Item implements IPointItem, IWandLike, ICastingItem {
-    private final List<CastingTrait> traits;
-    public WandItem(List<CastingTrait> traits) {
+    private final Supplier<List<CastingTrait>> traits;
+    public WandItem(Supplier<List<CastingTrait>> traits) {
         super(new Properties().stacksTo(1).tab(Glyphcast.GLYPHCAST_TAB).durability(250));
-        this.traits = traits;
+        this.traits = Suppliers.memoize(traits::get);
     }
 
     private static void openSpellWheelEditor(Level pLevel, Player pPlayer, ItemStack other) {
@@ -134,7 +136,7 @@ public class WandItem extends Item implements IPointItem, IWandLike, ICastingIte
     @Override
     public List<CastingTrait> getTraits(ItemStack stack) {
         return Stream.concat(
-                traits.stream(),
+                traits.get().stream(),
                 getCore(stack).map(WandCore::traits).orElseGet(Collections::emptyList).stream()
         ).toList();
     }

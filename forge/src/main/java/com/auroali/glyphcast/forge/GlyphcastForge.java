@@ -34,6 +34,7 @@ public class GlyphcastForge {
     }
 
     public void setup(final FMLCommonSetupEvent event) {
+        event.enqueueWork(Glyphcast::postClient);
     }
 
     public void setupClient(final FMLClientSetupEvent event) {

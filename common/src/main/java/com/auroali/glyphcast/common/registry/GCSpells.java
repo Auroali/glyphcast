@@ -5,6 +5,7 @@ import com.auroali.glyphcast.common.spells.Spell;
 import com.auroali.glyphcast.common.spells.composite.MendSpell;
 import com.auroali.glyphcast.common.spells.composite.PullSpell;
 import com.auroali.glyphcast.common.spells.composite.PushSpell;
+import com.auroali.glyphcast.common.spells.single.EarthSpell;
 import com.auroali.glyphcast.common.spells.single.FireSpell;
 import com.auroali.glyphcast.common.spells.single.IceSpell;
 import com.auroali.glyphcast.common.spells.single.LightSpell;
@@ -22,6 +23,7 @@ public class GCSpells {
     public static final RegistrySupplier<Spell> FIRE = SPELLS.register("fire", FireSpell::new);
     public static final RegistrySupplier<Spell> LIGHT = SPELLS.register("light", LightSpell::new);
     public static final RegistrySupplier<Spell> ICE = SPELLS.register("ice", IceSpell::new);
+    public static final RegistrySupplier<Spell> EARTH = SPELLS.register("earth", EarthSpell::new);
     // Composite
     public static final RegistrySupplier<Spell> PULL = SPELLS.register("pull", PullSpell::new);
     public static final RegistrySupplier<Spell> PUSH = SPELLS.register("push", PushSpell::new);

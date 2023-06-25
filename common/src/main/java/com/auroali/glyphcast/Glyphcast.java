@@ -34,6 +34,8 @@ import dev.architectury.registry.client.level.entity.EntityRendererRegistry;
 import dev.architectury.registry.client.particle.ParticleProviderRegistry;
 import dev.architectury.registry.client.rendering.RenderTypeRegistry;
 import dev.architectury.registry.item.ItemPropertiesRegistry;
+import dev.architectury.registry.level.entity.trade.SimpleTrade;
+import dev.architectury.registry.level.entity.trade.TradeRegistry;
 import dev.architectury.registry.menu.MenuRegistry;
 import dev.architectury.registry.registries.DeferredRegister;
 import dev.architectury.registry.registries.Registrar;
@@ -45,10 +47,17 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.packs.PackType;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.npc.VillagerTrades;
+import net.minecraft.world.entity.npc.WanderingTrader;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.trading.MerchantOffer;
 import net.minecraft.world.level.Level;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.function.Supplier;
 
@@ -61,7 +70,6 @@ public class Glyphcast {
     // Registering a new creative tab
     public static final CreativeModeTab GLYPHCAST_TAB = CreativeTabRegistry.create(new ResourceLocation(MODID, "glyphcast_tab"), () ->
             new ItemStack(GCItems.PARCHMENT.get()));
-    public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(MODID, Registry.ITEM_REGISTRY);
     public static final ResourceKey<Registry<Spell>> SPELL_REGISTRY = ResourceKey.createRegistryKey(new ResourceLocation(Glyphcast.MODID, "spells"));
     public static final ResourceKey<Registry<CastingTrait>> CASTING_TRAIT_REGISTRY = ResourceKey.createRegistryKey(new ResourceLocation(Glyphcast.MODID, "casting_traits"));
 
@@ -80,6 +88,8 @@ public class Glyphcast {
         GCEntities.ENTITIES.register();
         GCWorldgen.CONFIGURED_FEATURES.register();
         GCWorldgen.PLACED_FEATURES.register();
+        GCWorldgen.init();
+        GCCastingTraits.TRAITS.register();
 
 
         System.out.println(GlyphcastExpectPlatform.getConfigDirectory().toAbsolutePath().normalize().toString());
@@ -123,6 +133,16 @@ public class Glyphcast {
         ReloadListenerRegistry.register(PackType.SERVER_DATA, new WandCoreReloadListener(new Gson(), "wand_cores"));
     }
 
+    public static void post() {
+        TradeRegistry.registerTradeForWanderingTrader(true, new SimpleTrade(
+                new ItemStack(Items.EMERALD, 16),
+                ItemStack.EMPTY,
+                new ItemStack(GCItems.WANDERING_WAND.get()),
+                2,
+                16,
+                2.0f
+        ));
+    }
     public static void initClient() {
         GCKeybinds.register();
         ClientTickEvent.CLIENT_LEVEL_PRE.register(LightTracker::tick);
@@ -145,7 +165,11 @@ public class Glyphcast {
     }
 
     public static void postClient() {
-        RenderTypeRegistry.register(RenderType.cutout(), GCBlocks.FRACTURE_SIPHON.get());
+        RenderTypeRegistry.register(RenderType.cutout(),
+                GCBlocks.FRACTURE_SIPHON.get(),
+                GCBlocks.BLUE_GLYPH_FLOWER.get(),
+                GCBlocks.TRIMMED_GLYPH_FLOWER.get()
+        );
 
         MenuRegistry.registerScreenFactory(GCMenus.CARVING_TABLE.get(), CarvingTableScreen::new);
         MenuRegistry.registerScreenFactory(GCMenus.SCRIBING_TABLE.get(), ScribingTableScreen::new);

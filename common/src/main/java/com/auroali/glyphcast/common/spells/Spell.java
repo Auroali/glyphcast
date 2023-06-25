@@ -6,7 +6,9 @@ import com.auroali.glyphcast.common.items.GlyphParchmentItem;
 import com.auroali.glyphcast.common.items.IWandLike;
 import com.auroali.glyphcast.common.network.GCNetwork;
 import com.auroali.glyphcast.common.network.client.SpellEventMessage;
+import com.auroali.glyphcast.common.registry.GCCastingTraits;
 import com.auroali.glyphcast.common.spells.glyph.GlyphSequence;
+import com.auroali.glyphcast.common.wands.CastingTraitHelper;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
@@ -32,7 +34,7 @@ import java.util.function.Predicate;
  *
  * @author Auroali
  * @see GlyphSequence
- * @see FireSpell
+ * @see com.auroali.glyphcast.common.spells.single.FireSpell
  */
 public abstract class Spell {
     protected final GlyphSequence sequence;
@@ -102,24 +104,27 @@ public abstract class Spell {
      * @param player the player who activated this spell
      */
     public void tryActivate(Level level, Player player, InteractionHand hand) {
-        if (!canDrainEnergy(player, getCost()))
+        IContext ctx = new BasicContext(level, player, hand);
+        if (!canDrainEnergy(ctx, getCost()))
             return;
 
-        drainEnergy(player, getCost());
-        activate(new BasicContext(level, player, hand));
+        drainEnergy(ctx, getCost());
+        activate(ctx);
     }
 
-    protected void drainEnergy(Player player, double amount) {
-        SpellUser.get(player).ifPresent(user ->
-                user.drainEnergy(amount, false)
+    protected void drainEnergy(IContext ctx, double amount) {
+        double finalAmount = CastingTraitHelper.calculateFinalCost(ctx.getCastingItem(), amount);
+        SpellUser.get(ctx.player()).ifPresent(user ->
+                user.drainEnergy(finalAmount, false)
         );
     }
 
-    protected boolean canDrainEnergy(Player player, double amount) {
-        return SpellUser.get(player)
-                .map(user -> user.drainEnergy(amount, true))
+    protected boolean canDrainEnergy(IContext ctx, double amount) {
+        double finalAmount = CastingTraitHelper.calculateFinalCost(ctx.getCastingItem(), amount);
+        return SpellUser.get(ctx.player())
+                .map(user -> user.drainEnergy(finalAmount, true))
                 .orElse(Double.NaN)
-                == amount;
+                == finalAmount;
     }
 
     public interface IContext {
